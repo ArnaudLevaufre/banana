@@ -20,13 +20,10 @@ class GameEngine(pyglet.window.Window):
         self.background = pyglet.image.create(self.width, self.height, pyglet.image.SolidColorImagePattern((255,255,255,255))) # Background
         self.cin = cinematic.Cinematic()
     def on_draw(self):
-        
         self.clear()
         self.background.blit(0,0)
-        self.fpsText.text = str( round(pyglet.clock.get_fps(), 2) )
-        self.fps =  round(pyglet.clock.get_fps(), 2) +0.1
         if(self.state == "cin"):
-            self.cin.run(1 / self.fps)
+            self.cin.run()
 
         self.mainDrawingBatch.draw()
     
