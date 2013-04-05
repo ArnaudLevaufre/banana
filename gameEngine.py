@@ -26,7 +26,6 @@ class GameEngine(pyglet.window.Window):
         self.cin = cinematic.Cinematic()
         self.game = game.Game()
         self.fpsText = pyglet.text.Label("", x=4, y=self.height, anchor_y="top", batch=self.mainDrawingBatch, color=(0,0,0,255))
-        self.background = pyglet.image.create(self.width, self.height, pyglet.image.SolidColorImagePattern((255,255,0,255))) # Background
 
     def physicEngine(self, dt):
         if self.state == "playing" and self.game:
@@ -36,13 +35,15 @@ class GameEngine(pyglet.window.Window):
     def on_draw(self):
         
         self.clear()
-        self.background.blit(0,0)
+        pyglet.gl.glClearColor(0.5,0.75,1,1)
+        
         self.fpsText.text = str( round(pyglet.clock.get_fps(), 2) )
         
         if self.state == "playing" and self.game:
             self.game.render()
         
         self.fps =  round(pyglet.clock.get_fps(), 2) +0.1
+        
         if(self.state == "cin"):
             self.cin.run()
 
