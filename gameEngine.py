@@ -1,8 +1,7 @@
 # coding=utf-8
 import pyglet
-import cinematic
+import cinematic 
 import game
-
 class GameEngine(pyglet.window.Window):
     W_WIDTH = 1024
     W_HEIGHT = 640
@@ -14,7 +13,6 @@ class GameEngine(pyglet.window.Window):
         pyglet.clock.schedule_interval(lambda x:x, 1/1000000.0) # Debridage complet des FPS
         pyglet.clock.schedule_interval(self.physicEngine, 1/100.0)
         pyglet.gl.glEnable(pyglet.gl.GL_BLEND)
-        self.state = "cin"
 
         # Input handler        
         self.keysHandler = pyglet.window.key.KeyStateHandler()
@@ -34,7 +32,7 @@ class GameEngine(pyglet.window.Window):
     def physicEngine(self, dt):
         if self.state == "playing" and self.game:
             self.game.simulate(dt, self.keysHandler)
-        
+         
     
     def on_draw(self):
         
