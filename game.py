@@ -25,14 +25,17 @@ class Game:
             self.player.move(-10, 0, dt)
         elif keysHandler[key.D]:
             self.player.move(10, 0, dt)
-        
-        self.hpBar = self.uiBatch.add(4, pyglet.gl.GL_QUADS, None,
-        ('v2i', (0,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT,0,gameEngine.GameEngine.W_HEIGHT)),
-        ('c3B',(255,0,0,255,0,0,255,0,0,255,0,0))
-        )
+
         
         self.map.setRelativePos( -self.player.x, -self.player.y)
-   
+    def on_mouse_press(self,x, y, button, modifiers):
+        if(button == pyglet.window.mouse.LEFT):
+            print x,y
+            
+    def on_mouse_drag(self,x, y, dx, dy, buttons, modifiers):
+        if(buttons == pyglet.window.mouse.LEFT):
+            print x,y
+            
     def render(self):       
         self.uiBatch = pyglet.graphics.Batch() # On actualise
         xCenter = gameEngine.GameEngine.W_WIDTH / 2
