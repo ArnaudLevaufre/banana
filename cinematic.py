@@ -9,6 +9,8 @@ class Cinematic:
         # ---- Variables ---- #
         self.lastOnDrawTime = time.time()
         self.dt = 0
+        self.time = 0
+        self.endTime = 1000
         self.W_HEIGHT = gameEngine.GameEngine.W_HEIGHT
         self.W_WIDTH = gameEngine.GameEngine.W_WIDTH
         self.mainDrawingBatch = pyglet.graphics.Batch() # Batch que l'on va draw
@@ -20,7 +22,7 @@ class Cinematic:
         """
         Construction d'une cinematique a partir d'un fichier xml
         """
-        fileName = "Cin/Cin1.xml" 
+        fileName = "Cin/1.xml" 
         # On parse le XML
         tree = ET.parse(fileName)
         root = tree.getroot()
@@ -29,13 +31,21 @@ class Cinematic:
                 self.elements.append(Border(self.mainDrawingBatch,ch = [childs for childs in child],**child.attrib))
             if(child.tag == "image"): # Si c'est une image
                 self.elements.append(Image(self.mainDrawingBatch,ch = [childs for childs in child], **child.attrib))
+            if(child.tag == "end"):
+                if(child.attrib['time']):
+                    self.endTime = int(child.attrib["time"])
+                    print self.endTime
             
     def run(self): # Fonction pour afficher notre cinematique a l'écran
         self.dt = time.time() - self.lastOnDrawTime # Calcul de dt
+        self.time += self.dt
         for elmt in self.elements:
             elmt.animate(self.dt) # On anime tous les elements
         self.lastOnDrawTime = time.time()  
         self.mainDrawingBatch.draw()
+        print int(self.time) , self.endTime
+        if(int(self.time) > self.endTime):
+            return False
         
         
 #########################################################   

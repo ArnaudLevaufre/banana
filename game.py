@@ -13,7 +13,7 @@ class Game:
         self.player = entity.Player(0,0)
         self.map = Map()
         self.map.load("001", self.player)
-        self.map.setRelativePos(-self.player.x , -self.player.y )
+        self.map.setRelativePos(-self.player.x, -self.player.y)
         
     def simulate(self, dt, keysHandler):
         if keysHandler[key.Z]:
@@ -25,18 +25,21 @@ class Game:
             self.player.move(-10, 0, self.map,dt)
         elif keysHandler[key.D]:
             self.player.move(10, 0, self.map,dt)
-        
-        self.hpBar = self.uiBatch.add(4, pyglet.gl.GL_QUADS, None,
-        ('v2i', (0,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT,0,gameEngine.GameEngine.W_HEIGHT)),
-        ('c3B',(255,0,0,255,0,0,255,0,0,255,0,0))
-        )
+
         
         self.map.setRelativePos( -self.player.x, -self.player.y)
-   
+    def on_mouse_press(self,x, y, button, modifiers):
+        if(button == pyglet.window.mouse.LEFT):
+            print x,y
+            
+    def on_mouse_drag(self,x, y, dx, dy, buttons, modifiers):
+        if(buttons == pyglet.window.mouse.LEFT):
+            print x,y
+            
     def render(self):       
         self.uiBatch = pyglet.graphics.Batch() # On actualise
         
-        self.hpBar = self.uiBatch.add(4, pyglet.gl.GL_QUADS, None,
+        self.uiBatch.add(4, pyglet.gl.GL_QUADS, None,
         ('v2i', (0,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT,0,gameEngine.GameEngine.W_HEIGHT)),
         ('c3B',(255,0,0,255,0,0,255,0,0,255,0,0))
         )
@@ -111,7 +114,6 @@ class Map:
                             args = line.split(" ")
                             tile = args[0].split(":")
                             tile[0], tile[1] = int(tile[0]), int(tile[1])
-                            print args[1]
                             self.map.append(Tile(tile[0]*self.tileSize, tile[1]*self.tileSize, args[1], int(args[2])))
                         except:
                             print "Erreur: impossible de charger la carte [ "+filename+" ] le fichier est mal formé."

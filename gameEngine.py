@@ -22,7 +22,8 @@ class GameEngine(pyglet.window.Window):
         # =              VARIABLES            = #
 
         self.mainDrawingBatch = pyglet.graphics.Batch()
-        self.state = "playing"
+        self.state = "askForCin"
+        self.lvl = 1
         
         self.game = game.Game()
         self.cin = cinematic.Cinematic()
@@ -30,27 +31,35 @@ class GameEngine(pyglet.window.Window):
         image = pyglet.image.load('sprites/vis.png')    
         self.cursor = pyglet.window.ImageMouseCursor(image, 8, 8)
         self.set_mouse_cursor(self.cursor)
+        
     def physicEngine(self, dt):
         if self.state == "playing" and self.game:
             self.game.simulate(dt, self.keysHandler)
          
     
     def on_draw(self):
-        
         self.clear()
         pyglet.gl.glClearColor(0.5,0.75,1,1)
-        
         self.fpsText.text = str( round(pyglet.clock.get_fps(), 2) )
-        
+        if self.state == "askForCin":
+            self.cin = cinematic.Cinematic()
+            self.state = "cin"
+        elif self.state == "cin":
+            if self.cin.run() == False:
+                self.state = "askForMap"
+                self.state = "playing"
         if self.state == "playing" and self.game:
             self.game.render()
         
         self.fps =  round(pyglet.clock.get_fps(), 2) +0.1
         
-        if(self.state == "cin"):
-            self.cin.run()
 
         self.mainDrawingBatch.draw()
+        
+    def on_mouse_press(self,x, y, button, modifiers):
+        self.game.on_mouse_press(x,y,button,modifiers)
+    def on_mouse_drag(self,x, y, dx, dy, buttons, modifiers):
+        self.game.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
         
     def start(self):
         pyglet.app.run()
