@@ -7,8 +7,13 @@
 	</border>
 	<border velY = "220" pos = "top" maxY = "540"/>
 	<image path="Cin/1.png" x="250" y="250">
-		<move x="350" y="325" timeStart="1" timeStop="3"/> 
+		<move x="350" y="325" timeStart="2" timeStop="3"/> 
 		<move x="350" y="395" timeStart="4" timeStop="5"/> 
-		<move x="350" y="335" timeStart="6" timeStop="6"/> 
+		<move x="350" y="335" timeStart="6" timeStop="7"/> 
+	</image>
+	<image path="Cin/1.png" x="250" y="250">
+		<move x="480" y="325" timeStart="2" timeStop="3"/> 
+		<move x="333" y="395" timeStart="4" timeStop="5"/> 
+		<move x="275" y="335" timeStart="6" timeStop="7"/> 
 	</image>
 </cin>
