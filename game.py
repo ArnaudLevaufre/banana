@@ -12,10 +12,9 @@ class Game:
 #        self.level
 #        self.camera
         self.uiBatch = pyglet.graphics.Batch()
-        image = pyglet.image.load('sprites/vis.png')
-        
         self.map = Map()
-        self.cursor = pyglet.sprite.Sprite(image, gameEngine.GameEngine.W_WIDTH/2, gameEngine.GameEngine.W_HEIGHT/2, batch = self.uiBatch)
+#         self.cursor = pyglet.sprite.Sprite(image, gameEngine.GameEngine.W_WIDTH/2, gameEngine.GameEngine.W_HEIGHT/2, batch = self.uiBatch)
+
         self.player = entity.Player(200,200)
         
     def simulate(self, dt, keysHandler):
@@ -32,8 +31,9 @@ class Game:
         self.map.setRelativePos( -self.player.x, -self.player.y)
     
     def on_mouse_motion(self,x,y,dx,dy):
-        self.cursor.x = x - self.cursor.width / 2
-        self.cursor.y = y - self.cursor.height / 2
+        pass
+#         self.cursor.x = x - self.cursor.width / 2
+#         self.cursor.y = y - self.cursor.height / 2
         
     def render(self):        
         xCenter = gameEngine.GameEngine.W_WIDTH / 2

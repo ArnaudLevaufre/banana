@@ -16,6 +16,6 @@ class Player(Entity):
         Entity.__init__(self, x=0, y=0, xVel=0, yVel=0)
         
     def move(self, x,y):
-        # il fau d'abord check si il peut bouger
+        # il faut d'abord check si il peut bouger
         self.x += x
         self.y += y
