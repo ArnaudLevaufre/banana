@@ -13,18 +13,18 @@ class Game:
         self.player = entity.Player(0,0)
         self.map = Map()
         self.map.load("001", self.player)
-        self.map.setRelativePos(-self.player.x, -self.player.y)
+        self.map.setRelativePos(-self.player.x , -self.player.y )
         
     def simulate(self, dt, keysHandler):
         if keysHandler[key.Z]:
-            self.player.move(0,10, dt)
+            self.player.move(0,10, self.map,dt)
         elif keysHandler[key.S]:
-            self.player.move(0, -10, dt)
+            self.player.move(0, -10, self.map, dt)
         
         if keysHandler[key.Q]:
-            self.player.move(-10, 0, dt)
+            self.player.move(-10, 0, self.map,dt)
         elif keysHandler[key.D]:
-            self.player.move(10, 0, dt)
+            self.player.move(10, 0, self.map,dt)
         
         self.hpBar = self.uiBatch.add(4, pyglet.gl.GL_QUADS, None,
         ('v2i', (0,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT,0,gameEngine.GameEngine.W_HEIGHT)),
@@ -35,9 +35,7 @@ class Game:
    
     def render(self):       
         self.uiBatch = pyglet.graphics.Batch() # On actualise
-        xCenter = gameEngine.GameEngine.W_WIDTH / 2
-        yCenter = gameEngine.GameEngine.W_HEIGHT / 2
-
+        
         self.hpBar = self.uiBatch.add(4, pyglet.gl.GL_QUADS, None,
         ('v2i', (0,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT,0,gameEngine.GameEngine.W_HEIGHT)),
         ('c3B',(255,0,0,255,0,0,255,0,0,255,0,0))
@@ -46,14 +44,14 @@ class Game:
 
         self.map.render()
         self.uiBatch.draw()
+        self.player.render()
         
-        pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
-        
-        pyglet.gl.glVertex2i( xCenter, yCenter )
-        pyglet.gl.glVertex2i( xCenter, yCenter + 16 )
-        pyglet.gl.glVertex2i( xCenter + 16, yCenter + 16 )
-        pyglet.gl.glVertex2i( xCenter + 16, yCenter )
-        pyglet.gl.glEnd()
+        glBegin(GL_LINES)
+        glVertex2i(0,0)
+        glVertex2i(1024,640)
+        glVertex2i(0,640)
+        glVertex2i(1024,0)
+        glEnd()
 
 class Map:
     """
@@ -113,13 +111,48 @@ class Map:
                             args = line.split(" ")
                             tile = args[0].split(":")
                             tile[0], tile[1] = int(tile[0]), int(tile[1])
+                            print args[1]
                             self.map.append(Tile(tile[0]*self.tileSize, tile[1]*self.tileSize, args[1], int(args[2])))
                         except:
                             print "Erreur: impossible de charger la carte [ "+filename+" ] le fichier est mal formé."
                             sys.exit()
                             
             file.close()
-
+    def colide(self, x,y,w,h):
+        """
+                                == COLIDE ==
+        
+        La fonction colide permet de savoir si l'objet défnis par ses
+        coordonées et ses dimensions passées en paramètres se trouve
+        sur le sol ou non.
+        Lorsqu'aucune colision n'est détecté on retourne False
+        Si une colision est détectée alors on renvoie True
+        
+        :param x: Position x de l'objet
+        :param y: Position y de l'objet
+        :param w: Largeur de l'objet
+        :param h: Hauteur de l'objet
+        
+        :type x: int | float
+        :type y: int | float
+        :type w: int | float
+        :type h: int | float
+        
+        :rtype: bool
+        """
+        # One does not simply understand what's written there
+        for tile in self.map:
+            if x >= tile.x and x <= tile.x + self.tileSize:
+                if y >= tile.y and y <= tile.y + self.tileSize:
+                    if tile.type != "FLOOR":
+                        print "collide", tile.type
+                        return True
+            if x+w >= tile.x and x+w <= tile.x + self.tileSize:
+                if y+h >= tile.y and y+h <= tile.y + self.tileSize:
+                    if tile.type != "FLOOR":
+                        print "collide", tile.type
+                        return True
+        return False
     def render(self):
         glEnable(GL_TEXTURE_2D)
         glEnable(GL_BLEND)
