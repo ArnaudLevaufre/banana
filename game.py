@@ -10,6 +10,10 @@ class Game:
 #        self.entity
 #        self.level
 #        self.camera
+        self.mainBatch = pyglet.graphics.Batch()
+        image = pyglet.image.load('sprites/vis.png')
+        print image
+        self.cursor = pyglet.sprite.Sprite(image, gameEngine.GameEngine.W_WIDTH/2, gameEngine.GameEngine.W_HEIGHT/2, batch = self.mainBatch)
         self.player = entity.Player(200,200)
         self.camera = Camera()
         
@@ -26,7 +30,13 @@ class Game:
         
         # on update la camera
         self.camera.moveTo(gameEngine.GameEngine.W_WIDTH/2 - self.player.x, gameEngine.GameEngine.W_HEIGHT/2 - self.player.y )
+
     
+    def on_mouse_motion(self,x,y,dx,dy):
+        print x,y
+        print self.cursor.x
+        self.cursor.x = x
+        self.cursor.y = y
     def render(self):
         pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
         pyglet.gl.glVertex2i( self.player.x,self.player.y )
@@ -34,6 +44,7 @@ class Game:
         pyglet.gl.glVertex2i( self.player.x + 10,self.player.y + 10 )
         pyglet.gl.glVertex2i( self.player.x + 10,self.player.y )
         pyglet.gl.glEnd()
+        self.mainBatch.draw()
         
 class Camera:
     def __init__(self):
