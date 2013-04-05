@@ -52,8 +52,7 @@ class GameEngine(pyglet.window.Window):
 
         self.mainDrawingBatch.draw()
         
-    def on_mouse_motion(self,x, y, dx, dy):
-        pass
+
         
     def start(self):
         pyglet.app.run()
