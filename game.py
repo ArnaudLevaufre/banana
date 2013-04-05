@@ -7,19 +7,12 @@ from pyglet.gl import *
 
 class Game:
     def __init__(self):
-#        self.map
-#        self.player
-#        self.NPCs 
-#        self.entity
-#        self.level
-#        self.camera
         self.uiBatch = pyglet.graphics.Batch()
-        image = pyglet.image.load('sprites/vis.png')
-        
-        
+
+        self.player = entity.Player(0,0)
         self.map = Map()
-        self.cursor = pyglet.sprite.Sprite(image, gameEngine.GameEngine.W_WIDTH/2, gameEngine.GameEngine.W_HEIGHT/2, batch = self.uiBatch)
-        self.player = entity.Player(200,200)
+        self.map.load("001", self.player)
+        self.map.setRelativePos(-self.player.x, -self.player.y)
         
     def simulate(self, dt, keysHandler):
         if keysHandler[key.Z]:
@@ -33,14 +26,13 @@ class Game:
             self.player.move(10, 0, dt)
         
         self.map.setRelativePos( -self.player.x, -self.player.y)
-    
-    def on_mouse_motion(self,x,y,dx,dy):
-        self.cursor.x = x - self.cursor.width / 2
-        self.cursor.y = y - self.cursor.height / 2
         
     def render(self):        
         xCenter = gameEngine.GameEngine.W_WIDTH / 2
         yCenter = gameEngine.GameEngine.W_HEIGHT / 2
+        
+        self.map.render()
+        self.uiBatch.draw()
         
         pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
         
@@ -50,17 +42,11 @@ class Game:
         pyglet.gl.glVertex2i( xCenter + 16, yCenter )
         pyglet.gl.glEnd()
         
-        self.map.render()
-        self.uiBatch.draw()
-        
 class Map:
     """
     La carte est sibolisée par une matrice de chiffres
     représentant les éléments graphiques tels que les murs.
-    Elle est divisé en case de 16 pixels par 16 pixels
     """
-    
-    
     def __init__(self):
         self.batch = pyglet.graphics.Batch()
         self.xRelative = 0
@@ -69,7 +55,6 @@ class Map:
         self.textures = []
         self.tileSize = 64
         self.loadTextures()
-        self.load("001")
                 
     def loadTextures(self):
         tileSheet = pyglet.image.load("sprites/tile-map.bmp")
@@ -82,44 +67,48 @@ class Map:
                 self.textures.append(imageGrid[y*(tileSheet.height/64) + x].get_texture())
         
     def setRelativePos(self, x, y):
-        self.xRelative = int(x)
-        self.yRelative = int(y)
+        self.xRelative = int(x) + gameEngine.GameEngine.W_WIDTH/2
+        self.yRelative = int(y) + gameEngine.GameEngine.W_HEIGHT/2
         
-    def load(self, filename):
+    def load(self, filename, player=None):
         if os.path.isfile("maps/"+filename):
             file = open("maps/"+filename)
             
             section = None
             for line in file:
+                line = line[:-1]
                 # detection de la section
-                if line == "[INIT]\n":
+                if line == "[INIT]":
                     section = "init"
-                elif line == "[MAP]\n":
+                elif line == "[MAP]":
                     section = "map"
                 
                 if section == "init":
-                    pass
-                
+                    if line != "" and line != "[INIT]":
+                        splited = line.split("=")
+                        if splited[0] == "PLAYERPOS" and player != None:
+                            player.x = int(splited[1].split(":")[0]) * self.tileSize
+                            player.y = int(splited[1].split(":")[1]) * self.tileSize
+
                 if section == "map":
-                    if line != "\n" and line != "[MAP]\n":
-#                        try:
-                        args = line.split(" ")
-                        tile = args[0].split(":")
-                        tile[0], tile[1] = int(tile[0]), int(tile[1])
-                        self.map.append(Tile(tile[1]*self.tileSize, tile[0]*self.tileSize, args[1], None))
-#                        except:
-#                            print "Erreur: impossible de charger la carte [ "+filename+" ] le fichier est mal formé."
-#                            sys.exit()
+                    if line != "" and line != "[MAP]":
+                        try:
+                            args = line.split(" ")
+                            tile = args[0].split(":")
+                            tile[0], tile[1] = int(tile[0]), int(tile[1])
+                            self.map.append(Tile(tile[0]*self.tileSize, tile[1]*self.tileSize, args[1], int(args[2])))
+                        except:
+                            print "Erreur: impossible de charger la carte [ "+filename+" ] le fichier est mal formé."
+                            sys.exit()
                             
             file.close()
 
     def render(self):
-        glBindTexture(self.textures[0].target, self.textures[0].texture.id)
-            
         glEnable(GL_TEXTURE_2D)
         glEnable(GL_BLEND)
         
         for tile in self.map:
+            glBindTexture(self.textures[tile.texture].target, self.textures[tile.texture].texture.id)
             pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
             glTexCoord2i(0,0)
             glVertex2i(self.xRelative + tile.x, self.yRelative + tile.y)
@@ -130,13 +119,15 @@ class Map:
             glTexCoord2i(0,1)
             glVertex2i(self.xRelative + tile.x, self.yRelative + tile.y + self.tileSize)
             pyglet.gl.glEnd()
+        
+        glDisable(GL_TEXTURE_2D)
             
 
 class Tile:
     def __init__(self, x, y, type, texture):
         self.x = x
         self.y = y
-        self.texture = texture
+        self.texture = int(texture)
         self.type = type
     
     
