@@ -1,6 +1,6 @@
 #-*- encoding: utf-8 -*-
 
-import pyglet, pyglet.window.key as key
+import pyglet, pyglet.window.key as key, os, sys
 import gameEngine, entity
 
 from pyglet.gl import *
@@ -69,9 +69,8 @@ class Map:
         self.textures = []
         self.tileSize = 64
         self.loadTextures()
-    def loadMap(self):
-        pass
-    
+        self.load("001")
+                
     def loadTextures(self):
         tileSheet = pyglet.image.load("sprites/tile-map.bmp")
         imageGrid = pyglet.image.ImageGrid(tileSheet, tileSheet.width/64, tileSheet.height/64)
@@ -87,7 +86,32 @@ class Map:
         self.yRelative = int(y)
         
     def load(self, filename):
-        pass
+        if os.path.isfile("maps/"+filename):
+            file = open("maps/"+filename)
+            
+            section = None
+            for line in file:
+                # detection de la section
+                if line == "[INIT]\n":
+                    section = "init"
+                elif line == "[MAP]\n":
+                    section = "map"
+                
+                if section == "init":
+                    pass
+                
+                if section == "map":
+                    if line != "\n" and line != "[MAP]\n":
+#                        try:
+                        args = line.split(" ")
+                        tile = args[0].split(":")
+                        tile[0], tile[1] = int(tile[0]), int(tile[1])
+                        self.map.append(Tile(tile[1]*self.tileSize, tile[0]*self.tileSize, args[1], None))
+#                        except:
+#                            print "Erreur: impossible de charger la carte [ "+filename+" ] le fichier est mal formé."
+#                            sys.exit()
+                            
+            file.close()
 
     def render(self):
         glBindTexture(self.textures[0].target, self.textures[0].texture.id)
@@ -95,13 +119,27 @@ class Map:
         glEnable(GL_TEXTURE_2D)
         glEnable(GL_BLEND)
         
-        pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
-        glTexCoord2i(0,0)
-        pyglet.gl.glVertex2i(self.xRelative, self.yRelative)
-        glTexCoord2i(1,0)
-        pyglet.gl.glVertex2i(self.xRelative + self.tileSize, self.yRelative)
-        glTexCoord2i(1,1)
-        pyglet.gl.glVertex2i(self.xRelative + self.tileSize, self.yRelative + self.tileSize)
-        glTexCoord2i(0,1)
-        pyglet.gl.glVertex2i(self.xRelative, self.yRelative + self.tileSize)
-        pyglet.gl.glEnd()
+        for tile in self.map:
+            pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
+            glTexCoord2i(0,0)
+            glVertex2i(self.xRelative + tile.x, self.yRelative + tile.y)
+            glTexCoord2i(1,0)
+            glVertex2i(self.xRelative + tile.x + self.tileSize, self.yRelative + tile.y)
+            glTexCoord2i(1,1)
+            glVertex2i(self.xRelative + tile.x + self.tileSize, self.yRelative + tile.y + self.tileSize)
+            glTexCoord2i(0,1)
+            glVertex2i(self.xRelative + tile.x, self.yRelative + tile.y + self.tileSize)
+            pyglet.gl.glEnd()
+            
+
+class Tile:
+    def __init__(self, x, y, type, texture):
+        self.x = x
+        self.y = y
+        self.texture = texture
+        self.type = type
+    
+    
+
+
+        
