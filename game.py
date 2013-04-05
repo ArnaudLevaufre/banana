@@ -14,13 +14,10 @@ class Game:
 #        self.level
 #        self.camera
         self.uiBatch = pyglet.graphics.Batch()
-        image = pyglet.image.load('sprites/vis.png')
-        
-        
         self.map = Map()
-        self.cursor = pyglet.sprite.Sprite(image, gameEngine.GameEngine.W_WIDTH/2, gameEngine.GameEngine.W_HEIGHT/2, batch = self.uiBatch)
         self.player = entity.Player(200,200)
-        
+        # Vie
+
     def simulate(self, dt, keysHandler):
         if keysHandler[key.Z]:
             self.player.move(0,10, dt)
@@ -32,24 +29,32 @@ class Game:
         elif keysHandler[key.D]:
             self.player.move(10, 0, dt)
         
-        self.map.setRelativePos( -self.player.x, -self.player.y)
-    
-    def on_mouse_motion(self,x,y,dx,dy):
-        self.cursor.x = x - self.cursor.width / 2
-        self.cursor.y = y - self.cursor.height / 2
+        self.hpBar = self.uiBatch.add(4, pyglet.gl.GL_QUADS, None,
+        ('v2i', (0,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT,0,gameEngine.GameEngine.W_HEIGHT)),
+        ('c3B',(255,0,0,255,0,0,255,0,0,255,0,0))
+        )
         
-    def render(self):        
+        self.map.setRelativePos( -self.player.x, -self.player.y)
+        
+    def render(self):       
+        self.uiBatch = pyglet.graphics.Batch() # On actualise
         xCenter = gameEngine.GameEngine.W_WIDTH / 2
         yCenter = gameEngine.GameEngine.W_HEIGHT / 2
         
+        # Joueur
         pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
-        
         pyglet.gl.glVertex2i( xCenter, yCenter )
         pyglet.gl.glVertex2i( xCenter, yCenter + 16 )
         pyglet.gl.glVertex2i( xCenter + 16, yCenter + 16 )
         pyglet.gl.glVertex2i( xCenter + 16, yCenter )
         pyglet.gl.glEnd()
         
+
+        self.hpBar = self.uiBatch.add(4, pyglet.gl.GL_QUADS, None,
+        ('v2i', (0,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT,0,gameEngine.GameEngine.W_HEIGHT)),
+        ('c3B',(255,0,0,255,0,0,255,0,0,255,0,0))
+        )
+        self.player.hp -= 1
         self.map.render()
         self.uiBatch.draw()
         
