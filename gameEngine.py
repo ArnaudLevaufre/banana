@@ -22,7 +22,7 @@ class GameEngine(pyglet.window.Window):
         # =              VARIABLES            = #
 
         self.mainDrawingBatch = pyglet.graphics.Batch()
-        self.state = "cin"
+        self.state = "playing"
         
         self.game = game.Game()
         self.cin = cinematic.Cinematic()
@@ -53,9 +53,7 @@ class GameEngine(pyglet.window.Window):
         self.mainDrawingBatch.draw()
         
     def on_mouse_motion(self,x, y, dx, dy):
-        print x,y
-        if(self.state == "playing"):
-            self.game.on_mouse_motion(x,y,dx,dy)
+        pass
         
     def start(self):
         pyglet.app.run()

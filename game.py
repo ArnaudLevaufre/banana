@@ -50,7 +50,7 @@ class Game:
         pyglet.gl.glEnd()
         
 
-        self.hpBar = self.uiBatch.add(4, pyglet.gl.GL_QUADS, None,
+        self.uiBatch.add(4, pyglet.gl.GL_QUADS, None,
         ('v2i', (0,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT,0,gameEngine.GameEngine.W_HEIGHT)),
         ('c3B',(255,0,0,255,0,0,255,0,0,255,0,0))
         )
