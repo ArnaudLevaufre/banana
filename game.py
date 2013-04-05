@@ -7,6 +7,7 @@ from pyglet.gl import *
 
 class Game:
     def __init__(self):
+
         self.uiBatch = pyglet.graphics.Batch()
 
         self.player = entity.Player(0,0)
@@ -25,12 +26,24 @@ class Game:
         elif keysHandler[key.D]:
             self.player.move(10, 0, dt)
         
-        self.map.setRelativePos( -self.player.x, -self.player.y)
+        self.hpBar = self.uiBatch.add(4, pyglet.gl.GL_QUADS, None,
+        ('v2i', (0,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT,0,gameEngine.GameEngine.W_HEIGHT)),
+        ('c3B',(255,0,0,255,0,0,255,0,0,255,0,0))
+        )
         
-    def render(self):        
+        self.map.setRelativePos( -self.player.x, -self.player.y)
+   
+    def render(self):       
+        self.uiBatch = pyglet.graphics.Batch() # On actualise
         xCenter = gameEngine.GameEngine.W_WIDTH / 2
         yCenter = gameEngine.GameEngine.W_HEIGHT / 2
-        
+
+		self.hpBar = self.uiBatch.add(4, pyglet.gl.GL_QUADS, None,
+        ('v2i', (0,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT,0,gameEngine.GameEngine.W_HEIGHT)),
+        ('c3B',(255,0,0,255,0,0,255,0,0,255,0,0))
+        )
+        self.player.hp -= 1        
+
         self.map.render()
         self.uiBatch.draw()
         
@@ -41,12 +54,15 @@ class Game:
         pyglet.gl.glVertex2i( xCenter + 16, yCenter + 16 )
         pyglet.gl.glVertex2i( xCenter + 16, yCenter )
         pyglet.gl.glEnd()
-        
+
 class Map:
     """
     La carte est sibolisée par une matrice de chiffres
     représentant les éléments graphiques tels que les murs.
+  
     """
+    
+    
     def __init__(self):
         self.batch = pyglet.graphics.Batch()
         self.xRelative = 0
@@ -55,6 +71,7 @@ class Map:
         self.textures = []
         self.tileSize = 64
         self.loadTextures()
+        self.load("001")
                 
     def loadTextures(self):
         tileSheet = pyglet.image.load("sprites/tile-map.bmp")

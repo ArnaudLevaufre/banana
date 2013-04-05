@@ -14,6 +14,7 @@ class Entity():
 class Player(Entity):
     def __init__(self, x, y):
         Entity.__init__(self, x=0, y=0, xVel=0, yVel=0)
+        self.hp = 100
         
     def move(self, x,y,dt):
         # il faut d'abord check si il peut bouger
