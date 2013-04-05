@@ -29,7 +29,8 @@ class Cinematic:
         for child in root:
             if(child.tag == "border"): # Si on veut une bordure bot
                 self.elements.append(Border(self.mainDrawingBatch,ch = [childs for childs in child],**child.attrib))
-                
+            elif(child.tag == "image"):
+                self.elements.append(Image(self.mainDrawingBatch,ch = [childs for childs in child], **child.attrib))
 #         for elmt in self.elements: # On ajoute tout dans le batch
 #             elmt.batch = self.mainDrawingBatch
             
@@ -106,3 +107,36 @@ class Border(pyglet.sprite.Sprite):
                     self.text.text = self.toDoChangeText[elmt]
             self.text.y = self.y + self.height /2
             self.text.x = self.x + self.width /2
+
+###############################################
+#                   Image                     #
+###############################################
+class Image(pyglet.sprite.Sprite):
+    def __init__(self, batch,ch = None, path = None, x= 250, y = 250):
+        self._batch = batch
+        super(Image, self).__init__(pyglet.image.load(path))
+        self.x = int(x)
+        self.y = int(y)
+        # ---- Temps ---- #
+        self.time = 0
+        self.child = ch
+        self.toDoMovement = {}
+        for elmt in self.child:
+            if elmt.tag == "move":
+                attrib = {}
+                for i in elmt.attrib:
+                    attrib[i] = elmt.attrib[i]
+                self.toDoMovement[elmt.attrib['timeStart']] = attrib
+                
+    def animate(self, dt):
+        self.time += dt
+        delete = ""
+        print self.toDoMovement
+        for elmt in self.toDoMovement:
+            if(int(self.time) >= int(elmt)):
+                self.x= int(self.toDoMovement[str(int(self.time))]['x'])
+                self.y = int(self.toDoMovement[str(int(self.time))]['y'])
+                delete=str(int(self.time))
+        if(self.toDoMovement.has_key(delete)):
+            self.toDoMovement.pop(delete)
+        
