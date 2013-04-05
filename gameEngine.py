@@ -1,7 +1,7 @@
 # coding=utf-8
 import pyglet
 import cinematic
-import pyglet, game
+import game
 
 class GameEngine(pyglet.window.Window):
     W_WIDTH = 1024
@@ -11,9 +11,10 @@ class GameEngine(pyglet.window.Window):
         
         self.set_vsync(False)
         self.set_caption("Banana")
-        pyglet.gl.glEnable(pyglet.gl.GL_BLEND)
         pyglet.clock.schedule_interval(lambda x:x, 1/1000000.0) # Debridage complet des FPS
         pyglet.clock.schedule_interval(self.physicEngine, 1/100.0)
+        pyglet.gl.glEnable(pyglet.gl.GL_BLEND)
+        self.state = "cin"
 
         # Input handler        
         self.keysHandler = pyglet.window.key.KeyStateHandler()
@@ -36,6 +37,7 @@ class GameEngine(pyglet.window.Window):
         
     
     def on_draw(self):
+        
         self.clear()
         self.background.blit(0,0)
         self.fpsText.text = str( round(pyglet.clock.get_fps(), 2) )
@@ -45,7 +47,7 @@ class GameEngine(pyglet.window.Window):
         
         self.fps =  round(pyglet.clock.get_fps(), 2) +0.1
         if(self.state == "cin"):
-            self.cin.run(1 / self.fps)
+            self.cin.run()
 
         self.mainDrawingBatch.draw()
     
