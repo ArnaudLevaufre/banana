@@ -22,8 +22,8 @@ class GameEngine(pyglet.window.Window):
         # =              VARIABLES            = #
 
         self.mainDrawingBatch = pyglet.graphics.Batch()
-        self.fpsText = pyglet.text.Label("", x=4, y=self.height, anchor_y="top", batch=self.mainDrawingBatch)
-        self.state = "playing"
+        self.state = "cin"
+        self.cin = cinematic.Cinematic()
         self.game = game.Game()
         self.fpsText = pyglet.text.Label("", x=4, y=self.height, anchor_y="top", batch=self.mainDrawingBatch, color=(0,0,0,255))
         self.background = pyglet.image.create(self.width, self.height, pyglet.image.SolidColorImagePattern((255,255,0,255))) # Background
@@ -44,13 +44,13 @@ class GameEngine(pyglet.window.Window):
         
         self.fps =  round(pyglet.clock.get_fps(), 2) +0.1
         if(self.state == "cin"):
-            self.cin = cinematic.Cinematic()
             self.cin.run()
 
         self.mainDrawingBatch.draw()
         
     def on_mouse_motion(self,x, y, dx, dy):
-        self.game.on_mouse_motion(x,y,dx,dy)
+        if(self.state == "playing"):
+            self.game.on_mouse_motion(x,y,dx,dy)
         
     def start(self):
         pyglet.app.run()
