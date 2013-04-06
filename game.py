@@ -2,7 +2,7 @@
 
 import pyglet, pyglet.window.key as key, os, sys
 import gameEngine, entity
-
+import time
 from pyglet.gl import *
 
 class Game:
@@ -143,24 +143,22 @@ class Map:
                         return True
         return False
     def render(self):
-        glEnable(GL_TEXTURE_2D)
-        glEnable(GL_BLEND)
-        
+        glEnable(GL_TEXTURE_2D)        
         for tile in self.map:
-            glBindTexture(self.textures[tile.texture].target, self.textures[tile.texture].texture.id)
-            pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
-            glTexCoord2i(0,0)
-            glVertex2i(self.xRelative + tile.x, self.yRelative + tile.y)
-            glTexCoord2i(1,0)
-            glVertex2i(self.xRelative + tile.x + self.tileSize, self.yRelative + tile.y)
-            glTexCoord2i(1,1)
-            glVertex2i(self.xRelative + tile.x + self.tileSize, self.yRelative + tile.y + self.tileSize)
-            glTexCoord2i(0,1)
-            glVertex2i(self.xRelative + tile.x, self.yRelative + tile.y + self.tileSize)
-            pyglet.gl.glEnd()
+            if self.xRelative + tile.x > -self.tileSize and self.xRelative + tile.x < gameEngine.GameEngine.W_WIDTH and self.yRelative + tile.y > -self.tileSize and self.yRelative + tile.y < gameEngine.GameEngine.W_HEIGHT:
+                glBindTexture(self.textures[tile.texture].target, self.textures[tile.texture].texture.id)
+                pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
+                glTexCoord2i(0,0)
+                glVertex2i(self.xRelative + tile.x, self.yRelative + tile.y)
+                glTexCoord2i(1,0)
+                glVertex2i(self.xRelative + tile.x + self.tileSize, self.yRelative + tile.y)
+                glTexCoord2i(1,1)
+                glVertex2i(self.xRelative + tile.x + self.tileSize, self.yRelative + tile.y + self.tileSize)
+                glTexCoord2i(0,1)
+                glVertex2i(self.xRelative + tile.x, self.yRelative + tile.y + self.tileSize)
+                pyglet.gl.glEnd()
         
         glDisable(GL_TEXTURE_2D)
-            
 
 class Tile:
     def __init__(self, x, y, type, texture):
