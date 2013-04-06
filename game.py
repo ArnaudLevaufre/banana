@@ -170,3 +170,8 @@ class Tile:
         self.y = y
         self.texture = int(texture)
         self.type = type
+    
+    
+
+
+        
