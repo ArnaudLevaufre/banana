@@ -2,6 +2,7 @@
 import pyglet
 import cinematic 
 import game
+import menu
 class GameEngine(pyglet.window.Window):
     W_WIDTH = 1024
     W_HEIGHT = 640
@@ -22,7 +23,7 @@ class GameEngine(pyglet.window.Window):
         # =              VARIABLES            = #
 
         self.mainDrawingBatch = pyglet.graphics.Batch()
-        self.state = "playing"
+        self.state = "askForMenu"
         self.lvl = 1
         
         self.game = game.Game()
@@ -49,18 +50,33 @@ class GameEngine(pyglet.window.Window):
             if self.cin.run() == False:
                 self.state = "askForMap"
                 self.state = "playing"
+        elif self.state == "askForMenu":
+            self.menu = menu.MainMenu()
+            self.state = "menu"
+        elif self.state == "menu":
+            self.state = self.menu.render()
+        elif self.state == "quit":
+            self.close()
+            
         if self.state == "playing" and self.game:
             self.game.render()
         
         self.fps =  round(pyglet.clock.get_fps(), 2) +0.1
-        
-
         self.mainDrawingBatch.draw()
         
     def on_mouse_press(self,x, y, button, modifiers):
-        self.game.on_mouse_press(x,y,button,modifiers)
+        if self.state == "playing":
+            self.game.on_mouse_press(x,y,button,modifiers)
+        elif self.state == "menu":
+            self.menu.on_mouse_press(x,y,button,modifiers)
+            
     def on_mouse_drag(self,x, y, dx, dy, buttons, modifiers):
-        self.game.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
+        if self.state == "playing":
+            self.game.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
+            
+    def on_mouse_motion(self,x, y, dx, dy):
+        if self.state == "menu":
+            self.menu.on_mouse_motion(x, y, dx, dy)
         
     def start(self):
         pyglet.app.run()
