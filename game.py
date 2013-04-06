@@ -28,6 +28,7 @@ class Game:
 
         
         self.map.setRelativePos( -self.player.x, -self.player.y)
+        
     def on_mouse_press(self,x, y, button, modifiers):
         if(button == pyglet.window.mouse.LEFT):
             print x,y
@@ -43,7 +44,7 @@ class Game:
         ('v2i', (0,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT,0,gameEngine.GameEngine.W_HEIGHT)),
         ('c3B',(255,0,0,255,0,0,255,0,0,255,0,0))
         )
-        self.player.hp -= 1        
+        self.player.hp -= 1
 
         self.map.render()
         self.uiBatch.draw()
@@ -142,22 +143,23 @@ class Map:
                         print "collide", tile.type
                         return True
         return False
+    
     def render(self):
         glEnable(GL_TEXTURE_2D)
-        glEnable(GL_BLEND)
         
         for tile in self.map:
-            glBindTexture(self.textures[tile.texture].target, self.textures[tile.texture].texture.id)
-            pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
-            glTexCoord2i(0,0)
-            glVertex2i(self.xRelative + tile.x, self.yRelative + tile.y)
-            glTexCoord2i(1,0)
-            glVertex2i(self.xRelative + tile.x + self.tileSize, self.yRelative + tile.y)
-            glTexCoord2i(1,1)
-            glVertex2i(self.xRelative + tile.x + self.tileSize, self.yRelative + tile.y + self.tileSize)
-            glTexCoord2i(0,1)
-            glVertex2i(self.xRelative + tile.x, self.yRelative + tile.y + self.tileSize)
-            pyglet.gl.glEnd()
+            if self.xRelative + tile.x > -self.tileSize  and self.xRelative + tile.x < gameEngine.GameEngine.W_WIDTH and self.yRelative + tile.y > -self.tileSize and self.yRelative + tile.y < gameEngine.GameEngine.W_HEIGHT:
+                glBindTexture(self.textures[tile.texture].target, self.textures[tile.texture].texture.id)
+                pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
+                glTexCoord2i(0,0)
+                glVertex2i(self.xRelative + tile.x, self.yRelative + tile.y)
+                glTexCoord2i(1,0)
+                glVertex2i(self.xRelative + tile.x + self.tileSize, self.yRelative + tile.y)
+                glTexCoord2i(1,1)
+                glVertex2i(self.xRelative + tile.x + self.tileSize, self.yRelative + tile.y + self.tileSize)
+                glTexCoord2i(0,1)
+                glVertex2i(self.xRelative + tile.x, self.yRelative + tile.y + self.tileSize)
+                pyglet.gl.glEnd()
         
         glDisable(GL_TEXTURE_2D)
             
@@ -168,8 +170,3 @@ class Tile:
         self.y = y
         self.texture = int(texture)
         self.type = type
-    
-    
-
-
-        
