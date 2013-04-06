@@ -12,7 +12,7 @@ class Game:
 
         self.player = entity.Player(0,0)
         self.map = Map()
-        self.map.load("001", self.player)
+        self.map.load("arena", self.player)
         self.map.setRelativePos(-self.player.x, -self.player.y)
         
     def simulate(self, dt, keysHandler):
@@ -48,13 +48,6 @@ class Game:
         self.map.render()
         self.uiBatch.draw()
         self.player.render()
-        
-        glBegin(GL_LINES)
-        glVertex2i(0,0)
-        glVertex2i(1024,640)
-        glVertex2i(0,640)
-        glVertex2i(1024,0)
-        glEnd()
 
 class Map:
     """
@@ -72,7 +65,6 @@ class Map:
         self.textures = []
         self.tileSize = 64
         self.loadTextures()
-        self.load("001")
                 
     def loadTextures(self):
         tileSheet = pyglet.image.load("sprites/tile-map.bmp")
@@ -149,9 +141,6 @@ class Map:
                     if tile.type != "FLOOR":
                         print "collide", tile.type
                         return True
-
-        return False
-                
         return False
     def render(self):
         glEnable(GL_TEXTURE_2D)
