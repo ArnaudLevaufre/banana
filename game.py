@@ -144,16 +144,14 @@ class Map:
         """
         # One does not simply understand what's written there
         for tile in self.map:
-            if x >= tile.x and x <= tile.x + self.tileSize:
-                if y >= tile.y and y <= tile.y + self.tileSize:
+            if (x >= tile.x and x <= tile.x + self.tileSize) or (x+w >= tile.x and x+w <= tile.x + self.tileSize):
+                if (y >= tile.y and y <= tile.y + self.tileSize) or (y+h >= tile.y and y+h <= tile.y + self.tileSize):
                     if tile.type != "FLOOR":
                         print "collide", tile.type
                         return True
-            if x+w >= tile.x and x+w <= tile.x + self.tileSize:
-                if y+h >= tile.y and y+h <= tile.y + self.tileSize:
-                    if tile.type != "FLOOR":
-                        print "collide", tile.type
-                        return True
+
+        return False
+                
         return False
     def render(self):
         glEnable(GL_TEXTURE_2D)

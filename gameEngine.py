@@ -22,7 +22,7 @@ class GameEngine(pyglet.window.Window):
         # =              VARIABLES            = #
 
         self.mainDrawingBatch = pyglet.graphics.Batch()
-        self.state = "askForCin"
+        self.state = "playing"
         self.lvl = 1
         
         self.game = game.Game()
@@ -41,6 +41,7 @@ class GameEngine(pyglet.window.Window):
         self.clear()
         pyglet.gl.glClearColor(0.5,0.75,1,1)
         self.fpsText.text = str( round(pyglet.clock.get_fps(), 2) )
+        
         if self.state == "askForCin":
             self.cin = cinematic.Cinematic()
             self.state = "cin"
