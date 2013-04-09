@@ -1,8 +1,8 @@
 # coding=utf-8
 import pyglet
-import cinematic 
+import cinematic
 import game
-import menu
+import menu 
 class GameEngine(pyglet.window.Window):
     W_WIDTH = 1024
     W_HEIGHT = 640
@@ -23,7 +23,7 @@ class GameEngine(pyglet.window.Window):
         # =              VARIABLES            = #
 
         self.mainDrawingBatch = pyglet.graphics.Batch()
-        self.state = "askForMenu"
+        self.state = "askForCin"
         self.lvl = 1
         
         self.game = game.Game()
