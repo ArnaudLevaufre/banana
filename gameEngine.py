@@ -14,6 +14,7 @@ class GameEngine(pyglet.window.Window):
         pyglet.clock.schedule_interval(lambda x:x, 1/1000000.0) # Debridage complet des FPS
         pyglet.clock.schedule_interval(self.physicEngine, 1/100.0)
         pyglet.gl.glEnable(pyglet.gl.GL_BLEND)
+        
 
         # Input handler        
         self.keysHandler = pyglet.window.key.KeyStateHandler()
