@@ -24,6 +24,7 @@ class Player(Entity):
         if not gameMap.colide(self.x - self.width/2 + x * dt * 50, self.y - self.height/2 + y * dt * 50, self.width, self.height):
             self.x += x * dt * 50
             self.y += y * dt * 50
+            
     def render(self):
         w = gameEngine.GameEngine.W_WIDTH
         h = gameEngine.GameEngine.W_HEIGHT
@@ -34,3 +35,19 @@ class Player(Entity):
         pyglet.gl.glVertex2i( w/2 + self.width/2, h/2 + self.width/2 )
         pyglet.gl.glVertex2i( w/2 - self.width/2, h/2 + self.width/2 )
         pyglet.gl.glEnd()
+        
+class Npc(object):
+    def __init__(self,x,y):
+        super(Npc, self).__init__(x,y)
+        
+        
+    def move(self, map):
+        pass
+    
+    def render(self):
+        pass
+    
+    def kill(self):
+        pass
+    
+        

@@ -67,7 +67,7 @@ class Map:
         self.loadTextures()
                 
     def loadTextures(self):
-        tileSheet = pyglet.image.load("sprites/tile-map.bmp")
+        tileSheet = pyglet.image.load("sprites/tile-map.jpg")
         imageGrid = pyglet.image.ImageGrid(tileSheet, tileSheet.width/64, tileSheet.height/64)
         
         # on réordonne les tiles de miniere plus propre
