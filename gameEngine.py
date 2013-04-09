@@ -24,7 +24,7 @@ class GameEngine(pyglet.window.Window):
         # =              VARIABLES            = #
 
         self.mainDrawingBatch = pyglet.graphics.Batch()
-        self.state = "askForCin"
+        self.state = "playing"
         self.lvl = 1
         
         self.game = game.Game()
