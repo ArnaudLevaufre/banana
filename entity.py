@@ -1,13 +1,13 @@
 import pyglet
 import gameEngine
 
-class Entity():
+class Entity(object):
     def __init__(self, x=0, y=0, xVel=0, yVel=0):
         self.x = x
         self.y = y
         self.xVel = xVel
         self.yVel = yVel
-    
+
     def simulate(self, dt=1):
         if self.xVel != 0:
             self.x += self.xVel * dt
