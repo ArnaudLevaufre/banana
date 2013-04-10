@@ -1,6 +1,6 @@
 #-*- encoding: utf-8 -*-
 
-import pyglet, pyglet.window.key as key, os, sys
+import pyglet, pyglet.window.key as key, os, sys, xml.etree.ElementTree as xml
 import gameEngine, entity
 
 
@@ -11,7 +11,7 @@ class Game:
 
         self.player = entity.Player(0,0)
         self.map = Map()
-        self.map.load("arena", self.player)
+        self.map.load("001", self.player)
         self.map.setRelativePos(-self.player.x, -self.player.y)
         
     def simulate(self, dt, keysHandler):
@@ -80,38 +80,23 @@ class Map:
         self.xRelative = int(x) + gameEngine.GameEngine.W_WIDTH/2
         self.yRelative = int(y) + gameEngine.GameEngine.W_HEIGHT/2
         
-    def load(self, filename, player=None):
-        if os.path.isfile("maps/"+filename):
-            file = open("maps/"+filename)
+    def load(self, fileName, player=None):
+        
+        if os.path.isfile("maps/"+fileName):
+            xmlTree = xml.parse("maps/"+fileName)
+            root = xmlTree.getroot()
             
-            section = None
-            for line in file:
-                line = line[:-1]
-                # detection de la section
-                if line == "[INIT]":
-                    section = "init"
-                elif line == "[MAP]":
-                    section = "map"
-                
-                if section == "init":
-                    if line != "" and line != "[INIT]":
-                        splited = line.split("=")
-                        if splited[0] == "PLAYERPOS" and player != None:
-                            player.x = int(splited[1].split(":")[0]) * self.tileSize
-                            player.y = int(splited[1].split(":")[1]) * self.tileSize
-
-                if section == "map":
-                    if line != "" and line != "[MAP]":
-                        try:
-                            args = line.split(" ")
-                            tile = args[0].split(":")
-                            tile[0], tile[1] = int(tile[0]), int(tile[1])
-                            self.map.append(Tile(tile[0]*self.tileSize, tile[1]*self.tileSize, args[1], int(args[2])))
-                        except:
-                            print "Erreur: impossible de charger la carte [ "+filename+" ] le fichier est mal formé."
-                            sys.exit()
+            for child in root:
+                self.map.append(Tile( **child.attrib ))
+            
+            # on place le joueur sur la carte si il est donné en paramètre
+            if player:
+                player.x = int( root.attrib["playerpos"].split(":")[0] ) * Tile.SIZE
+                player.y = int( root.attrib["playerpos"].split(":")[1] ) * Tile.SIZE
+                self.setRelativePos(player.x, player.y)
+        else:
+            print "couldn't load the map ["+fileName+"]. No such file."  
                             
-            file.close()
     def colide(self, x,y,w,h):
         """
                                 == COLIDE ==
@@ -138,14 +123,13 @@ class Map:
         for tile in self.map:
             if (x >= tile.x and x <= tile.x + self.tileSize) or (x+w >= tile.x and x+w <= tile.x + self.tileSize):
                 if (y >= tile.y and y <= tile.y + self.tileSize) or (y+h >= tile.y and y+h <= tile.y + self.tileSize):
-                    if tile.type != "FLOOR":
-                        print "collide", tile.type
+                    if tile.colision == True:
                         return True
         return False
     
     def render(self):
         pyglet.gl.glEnable(pyglet.gl.GL_TEXTURE_2D)
-            
+        
         for tile in self.map:
             if self.xRelative + tile.x > -self.tileSize  and self.xRelative + tile.x < gameEngine.GameEngine.W_WIDTH and self.yRelative + tile.y > -self.tileSize and self.yRelative + tile.y < gameEngine.GameEngine.W_HEIGHT:
                 pyglet.gl.glBindTexture(self.textures[tile.texture].target, self.textures[tile.texture].texture.id)
@@ -164,11 +148,16 @@ class Map:
             
 
 class Tile:
-    def __init__(self, x, y, type, texture):
-        self.x = x
-        self.y = y
-        self.texture = int(texture)
-        self.type = type
+    SIZE = 64
+    def __init__(self, x, y, colision, type):
+        self.x = int(x) * self.SIZE
+        self.y = int(y) * self.SIZE
+        self.texture = int(type)
+        
+        if colision == "True":
+            self.colision = True
+        else:
+            self.colision = False
     
     
 
