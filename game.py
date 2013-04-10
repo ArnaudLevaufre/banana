@@ -1,6 +1,5 @@
 #-*- encoding: utf-8 -*-
-
-import pyglet, pyglet.window.key as key, os, sys, xml.etree.ElementTree as xml
+import pyglet, pyglet.window.key as key, os, xml.etree.ElementTree as xml
 import gameEngine, entity
 
 
@@ -24,17 +23,17 @@ class Game:
             self.player.move(-10, 0, self.map,dt)
         elif keysHandler[key.D]:
             self.player.move(10, 0, self.map,dt)
-
         
+        # on repositionne la carte.
         self.map.setRelativePos( -self.player.x, -self.player.y)
         
     def on_mouse_press(self,x, y, button, modifiers):
         if(button == pyglet.window.mouse.LEFT):
-            print x,y
+            self.player.aim(x,y)
             
     def on_mouse_drag(self,x, y, dx, dy, buttons, modifiers):
         if(buttons == pyglet.window.mouse.LEFT):
-            print x,y
+            self.player.aim(x,y)
             
     def render(self):       
         self.uiBatch = pyglet.graphics.Batch() # On actualise
@@ -51,11 +50,8 @@ class Game:
 
 class Map:
     """
-    La carte est sibolisée par une matrice de chiffres
-    représentant les éléments graphiques tels que les murs.
-  
+    La carte est un tableau d'objets Tile
     """
-    
     
     def __init__(self):
         self.batch = pyglet.graphics.Batch()
@@ -70,8 +66,8 @@ class Map:
         tileSheet = pyglet.image.load("sprites/tile-map.jpg")
         imageGrid = pyglet.image.ImageGrid(tileSheet, tileSheet.width/64, tileSheet.height/64)
         
-        # on réordonne les tiles de miniere plus propre
-        # c'est a dire du haut a gauche jusqu'en bas a droite
+        # on réordonne les tiles de maniere plus propre
+        # c'est a dire du haut à gauche jusqu'en bas à droite
         for y in range(tileSheet.height/64 - 1, 1, -1):
             for x in range(tileSheet.width/64):
                 self.textures.append(imageGrid[y*(tileSheet.height/64) + x].get_texture())
