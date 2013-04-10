@@ -3,6 +3,7 @@ import pyglet
 import cinematic
 import game
 import menu 
+
 class GameEngine(pyglet.window.Window):
     W_WIDTH = 1024
     W_HEIGHT = 640
