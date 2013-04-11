@@ -67,17 +67,17 @@ class GameEngine(pyglet.window.Window):
         
     def on_mouse_press(self,x, y, button, modifiers):
         if self._state == "playing":
-            self.game.on_mouse_press(x,y,button,modifiers)
+            self._game.on_mouse_press(x,y,button,modifiers)
         elif self._state == "menu":
-            self.menu.on_mouse_press(x,y,button,modifiers)
+            self._menu.on_mouse_press(x,y,button,modifiers)
             
     def on_mouse_drag(self,x, y, dx, dy, buttons, modifiers):
         if self._state == "playing":
-            self.game.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
+            self._game.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
             
     def on_mouse_motion(self,x, y, dx, dy):
         if self._state == "menu":
-            self.menu.on_mouse_motion(x, y, dx, dy)
+            self._menu.on_mouse_motion(x, y, dx, dy)
         
     def start(self):
         pyglet.app.run()
