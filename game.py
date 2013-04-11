@@ -1,6 +1,6 @@
 #-*- encoding: utf-8 -*-
 import pyglet, pyglet.window.key as key, os, xml.etree.ElementTree as xml
-import gameEngine, entity
+import gameEngine, entity, ui
 
 
 class Game:
@@ -8,6 +8,7 @@ class Game:
         
         self.uiBatch = pyglet.graphics.Batch()
         self.camera = Camera()
+        self.ui = ui.UI()
         self.player = entity.Player(0,0)
         self.map = Map()
         self.map.load("001", self.player)
@@ -49,16 +50,11 @@ class Game:
             self.player.aim(x,y)
             
     def render(self):
-        self.uiBatch = pyglet.graphics.Batch() # On actualise
         
-        self.uiBatch.add(4, pyglet.gl.GL_QUADS, None,
-        ('v2i', (0,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT-16,self.player.hp*2,gameEngine.GameEngine.W_HEIGHT,0,gameEngine.GameEngine.W_HEIGHT)),
-        ('c3B',(255,0,0,255,0,0,255,0,0,255,0,0))
-        )
-        self.player.hp -= 1
-
         self.map.render()
-        self.uiBatch.draw()
+        self.player.hp -= 0.1
+        print self.player.hp
+        self.ui.render(self.camera.x, self.camera.y, self.player)
         self.player.render()
         
         for bullet in self.bullets:
@@ -183,6 +179,8 @@ class Camera:
         self.y = 0
     
     def setPos(self, x, y):
+        self.x = x
+        self.y = y
         pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)
         pyglet.gl.glLoadIdentity()
         pyglet.gl.glOrtho(x - gameEngine.GameEngine.W_WIDTH/2, x + gameEngine.GameEngine.W_WIDTH/2, y - gameEngine.GameEngine.W_HEIGHT/2, y + gameEngine.GameEngine.W_HEIGHT/2, -1, 1)
