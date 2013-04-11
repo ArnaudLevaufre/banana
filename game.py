@@ -52,8 +52,6 @@ class Game:
     def render(self):
         
         self.map.render()
-        self.player.hp -= 0.1
-        print self.player.hp
         self.ui.render(self.camera.x, self.camera.y, self.player)
         self.player.render()
         
