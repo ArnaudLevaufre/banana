@@ -75,6 +75,7 @@ class Map:
     def setRelativePos(self, x, y):
         self.xRelative = int(x) + gameEngine.GameEngine.W_WIDTH/2
         self.yRelative = int(y) + gameEngine.GameEngine.W_HEIGHT/2
+
         
     def load(self, fileName, player=None):
         
@@ -117,7 +118,7 @@ class Map:
         """
         # One does not simply understand what's written there
         for tile in self.map:
-            if tile.colision == True:
+            if tile.collision == True:
                 if (tile.x <= x <= tile.x + self.tileSize) or (tile.x <= x+w <= tile.x + self.tileSize):
                     if (tile.y <= y <= tile.y + self.tileSize) or (tile.y <= y+h <= tile.y + self.tileSize):
                         return True
@@ -125,6 +126,7 @@ class Map:
     
     def render(self):
         pyglet.gl.glEnable(pyglet.gl.GL_TEXTURE_2D)
+
         
         for tile in self.map:
             if self.xRelative + tile.x > -self.tileSize  and self.xRelative + tile.x < gameEngine.GameEngine.W_WIDTH and self.yRelative + tile.y > -self.tileSize and self.yRelative + tile.y < gameEngine.GameEngine.W_HEIGHT:
@@ -145,15 +147,15 @@ class Map:
 
 class Tile:
     SIZE = 64
-    def __init__(self, x, y, colision, type):
+    def __init__(self, x, y, collision, type):
         self.x = int(x) * self.SIZE
         self.y = int(y) * self.SIZE
         self.texture = int(type)
         
-        if colision == "True":
-            self.colision = True
+        if collision == "True":
+            self.collision = True
         else:
-            self.colision = False
+            self.collision = False
     
     
 

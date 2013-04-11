@@ -1,0 +1,26 @@
+main
+	menu
+	lancerjeux
+		chargerNiveau
+			> mainLoop
+				JouerCinematique
+					ChargerCinematique
+					AfficherCinemaTique					
+				
+				ChargerCarte
+				ChargerJoueur
+				ChargerEnemis
+				ChargerItems
+			
+				> gameLoop
+					Action joueur
+					Action enemis
+					
+					afficher carte
+					afficher joueur
+					afficher interface						
+				</gameLoop
+				sauvegarderProgressionDansFichier	
+			</ mainLoop
+			
+	quitter	
