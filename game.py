@@ -27,6 +27,10 @@ class Game:
         elif keysHandler[key.D]:
             self.player.move(10, 0, self.map,dt)
             
+        if keysHandler[key.TAB]:
+            self.ui.toggleMenu(True)
+        else:
+            self.ui.toggleMenu(False)
         
         # tir du joueur
         self.player.shoot(self.bullets)
