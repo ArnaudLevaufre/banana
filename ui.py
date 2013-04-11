@@ -5,7 +5,11 @@ class UI(object):
     def __init__(self):
         self.hpTexture = pyglet.image.load("sprites/hp.png").get_texture()
         self.shieldTexture = pyglet.image.load("sprites/shield.png").get_texture()
-    
+        self.menuOpened = False
+        
+    def toggleMenu(self, state):
+        self.menuOpened = state
+        
     def render(self,x,y, player):
         # Barre de vie
         pyglet.gl.glEnable(pyglet.gl.GL_TEXTURE_2D)
@@ -40,3 +44,13 @@ class UI(object):
 
         pyglet.gl.glDisable(pyglet.gl.GL_TEXTURE_2D)
         pyglet.gl.glEnd()
+        
+        if self.menuOpened == True:
+            pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
+        
+            pyglet.gl.glVertex2i(x-gameEngine.GameEngine.W_WIDTH/2,y-gameEngine.GameEngine.W_HEIGHT/2 +100)
+            pyglet.gl.glVertex2i(x-gameEngine.GameEngine.W_WIDTH/2 +100,y-gameEngine.GameEngine.W_HEIGHT/2+100)
+            pyglet.gl.glVertex2i(x-gameEngine.GameEngine.W_WIDTH/2 +100,y-gameEngine.GameEngine.W_HEIGHT/2+500)
+            pyglet.gl.glVertex2i(x-gameEngine.GameEngine.W_WIDTH/2,y-gameEngine.GameEngine.W_HEIGHT/2+500)
+            
+            pyglet.gl.glEnd()
