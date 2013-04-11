@@ -26,6 +26,7 @@ class Game:
             self.player.move(-10, 0, self.map,dt)
         elif keysHandler[key.D]:
             self.player.move(10, 0, self.map,dt)
+            
         
         # tir du joueur
         self.player.shoot(self.bullets)
