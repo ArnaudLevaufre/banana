@@ -1,5 +1,5 @@
 #-*- encoding: utf-8 -*-
-import math
+import math, time
 import pyglet
 import gameEngine
 
@@ -19,17 +19,23 @@ class Entity(object):
 class Player(Entity):
     def __init__(self, x, y):
         Entity.__init__(self, x=0, y=0, xVel=0, yVel=0)
-        self.hp = 100
         self.width = 48
         self.height = 48
-        self.speed = 30
         self.aimVector = [0,0]
-        self.mouseOffset = 7
+        self.mouthOffset = 7
         self.isFiring = False
+        self.lastShoot = time.time()
         
         self.sprite = pyglet.sprite.Sprite(pyglet.image.load("sprites/blarg.png").get_texture())
-        self.sprite.x = gameEngine.GameEngine.W_WIDTH/2 - self.sprite.width/2
-        self.sprite.y = gameEngine.GameEngine.W_HEIGHT/2 - self.sprite.height/2
+        self.sprite.x = gameEngine.GameEngine.W_WIDTH/2 - self.width/2
+        self.sprite.y = gameEngine.GameEngine.W_HEIGHT/2 - self.height/2
+        
+        # Caractéristiques du joueur.
+        self.maxHp = 100
+        self.hp = 100
+        self.speed = 30
+        self.shield = 0
+        self.fireRate = 60.0
     
     def aim(self, x, y):
         """
@@ -39,12 +45,19 @@ class Player(Entity):
         par le centre de l'écran et le cursor par sa norme.
         """
         centerX = gameEngine.GameEngine.W_WIDTH/2
-        centerY = gameEngine.GameEngine.W_HEIGHT/2 + self.mouseOffset
+        centerY = gameEngine.GameEngine.W_HEIGHT/2 + self.mouthOffset
         
         norm = math.sqrt( (x - centerX)**2 + (y - centerY)**2 )
         
+        print self.x, gameEngine.GameEngine.W_WIDTH/2
         self.aimVector[0] = (x - centerX) / norm
         self.aimVector[1] = (y - centerY) / norm
+    
+    def shoot(self, bullets):
+        if self.isFiring and time.time() - self.lastShoot > 1/self.fireRate:
+            self.lastShoot = time.time()
+            bullets.append(Bullet( self.x, self.y + self.mouthOffset, self.aimVector[0]*1000, self.aimVector[1]*1000, "player" ))
+        
         
     def move(self, x,y, gameMap ,dt):
         
@@ -53,10 +66,12 @@ class Player(Entity):
             self.y += int(y * dt * self.speed)
                     
     def render(self):
+        self.sprite.x = self.x - self.width/2
+        self.sprite.y = self.y - self.height/2
         self.sprite.draw()
         
-        centerX = gameEngine.GameEngine.W_WIDTH/2
-        centerY = gameEngine.GameEngine.W_HEIGHT/2 + self.mouseOffset
+        centerX = self.x
+        centerY = self.y + self.mouthOffset
         
         # DEBUG: On trace la la droite qui porte le
         # veceur aimVector
@@ -66,7 +81,7 @@ class Player(Entity):
             pyglet.gl.glVertex2i( centerX, centerY)
             pyglet.gl.glVertex2i( int(centerX + 2000 * self.aimVector[0]), int(centerY + 2000 * self.aimVector[1]))
             pyglet.gl.glEnd()
-        
+
 class Npc(object):
     def __init__(self,x,y):
         super(Npc, self).__init__(x,y)
@@ -82,11 +97,8 @@ class Npc(object):
         pass
     
 class Bullet(Entity):
-    SIZE = 10 
+    SIZE = 10
     
-    def __init__(self, self, x,y, xVel, yVel, owner):
-        super(Bullet, self).__init__(self, x,y, xVel, yVel)       
+    def __init__(self, x,y, xVel, yVel, owner):
+        super(Bullet, self).__init__(x, y, xVel, yVel)       
         self.owner = owner
-        
-    def simulate(self, map, player, enemies):
-        pass

@@ -5,14 +5,15 @@ import gameEngine, entity
 
 class Game:
     def __init__(self):
-
+        
         self.uiBatch = pyglet.graphics.Batch()
-
+        self.camera = Camera()
         self.player = entity.Player(0,0)
         self.map = Map()
         self.map.load("001", self.player)
-        self.map.setRelativePos(-self.player.x, -self.player.y)
         self.bullets = []
+        
+        
         
     def simulate(self, dt, keysHandler):
         if keysHandler[key.Z]:
@@ -26,10 +27,13 @@ class Game:
             self.player.move(10, 0, self.map,dt)
         
         # tir du joueur
-        self.player.fire(self.bullets)
+        self.player.shoot(self.bullets)
+        
+        for bullet in self.bullets:
+            bullet.simulate(dt)
                 
         # on repositionne la carte.
-        self.map.setRelativePos( -self.player.x, -self.player.y)
+        self.camera.setPos(self.player.x, self.player.y)
         
     def on_mouse_press(self,x, y, button, modifiers):
         if(button == pyglet.window.mouse.LEFT):
@@ -44,7 +48,7 @@ class Game:
         if(buttons == pyglet.window.mouse.LEFT):
             self.player.aim(x,y)
             
-    def render(self):       
+    def render(self):
         self.uiBatch = pyglet.graphics.Batch() # On actualise
         
         self.uiBatch.add(4, pyglet.gl.GL_QUADS, None,
@@ -56,6 +60,14 @@ class Game:
         self.map.render()
         self.uiBatch.draw()
         self.player.render()
+        
+        for bullet in self.bullets:
+            pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
+            pyglet.gl.glVertex2d(bullet.x,bullet.y)
+            pyglet.gl.glVertex2d(bullet.x + entity.Bullet.SIZE ,bullet.y)
+            pyglet.gl.glVertex2d(bullet.x + entity.Bullet.SIZE, bullet.y + entity.Bullet.SIZE)
+            pyglet.gl.glVertex2d(bullet.x ,bullet.y + entity.Bullet.SIZE)
+            pyglet.gl.glEnd()
 
 class Map:
     """
@@ -80,12 +92,7 @@ class Map:
         for y in range(tileSheet.height/64 - 1, 1, -1):
             for x in range(tileSheet.width/64):
                 self.textures.append(imageGrid[y*(tileSheet.height/64) + x].get_texture())
-        
-    def setRelativePos(self, x, y):
-        self.xRelative = int(x) + gameEngine.GameEngine.W_WIDTH/2
-        self.yRelative = int(y) + gameEngine.GameEngine.W_HEIGHT/2
 
-        
     def load(self, fileName, player=None):
         
         if os.path.isfile("maps/"+fileName):
@@ -99,7 +106,6 @@ class Map:
             if player:
                 player.x = int( root.attrib["playerpos"].split(":")[0] ) * Tile.SIZE
                 player.y = int( root.attrib["playerpos"].split(":")[1] ) * Tile.SIZE
-                self.setRelativePos(player.x, player.y)
         else:
             print "couldn't load the map ["+fileName+"]. No such file."  
                             
@@ -170,7 +176,17 @@ class Tile:
             self.collision = True
         else:
             self.collision = False
+
+class Camera:
+    def __init__(self):
+        self.x = 0
+        self.y = 0
     
+    def setPos(self, x, y):
+        pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)
+        pyglet.gl.glLoadIdentity()
+        pyglet.gl.glOrtho(x - gameEngine.GameEngine.W_WIDTH/2, x + gameEngine.GameEngine.W_WIDTH/2, y - gameEngine.GameEngine.W_HEIGHT/2, y + gameEngine.GameEngine.W_HEIGHT/2, -1, 1)
+        pyglet.gl.glMatrixMode(pyglet.gl.GL_MODELVIEW)
     
 
 
