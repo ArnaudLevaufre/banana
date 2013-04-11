@@ -117,9 +117,9 @@ class Map:
         """
         # One does not simply understand what's written there
         for tile in self.map:
-            if (tile.x <= x <= tile.x + self.tileSize) or (tile.x <= x+w <= tile.x + self.tileSize):
-                if (tile.y <= y <= tile.y + self.tileSize) or (tile.y <= y+h <= tile.y + self.tileSize):
-                    if tile.colision == True:
+            if tile.colision == True:
+                if (tile.x <= x <= tile.x + self.tileSize) or (tile.x <= x+w <= tile.x + self.tileSize):
+                    if (tile.y <= y <= tile.y + self.tileSize) or (tile.y <= y+h <= tile.y + self.tileSize):
                         return True
         return False
     
