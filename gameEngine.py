@@ -15,9 +15,11 @@ class GameEngine(pyglet.window.Window):
         
         self.set_vsync(False)
         self.set_caption("Blarg")
-        pyglet.clock.schedule_interval(lambda x:x, 1/1000000.0) # Debridage complet des FPS
+        pyglet.clock.schedule_interval(lambda x:x, 1/100000000.0) # Debridage complet des FPS
         pyglet.clock.schedule_interval(self.physicEngine, 1/100.0)
+        
         pyglet.gl.glEnable(pyglet.gl.GL_BLEND)
+        
 
         # Input handler        
         self.keysHandler = pyglet.window.key.KeyStateHandler()
@@ -55,7 +57,7 @@ class GameEngine(pyglet.window.Window):
             self._menu = menu.MainMenu()
             self._state = "menu"
         elif self._state == "menu":
-            self._state = self.menu.render()
+            self._state = self._menu.render()
         elif self._state == "quit":
             self.close()
             
@@ -66,11 +68,19 @@ class GameEngine(pyglet.window.Window):
         self.mainDrawingBatch.draw()
         
     def on_mouse_press(self,x, y, button, modifiers):
+    
         if self._state == "playing":
             self._game.on_mouse_press(x,y,button,modifiers)
         elif self._state == "menu":
             self._menu.on_mouse_press(x,y,button,modifiers)
-            
+
+
+    def on_mouse_release(self,x, y, button, modifiers):
+
+        if self._state == "playing":
+            self._game.on_mouse_release(x, y, button, modifiers)
+        
+        
     def on_mouse_drag(self,x, y, dx, dy, buttons, modifiers):
         if self._state == "playing":
             self._game.on_mouse_drag(x, y, dx, dy, buttons, modifiers)

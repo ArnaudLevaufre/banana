@@ -12,6 +12,7 @@ class Game:
         self.map = Map()
         self.map.load("001", self.player)
         self.map.setRelativePos(-self.player.x, -self.player.y)
+        self.bullets = []
         
     def simulate(self, dt, keysHandler):
         if keysHandler[key.Z]:
@@ -24,12 +25,20 @@ class Game:
         elif keysHandler[key.D]:
             self.player.move(10, 0, self.map,dt)
         
+        # tir du joueur
+        self.player.fire(self.bullets)
+                
         # on repositionne la carte.
         self.map.setRelativePos( -self.player.x, -self.player.y)
         
     def on_mouse_press(self,x, y, button, modifiers):
         if(button == pyglet.window.mouse.LEFT):
+            self.player.isFiring = True
             self.player.aim(x,y)
+
+    def on_mouse_release(self, x, y, button, modifiers):
+        if button == pyglet.window.mouse.LEFT:
+            self.player.isFiring = False
             
     def on_mouse_drag(self,x, y, dx, dy, buttons, modifiers):
         if(buttons == pyglet.window.mouse.LEFT):
@@ -94,15 +103,15 @@ class Map:
         else:
             print "couldn't load the map ["+fileName+"]. No such file."  
                             
-    def colide(self, x,y,w,h):
+    def collide(self, x,y,w,h):
         """
-                                == COLIDE ==
+                                == COLlIDE ==
         
-        La fonction colide permet de savoir si l'objet défnis par ses
+        La fonction collide permet de savoir si l'objet défnis par ses
         coordonées et ses dimensions passées en paramètres se trouve
         sur le sol ou non.
-        Lorsqu'aucune colision n'est détecté on retourne False
-        Si une colision est détectée alors on renvoie True
+        Lorsqu'aucune collision n'est détecté on retourne False
+        Si une collision est détectée alors on renvoie True
         
         :param x: Position x de l'objet
         :param y: Position y de l'objet
@@ -120,7 +129,11 @@ class Map:
         for tile in self.map:
             if tile.collision == True:
                 if (tile.x <= x <= tile.x + self.tileSize) or (tile.x <= x+w <= tile.x + self.tileSize):
+                    # Si la position gauche (x) ou la position droite (x+w)
+                    # est comprise entre le bord gauche et droite de la tile.
                     if (tile.y <= y <= tile.y + self.tileSize) or (tile.y <= y+h <= tile.y + self.tileSize):
+                        # Si la position du bas (y) ou la position du haut (y+h) 
+                        # est comprise entre le bord haut et le bord bas de la tile.
                         return True
         return False
     
@@ -147,6 +160,7 @@ class Map:
 
 class Tile:
     SIZE = 64
+    
     def __init__(self, x, y, collision, type):
         self.x = int(x) * self.SIZE
         self.y = int(y) * self.SIZE

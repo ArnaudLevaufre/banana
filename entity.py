@@ -25,6 +25,7 @@ class Player(Entity):
         self.speed = 30
         self.aimVector = [0,0]
         self.mouseOffset = 7
+        self.isFiring = False
         
         self.sprite = pyglet.sprite.Sprite(pyglet.image.load("sprites/blarg.png").get_texture())
         self.sprite.x = gameEngine.GameEngine.W_WIDTH/2 - self.sprite.width/2
@@ -47,7 +48,7 @@ class Player(Entity):
         
     def move(self, x,y, gameMap ,dt):
         
-        if not gameMap.colide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
+        if not gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
             self.x += int(x * dt * self.speed)
             self.y += int(y * dt * self.speed)
                     
@@ -59,10 +60,12 @@ class Player(Entity):
         
         # DEBUG: On trace la la droite qui porte le
         # veceur aimVector
-        pyglet.gl.glBegin(pyglet.gl.GL_LINES)
-        pyglet.gl.glVertex2i( centerX, centerY)
-        pyglet.gl.glVertex2i( int(centerX + 2000 * self.aimVector[0]), int(centerY + 2000 * self.aimVector[1]))
-        pyglet.gl.glEnd()
+        
+        if self.isFiring:
+            pyglet.gl.glBegin(pyglet.gl.GL_LINES)
+            pyglet.gl.glVertex2i( centerX, centerY)
+            pyglet.gl.glVertex2i( int(centerX + 2000 * self.aimVector[0]), int(centerY + 2000 * self.aimVector[1]))
+            pyglet.gl.glEnd()
         
 class Npc(object):
     def __init__(self,x,y):
@@ -78,4 +81,12 @@ class Npc(object):
     def kill(self):
         pass
     
+class Bullet(Entity):
+    SIZE = 10 
+    
+    def __init__(self, self, x,y, xVel, yVel, owner):
+        super(Bullet, self).__init__(self, x,y, xVel, yVel)       
+        self.owner = owner
         
+    def simulate(self, map, player, enemies):
+        pass
