@@ -5,8 +5,7 @@ import gameEngine, entity, ui
 
 class Game:
     def __init__(self):
-        
-        self.uiBatch = pyglet.graphics.Batch()
+
         self.camera = Camera()
         self.ui = ui.UI()
         self.player = entity.Player(0,0)
