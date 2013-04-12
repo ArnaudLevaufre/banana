@@ -35,7 +35,7 @@ class Player(Entity):
         self.hp = 100
         self.speed = 30
         self.shield = 50
-        self.fireRate = 60.0
+        self.fireRate = 20.0
     
     def aim(self, x, y):
         """

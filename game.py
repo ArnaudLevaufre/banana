@@ -9,7 +9,7 @@ class Game:
         self.camera = Camera()
         self.ui = ui.UI()
         self.player = entity.Player(0,0)
-        self.map = Map()
+        self.map = Map()        
         self.map.load("001", self.player)
         self.bullets = []
         
@@ -76,13 +76,12 @@ class Map:
     
     def __init__(self):
         self.batch = pyglet.graphics.Batch()
-        self.xRelative = 0
-        self.yRelative = 0
         self.map = []
         self.textures = []
-        self.tileSize = 64
+        self.sprites = []
+
         self.loadTextures()
-                
+        
     def loadTextures(self):
         tileSheet = pyglet.image.load("sprites/tile-map.jpg")
         imageGrid = pyglet.image.ImageGrid(tileSheet, tileSheet.width/64, tileSheet.height/64)
@@ -91,16 +90,19 @@ class Map:
         # c'est a dire du haut à gauche jusqu'en bas à droite
         for y in range(tileSheet.height/64 - 1, 1, -1):
             for x in range(tileSheet.width/64):
-                self.textures.append(imageGrid[y*(tileSheet.height/64) + x].get_texture())
+                self.textures.append(imageGrid[y*(tileSheet.height/64) + x])
 
     def load(self, fileName, player=None):
-        
         if os.path.isfile("maps/"+fileName):
             xmlTree = xml.parse("maps/"+fileName)
             root = xmlTree.getroot()
             
             for child in root:
-                self.map.append(Tile( **child.attrib ))
+                if child.tag == "tile":
+                    # On ajoute la case dans le tableau représentant la carte
+                    self.map.append(Tile( **child.attrib ))
+                    # On ajoute la texture de la case dans le batch
+                    self.sprites.append(pyglet.sprite.Sprite(self.textures[int(child.attrib["type"])], x=int(child.attrib["x"])*Tile.SIZE, y=int(child.attrib["y"])*Tile.SIZE , batch=self.batch ))
             
             # on place le joueur sur la carte si il est donné en paramètre
             if player:
@@ -134,35 +136,17 @@ class Map:
         # One does not simply understand what's written there
         for tile in self.map:
             if tile.collision == True:
-                if (tile.x <= x <= tile.x + self.tileSize) or (tile.x <= x+w <= tile.x + self.tileSize):
+                if (tile.x <= x <= tile.x + Tile.SIZE) or (tile.x <= x+w <= tile.x + Tile.SIZE):
                     # Si la position gauche (x) ou la position droite (x+w)
                     # est comprise entre le bord gauche et droite de la tile.
-                    if (tile.y <= y <= tile.y + self.tileSize) or (tile.y <= y+h <= tile.y + self.tileSize):
+                    if (tile.y <= y <= tile.y + Tile.SIZE) or (tile.y <= y+h <= tile.y + Tile.SIZE):
                         # Si la position du bas (y) ou la position du haut (y+h) 
                         # est comprise entre le bord haut et le bord bas de la tile.
                         return True
         return False
     
     def render(self):
-        pyglet.gl.glEnable(pyglet.gl.GL_TEXTURE_2D)
-
-        
-        for tile in self.map:
-            if self.xRelative + tile.x > -self.tileSize  and self.xRelative + tile.x < gameEngine.GameEngine.W_WIDTH and self.yRelative + tile.y > -self.tileSize and self.yRelative + tile.y < gameEngine.GameEngine.W_HEIGHT:
-                pyglet.gl.glBindTexture(self.textures[tile.texture].target, self.textures[tile.texture].texture.id)
-                pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
-                pyglet.gl.glTexCoord2i(0,0)
-                pyglet.gl.glVertex2i(self.xRelative + tile.x, self.yRelative + tile.y)
-                pyglet.gl.glTexCoord2i(1,0)
-                pyglet.gl.glVertex2i(self.xRelative + tile.x + self.tileSize, self.yRelative + tile.y)
-                pyglet.gl.glTexCoord2i(1,1)
-                pyglet.gl.glVertex2i(self.xRelative + tile.x + self.tileSize, self.yRelative + tile.y + self.tileSize)
-                pyglet.gl.glTexCoord2i(0,1)
-                pyglet.gl.glVertex2i(self.xRelative + tile.x, self.yRelative + tile.y + self.tileSize)
-                pyglet.gl.glEnd()
-        
-        pyglet.gl.glDisable(pyglet.gl.GL_TEXTURE_2D)
-            
+        self.batch.draw()
 
 class Tile:
     SIZE = 64
