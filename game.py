@@ -40,6 +40,10 @@ class Game:
         # on repositionne la carte.
         self.camera.setPos(self.player.x, self.player.y)
         
+        # DEBUG barre de vie
+        if self.player.hp - 0.1 >= 0:
+            self.player.hp -= 0.1
+        
     def on_mouse_press(self,x, y, button, modifiers):
         if(button == pyglet.window.mouse.LEFT):
             self.player.isFiring = True
@@ -56,8 +60,6 @@ class Game:
     def render(self):
         
         self.map.render()
-        self.player.hp -= 0.1
-        print self.player.hp
         self.ui.render(self.camera.x, self.camera.y, self.player)
         self.player.render()
         
