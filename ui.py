@@ -30,7 +30,8 @@ class UI(object):
         originY = int(y - gameEngine.GameEngine.W_HEIGHT/2)
         
         self.drawBar(originX + self.hpPos["x"], originY + self.hpPos["y"], self.hpSize["x"], self.hpSize["y"], (1,0,0), 3, player.hp/player.maxHp)
-        self.drawBar(originX + 5, originY + self.shieldPos["y"], self.shieldSize["x"], self.shieldSize["y"], (0.10,0.5,1), 3, player.shield/player.shieldCapacity)
+        if int(player.shield) > 0:
+            self.drawBar(originX + 5, originY + self.shieldPos["y"], self.shieldSize["x"], self.shieldSize["y"], (0.10,0.5,1), 3, player.shield/player.shieldCapacity)
         
         if self.menuOpened == True:
 
@@ -54,10 +55,15 @@ class UI(object):
         self.hpLabel.x, self.hpLabel.y = originX + self.hpPos["x"] + self.hpSize["x"] - 6, originY + self.hpPos["y"] + self.hpSize["y"]/2
         self.shieldLabel.x, self.shieldLabel.y = originX + self.shieldPos["x"] + self.shieldSize["x"] - 6, originY + self.shieldPos["y"] + self.shieldSize["y"]/2
         self.hpLabel.text = str(int(player.hp)) + " / " + str(int(player.maxHp))
-        self.shieldLabel.text = str(int(player.shield)) + " / " + str(int(player.shieldCapacity))
+        
+        if int(player.shield) > 0:
+            self.shieldLabel.text = str(int(player.shield)) + " / " + str(int(player.shieldCapacity))
+        else:
+            self.shieldLabel.text = ""
+        
         self.batch.draw()
+        
     def drawBar(self,x,y, width, height, color, border, progress):
-
         pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
     
         if border:

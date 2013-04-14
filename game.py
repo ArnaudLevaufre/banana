@@ -43,6 +43,8 @@ class Game:
         # DEBUG barre de vie
         if self.player.hp - 0.1 >= 0:
             self.player.hp -= 0.1
+        if self.player.shield - 0.1 >= 0:
+            self.player.shield -= 0.1
         
     def on_mouse_press(self,x, y, button, modifiers):
         if(button == pyglet.window.mouse.LEFT):
@@ -142,10 +144,10 @@ class Map:
         # One does not simply understand what's written there
         for tile in self.map:
             if tile.collision == True:
-                if (tile.x <= x <= tile.x + Tile.SIZE) or (tile.x <= x+w <= tile.x + Tile.SIZE):
+                if tile.x <= x <= tile.x + Tile.SIZE or tile.x <= x+w <= tile.x + Tile.SIZE:
                     # Si la position gauche (x) ou la position droite (x+w)
                     # est comprise entre le bord gauche et droite de la tile.
-                    if (tile.y <= y <= tile.y + Tile.SIZE) or (tile.y <= y+h <= tile.y + Tile.SIZE):
+                    if tile.y <= y <= tile.y + Tile.SIZE or tile.y <= y+h <= tile.y + Tile.SIZE:
                         # [1] Si la position du bas (y) ou la position du haut (y+h) 
                         # est comprise entre le bord haut et le bord bas de la tile.
                         return True

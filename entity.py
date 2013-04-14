@@ -56,9 +56,13 @@ class Player(Entity):
         
         norm = math.sqrt( (x - centerX)**2 + (y - centerY)**2 )
         
-        print self.x, gameEngine.GameEngine.W_WIDTH/2
-        self.aimVector[0] = (x - centerX) / norm
-        self.aimVector[1] = (y - centerY) / norm
+        try:
+            self.aimVector[0] = (x - centerX) / norm
+            self.aimVector[1] = (y - centerY) / norm
+        except ZeroDivisionError:
+            print "Do or do not, there is no try!"
+            self.aimVector[0] = 0
+            self.aimVector[1] = 1
     
     def shoot(self, bullets):
         if self.isFiring and time.time() - self.lastShoot > 1/self.fireRate:
