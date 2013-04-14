@@ -1,29 +1,36 @@
+#-*- encoding:utf-8 -*-
+
 import pyglet
 import gameEngine
 
 class UI(object):
     def __init__(self):
-        self.hpTexture = pyglet.image.load("sprites/hp.png").get_texture()
-        self.shieldTexture = pyglet.image.load("sprites/shield.png").get_texture()
+        self.batch = pyglet.graphics.Batch()
         self.menuOpened = False
         
         # Proprietees de l'interface
+        self.hpPos = {"x":5, "y":5}
         self.hpSize = {"x":150, "y":20}
         self.whiteSpacing = 4
-        self.shieldSize = [150,30]
+        self.shieldPos = {"x":5, "y":30}
+        self.shieldSize = {"x":150,"y":20}
         self.sidePanelWidth = 160
         self.sidePanelHeight = 400
         
+        # Labels
+        self.hpLabel = pyglet.text.Label("100 / 100", batch=self.batch, anchor_x="right", anchor_y="center", bold=True, font_size=8)
+        self.shieldLabel = pyglet.text.Label("50 / 50", batch=self.batch, anchor_x="right", anchor_y="center", bold=True, font_size=8 )
+        
     def toggleMenu(self, state):
         self.menuOpened = state
-        
+
     def render(self,x,y, player):
         # Barre de vie
         originX = int(x - gameEngine.GameEngine.W_WIDTH/2)
         originY = int(y - gameEngine.GameEngine.W_HEIGHT/2)
         
-        self.drawBar(originX + 10, originY + 10, self.hpSize["x"], self.hpSize["y"], (1,0,0), 3, player.hp/player.maxHp)
-        self.drawBar(originX + 10, originY + self.hpSize["y"] + 12, self.hpSize["x"], self.hpSize["y"], (0.10,0.5,1), 3, player.shield/player.shieldCapacity)
+        self.drawBar(originX + self.hpPos["x"], originY + self.hpPos["y"], self.hpSize["x"], self.hpSize["y"], (1,0,0), 3, player.hp/player.maxHp)
+        self.drawBar(originX + 5, originY + self.shieldPos["y"], self.shieldSize["x"], self.shieldSize["y"], (0.10,0.5,1), 3, player.shield/player.shieldCapacity)
         
         if self.menuOpened == True:
 
@@ -42,7 +49,13 @@ class UI(object):
             pyglet.gl.glVertex2i(originX + self.sidePanelWidth,y + self.sidePanelHeight/2)
             pyglet.gl.glVertex2i(originX, y + self.sidePanelHeight/2)
             pyglet.gl.glEnd()
-            
+        
+        # redéfinition des positions du texte
+        self.hpLabel.x, self.hpLabel.y = originX + self.hpPos["x"] + self.hpSize["x"] - 6, originY + self.hpPos["y"] + self.hpSize["y"]/2
+        self.shieldLabel.x, self.shieldLabel.y = originX + self.shieldPos["x"] + self.shieldSize["x"] - 6, originY + self.shieldPos["y"] + self.shieldSize["y"]/2
+        self.hpLabel.text = str(int(player.hp)) + " / " + str(int(player.maxHp))
+        self.shieldLabel.text = str(int(player.shield)) + " / " + str(int(player.shieldCapacity))
+        self.batch.draw()
     def drawBar(self,x,y, width, height, color, border, progress):
 
         pyglet.gl.glBegin(pyglet.gl.GL_QUADS)

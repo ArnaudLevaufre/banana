@@ -38,6 +38,12 @@ class Player(Entity):
         self.shield = 50
         self.fireRate = 20.0
     
+    def getHp(self):
+        return self.hp
+    
+    def getMaxHp(self):
+        return self.maxHp
+    
     def aim(self, x, y):
         """
         Détermine le vecteur directeur de la droite passant par 
