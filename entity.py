@@ -69,18 +69,7 @@ class Player(Entity):
         self.sprite.x = self.x - self.width/2
         self.sprite.y = self.y - self.height/2
         self.sprite.draw()
-        
-        centerX = self.x
-        centerY = self.y + self.mouthOffset
-        
-        # DEBUG: On trace la la droite qui porte le
-        # veceur aimVector
-        
-        if self.isFiring:
-            pyglet.gl.glBegin(pyglet.gl.GL_LINES)
-            pyglet.gl.glVertex2i( centerX, centerY)
-            pyglet.gl.glVertex2i( int(centerX + 2000 * self.aimVector[0]), int(centerY + 2000 * self.aimVector[1]))
-            pyglet.gl.glEnd()
+
 
 class Npc(object):
     def __init__(self,x,y):
@@ -100,5 +89,5 @@ class Bullet(Entity):
     SIZE = 10
     
     def __init__(self, x,y, xVel, yVel, owner):
-        super(Bullet, self).__init__(x, y, xVel, yVel)       
+        super(Bullet, self).__init__(x, y, xVel, yVel)
         self.owner = owner

@@ -61,13 +61,17 @@ class Game:
         self.ui.render(self.camera.x, self.camera.y, self.player)
         self.player.render()
         
+        print "[BULLETS] <", len(self.bullets), ">"
         for bullet in self.bullets:
-            pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
-            pyglet.gl.glVertex2d(bullet.x,bullet.y)
-            pyglet.gl.glVertex2d(bullet.x + entity.Bullet.SIZE ,bullet.y)
-            pyglet.gl.glVertex2d(bullet.x + entity.Bullet.SIZE, bullet.y + entity.Bullet.SIZE)
-            pyglet.gl.glVertex2d(bullet.x ,bullet.y + entity.Bullet.SIZE)
-            pyglet.gl.glEnd()
+            if self.player.x - gameEngine.GameEngine.W_WIDTH/2 < bullet.x < self.player.x + gameEngine.GameEngine.W_WIDTH/2 and self.player.y - gameEngine.GameEngine.W_HEIGHT/2 < bullet.y < self.player.y + gameEngine.GameEngine.W_WIDTH/2:
+                pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
+                pyglet.gl.glVertex2d(bullet.x - bullet.SIZE/2 ,bullet.y - bullet.SIZE/2)
+                pyglet.gl.glVertex2d(bullet.x - bullet.SIZE/2 + entity.Bullet.SIZE ,bullet.y - bullet.SIZE/2)
+                pyglet.gl.glVertex2d(bullet.x - bullet.SIZE/2 + entity.Bullet.SIZE, bullet.y - bullet.SIZE/2 + entity.Bullet.SIZE)
+                pyglet.gl.glVertex2d(bullet.x - bullet.SIZE/2 ,bullet.y - bullet.SIZE/2 + entity.Bullet.SIZE)
+                pyglet.gl.glEnd()
+            else:
+                self.bullets.remove(bullet)
 
 class Map:
     """
@@ -140,9 +144,25 @@ class Map:
                     # Si la position gauche (x) ou la position droite (x+w)
                     # est comprise entre le bord gauche et droite de la tile.
                     if (tile.y <= y <= tile.y + Tile.SIZE) or (tile.y <= y+h <= tile.y + Tile.SIZE):
-                        # Si la position du bas (y) ou la position du haut (y+h) 
+                        # [1] Si la position du bas (y) ou la position du haut (y+h) 
                         # est comprise entre le bord haut et le bord bas de la tile.
                         return True
+                    elif y <= tile.y <= y+h or y <= tile.y + Tile.SIZE <= y+h:
+                        # [2] si le bord bas (tile.y) ou le bord haut(tile.y+Tile.SIZE) est 
+                        # compris entre le position du bas (y) et la position du haut 
+                        # (y+h) de l'objet à tester.
+                        return True
+                    
+                elif x <= tile.x <= x+w or x <= tile.x + Tile.SIZE <= x+w:
+                    # Si le bord gauche ou le bord droit de la tile est compris
+                    # entre la position gauche et droite de l'objet à tester.
+                    if (tile.y <= y <= tile.y + Tile.SIZE) or (tile.y <= y+h <= tile.y + Tile.SIZE):
+                        # Voir [1]
+                        return True
+                    elif y <= tile.y <= y+h or y <= tile.y + Tile.SIZE <= y+h:
+                        # voir [2]
+                        return True
+                    
         return False
     
     def render(self):
