@@ -70,11 +70,11 @@ class Player(Entity):
             bullets.append(Bullet( self.x, self.y + self.mouthOffset, self.aimVector[0]*1000, self.aimVector[1]*1000, "player" ))
         
         
-    def move(self, x,y, gameMap ,dt):
+    def move(self, dx,dy, gameMap ,dt):
         
-        if not gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
-            self.x += int(x * dt * self.speed)
-            self.y += int(y * dt * self.speed)
+        if not gameMap.collide( self.x - self.width/2 + dx * dt * self.speed, self.y - self.height/2 + dy * dt * self.speed, self.width, self.height):
+            self.x += int(dx * dt * self.speed)
+            self.y += int(dy * dt * self.speed)
                     
     def render(self):
         self.sprite.x = self.x - self.width/2
