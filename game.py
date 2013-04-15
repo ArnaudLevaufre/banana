@@ -1,19 +1,18 @@
 #-*- encoding: utf-8 -*-
 import pyglet, pyglet.window.key as key, os, xml.etree.ElementTree as xml
 import gameEngine, entity, ui
-
-
+import math
+# ---------------------------------------------------
 class Game:
     def __init__(self):
 
         self.camera = Camera()
         self.ui = ui.UI()
         self.player = entity.Player(0,0)
-        self.map = Map()        
+        self.map = Map()
+        self.lvl = Level()
         self.map.load("001", self.player)
         self.bullets = []
-        
-        
         
     def simulate(self, dt, keysHandler):
         if keysHandler[key.Z]:
@@ -45,6 +44,8 @@ class Game:
             self.player.hp -= 0.1
         if self.player.shield - 0.1 >= 0:
             self.player.shield -= 0.1
+            
+        self.lvl.simulate(self.map,self.player, dt)
         
     def on_mouse_press(self,x, y, button, modifiers):
         if(button == pyglet.window.mouse.LEFT):
@@ -60,12 +61,12 @@ class Game:
             self.player.aim(x,y)
             
     def render(self):
-        
+
         self.map.render()
         self.ui.render(self.camera.x, self.camera.y, self.player)
         self.player.render()
-        
-        print "[BULLETS] <", len(self.bullets), ">"
+        self.lvl.render()
+#         print "[BULLETS] <", len(self.bullets), ">"
         for bullet in self.bullets:
             if self.player.x - gameEngine.GameEngine.W_WIDTH/2 < bullet.x < self.player.x + gameEngine.GameEngine.W_WIDTH/2 and self.player.y - gameEngine.GameEngine.W_HEIGHT/2 < bullet.y < self.player.y + gameEngine.GameEngine.W_WIDTH/2:
                 pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
@@ -76,7 +77,7 @@ class Game:
                 pyglet.gl.glEnd()
             else:
                 self.bullets.remove(bullet)
-
+# ---------------------------------------------------
 class Map:
     """
     La carte est un tableau d'objets Tile
@@ -171,7 +172,33 @@ class Map:
     
     def render(self):
         self.batch.draw()
+# ---------------------------------------------------
+class Level(object):
+    def __init__(self):
+        self.lvl = []
+        self.sprites = []
+        self.load("001")
+    
+    def simulate(self, gameMap,player, dt):
+        for ent in self.lvl:
+            norm = math.sqrt((ent.x - player.x)**2 + (ent.y - player.y)**2)/10
+            print norm
+            ent.move((player.x - ent.x)/norm,(player.y-ent.y)/norm, gameMap ,dt)
+        
+    def load(self, fileName):
+        if os.path.isfile("lvl/"+fileName):
+                    xmlTree = xml.parse("lvl/"+fileName)
+                    root = xmlTree.getroot()
+                    for child in root:
+                        if child.tag == "enemy":
+                            print "load"
+                            self.lvl.append(entity.Enemy( **child.attrib ))
+    
+    def render(self):
+        for ent in self.lvl:
+            ent.render()
 
+# ---------------------------------------------------   
 class Tile:
     SIZE = 64
     
@@ -184,7 +211,7 @@ class Tile:
             self.collision = True
         else:
             self.collision = False
-
+# ---------------------------------------------------
 class Camera:
     def __init__(self):
         self.x = 0
