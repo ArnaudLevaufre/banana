@@ -2,11 +2,12 @@
 import math, time
 import pyglet
 import gameEngine
-
+import game
+# ---------------------------------------------------
 class Entity(object):
     def __init__(self, x=0, y=0, xVel=0, yVel=0):
-        self.x = x
-        self.y = y
+        self.x = int(x)
+        self.y = int(y)
         self.xVel = xVel
         self.yVel = yVel
 
@@ -16,9 +17,51 @@ class Entity(object):
         if self.yVel != 0:
             self.y += self.yVel * dt
             
+    def move(self, x,y, gameMap ,dt):
+        if not gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
+            self.x += int(x * dt * self.speed)
+            self.y += int(y * dt * self.speed)
+# ---------------------------------------------------
+class Enemy(Entity):
+    def __init__(self, x, y):
+        Entity.__init__(self, x, y)
+        self.width = 48
+        self.height = 48
+        self.speed = 30
+        self.blocked = False
+        self.sprite = pyglet.sprite.Sprite(pyglet.image.load("sprites/blarg.png").get_texture())
+        self.x = int(x)  * game.Tile.SIZE
+        self.y = int(y)  * game.Tile.SIZE 
+        
+    def render(self):
+        self.sprite.x = self.x - self.width/2
+        self.sprite.y = self.y - self.height/2
+        self.sprite.draw()
+        
+    def move(self, x,y, gameMap ,dt):
+        print x,y 
+        if not gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
+            self.x += int(x * dt * self.speed)
+            self.y += int(y * dt * self.speed)
+            self.blocked = False
+        elif gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2, self.width, self.height):
+            if(y >= 0 or self.blocked == "top" and not self.blocked == "bot"):
+                self.y += int(10 * dt * self.speed)
+                self.blocked = "top"
+            elif y < 0 or self.blocked == "bot" and not self.blocked == "top":
+                self.y -= int(10 * dt * self.speed)
+                self.blocked= "bot"
+        elif gameMap.collide( self.x - self.width/2 , self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
+            if(x >= 0 or self.blocked == "top" and not self.blocked == "bot"):  
+                self.x += int(10 * dt * self.speed)
+                self.blocked ="top"
+            elif x < 0 or self.blocked == "bot" and not self.blocked == "top":
+                self.x -= int(10 * dt * self.speed)
+                self.blocked = "bot"
+# ---------------------------------------------------     
 class Player(Entity):
     def __init__(self, x, y):
-        Entity.__init__(self, x=0, y=0, xVel=0, yVel=0)
+        Entity.__init__(self, x, y)
         self.width = 48
         self.height = 48
         self.aimVector = [0,0]
@@ -70,18 +113,18 @@ class Player(Entity):
             bullets.append(Bullet( self.x, self.y + self.mouthOffset, self.aimVector[0]*1000, self.aimVector[1]*1000, "player" ))
         
         
-    def move(self, x,y, gameMap ,dt):
-        
-        if not gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
-            self.x += int(x * dt * self.speed)
-            self.y += int(y * dt * self.speed)
+#     def move(self, x,y, gameMap ,dt):
+#         
+#         if not gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
+#             self.x += int(x * dt * self.speed)
+#             self.y += int(y * dt * self.speed)
                     
     def render(self):
         self.sprite.x = self.x - self.width/2
         self.sprite.y = self.y - self.height/2
         self.sprite.draw()
 
-
+# ---------------------------------------------------
 class Npc(object):
     def __init__(self,x,y):
         super(Npc, self).__init__(x,y)
@@ -95,7 +138,7 @@ class Npc(object):
     
     def kill(self):
         pass
-    
+# ---------------------------------------------------   
 class Bullet(Entity):
     SIZE = 10
     

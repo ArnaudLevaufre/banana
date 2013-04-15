@@ -181,8 +181,7 @@ class Level(object):
     
     def simulate(self, gameMap,player, dt):
         for ent in self.lvl:
-            norm = math.sqrt((ent.x - player.x)**2 + (ent.y - player.y)**2)/10
-            print norm
+            norm = math.sqrt((ent.x - player.x)**2 + (ent.y - player.y)**2)/5
             ent.move((player.x - ent.x)/norm,(player.y-ent.y)/norm, gameMap ,dt)
         
     def load(self, fileName):
