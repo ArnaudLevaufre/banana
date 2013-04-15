@@ -31,7 +31,7 @@ class GameEngine(pyglet.window.Window):
         self.mainDrawingBatch = pyglet.graphics.Batch()
         self._state = "playing"
         self._lvl = 1
-        
+        self._menu = menu.MainMenu()
         self._game = game.Game()
         self._cin = cinematic.Cinematic()
         self.fpsText = pyglet.text.Label("", x=4, y=self.height, anchor_y="top", batch=self.mainDrawingBatch, color=(0,0,0,255))
@@ -68,7 +68,6 @@ class GameEngine(pyglet.window.Window):
         self.mainDrawingBatch.draw()
         
     def on_mouse_press(self,x, y, button, modifiers):
-    
         if self._state == "playing":
             self._game.on_mouse_press(x,y,button,modifiers)
         elif self._state == "menu":
@@ -76,7 +75,6 @@ class GameEngine(pyglet.window.Window):
 
 
     def on_mouse_release(self,x, y, button, modifiers):
-
         if self._state == "playing":
             self._game.on_mouse_release(x, y, button, modifiers)
         
