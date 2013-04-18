@@ -34,7 +34,8 @@ class Game:
         self.player.shoot(self.bullets)
         
         for bullet in self.bullets:
-            bullet.simulate(dt)
+            if bullet.simulate(self.map, dt) == False:
+                self.bullets.remove(bullet)
                 
         # on repositionne la carte.
         self.camera.setPos(self.player.x, self.player.y)

@@ -3,8 +3,13 @@ import math, time
 import pyglet
 import gameEngine
 import game
+
 # ---------------------------------------------------
+
 class Entity(object):
+    """
+    Classe generale d'une entitée
+    """
     def __init__(self, x=0, y=0, xVel=0, yVel=0):
         self.x = int(x)
         self.y = int(y)
@@ -21,8 +26,13 @@ class Entity(object):
         if not gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
             self.x += int(x * dt * self.speed)
             self.y += int(y * dt * self.speed)
+            
 # ---------------------------------------------------
+
 class Enemy(Entity):
+    """
+    Ennemie pour tester l'IA, il essaie juste de toucher le joueur
+    """
     def __init__(self, x, y):
         Entity.__init__(self, x, y)
         self.width = 48
@@ -48,18 +58,21 @@ class Enemy(Entity):
             if(y >= 0 or self.blocked == "top" and not self.blocked == "bot"):
                 self.y += int(10 * dt * self.speed)
                 self.blocked = "top"
-            elif y < 0 or self.blocked == "bot" and not self.blocked == "top":
+            elif(y < 0 or self.blocked == "bot" and not self.blocked == "top"):
                 self.y -= int(10 * dt * self.speed)
                 self.blocked= "bot"
         elif gameMap.collide( self.x - self.width/2 , self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
             if(x >= 0 or self.blocked == "top" and not self.blocked == "bot"):  
                 self.x += int(10 * dt * self.speed)
                 self.blocked ="top"
-            elif x < 0 or self.blocked == "bot" and not self.blocked == "top":
+            elif(x < 0 or self.blocked == "bot" and not self.blocked == "top"):
                 self.x -= int(10 * dt * self.speed)
                 self.blocked = "bot"
 # ---------------------------------------------------     
 class Player(Entity):
+    """ 
+    Joueur
+    """
     def __init__(self, x, y):
         Entity.__init__(self, x, y)
         self.width = 48
@@ -143,5 +156,21 @@ class Bullet(Entity):
     SIZE = 10
     
     def __init__(self, x,y, xVel, yVel, owner):
+        self.initX = x
+        self.initY = y
+        self.height = 10
+        self.width = 10
+        self.speed = 1
+        self.range = 200
         super(Bullet, self).__init__(x, y, xVel, yVel)
         self.owner = owner
+        print self.initX
+        
+        
+    def simulate(self,gameMap, dt=1):
+        norm = math.sqrt((self.initX - self.x)**2 + (self.initY - self.y)**2)
+        if not gameMap.collide( self.x - self.width/2 + self.xVel * dt * self.speed, self.y - self.height/2 + self.yVel * dt * self.speed, self.width, self.height) and norm < self.range:
+            self.x += int(self.xVel * dt * self.speed)
+            self.y += int(self.yVel * dt * self.speed)
+        else:
+            return False
