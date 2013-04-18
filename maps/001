@@ -69,7 +69,7 @@
 	<tile x="0" y="6" collision="True" type="2" />
 	<tile x="1" y="6" collision="False" type="0" />
 	<tile x="2" y="6" collision="False" type="0" />
-	<tile x="3" y="6" collision="False" type="0" />
+	<tile x="3" y="6" collision="True" type="1" />
 	<tile x="4" y="6" collision="True" type="1" />
 	<tile x="5" y="6" collision="False" type="0" />
 	<tile x="6" y="6" collision="False" type="0" />

@@ -1,5 +1,4 @@
 <?xml version="1.0" ?>
 <lvl>
 	<enemy x="2" y="2" />
-	<enemy x="0" y="1" />
 </lvl>
