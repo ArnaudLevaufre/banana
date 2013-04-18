@@ -48,27 +48,32 @@ class Enemy(Entity):
         self.sprite.y = self.y - self.height/2
         self.sprite.draw()
         
-    def move(self, x,y, gameMap ,dt):
-        print x,y 
+    def move(self, x,y, gameMap ,dt, recurs = False):   
         if not gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
+            # Si il ne collisione pas, il se déplace normalement
             self.x += int(x * dt * self.speed)
             self.y += int(y * dt * self.speed)
             self.blocked = False
-        elif gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2, self.width, self.height):
-            if(y >= 0 or self.blocked == "top" and not self.blocked == "bot"):
-                self.y += int(10 * dt * self.speed)
-                self.blocked = "top"
-            elif(y < 0 or self.blocked == "bot" and not self.blocked == "top"):
-                self.y -= int(10 * dt * self.speed)
-                self.blocked= "bot"
-        elif gameMap.collide( self.x - self.width/2 , self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
-            if(x >= 0 or self.blocked == "top" and not self.blocked == "bot"):  
-                self.x += int(10 * dt * self.speed)
-                self.blocked ="top"
-            elif(x < 0 or self.blocked == "bot" and not self.blocked == "top"):
-                self.x -= int(10 * dt * self.speed)
-                self.blocked = "bot"
+        if not recurs:
+            if gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2, self.width, self.height):
+                # Si c'est en x que l'on collide, on se déplace en y dans la direction vers le joueur
+                if(y >= 0 or self.blocked == "top" and not self.blocked == "bot"):
+                    self.move(0,10, gameMap ,dt, True)
+                    self.blocked = "top"
+                elif(y < 0 or self.blocked == "bot" and not self.blocked == "top"):
+                    self.move(0,-10, gameMap ,dt, True)
+                    self.blocked= "bot"
+            elif gameMap.collide( self.x - self.width/2 , self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
+                # Si c'est en y que l'on collide, on se déplace en x dans la direction vers le joueur
+                if(x >= 0 or self.blocked == "right" and not self.blocked == "left"):  
+                    self.move(10,0, gameMap ,dt, True)
+                    self.blocked ="right"
+                elif(x < 0 or self.blocked == "left" and not self.blocked == "right"):
+                    self.move(-10,0, gameMap ,dt, True)
+                    self.blocked = "left"
+                
 # ---------------------------------------------------     
+
 class Player(Entity):
     """ 
     Joueur
@@ -138,6 +143,7 @@ class Player(Entity):
         self.sprite.draw()
 
 # ---------------------------------------------------
+
 class Npc(object):
     def __init__(self,x,y):
         super(Npc, self).__init__(x,y)
@@ -151,7 +157,9 @@ class Npc(object):
     
     def kill(self):
         pass
+    
 # ---------------------------------------------------   
+
 class Bullet(Entity):
     SIZE = 10
     
