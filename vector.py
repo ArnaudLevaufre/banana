@@ -4,10 +4,7 @@ Description:	A simple library for easy use of vectors.
 Author: 		Arnaud Levaufre
 
 
-
-
 						== MANUAL ==
-
 class :
 -------
 
