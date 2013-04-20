@@ -91,7 +91,9 @@ class Map(object):
     
     def render(self):
         self.batch.draw()
-        
+
+# ----------------------------------
+
 class Tile:
     SIZE = 64
     

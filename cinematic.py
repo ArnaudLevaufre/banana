@@ -57,6 +57,7 @@ class Cinematic(object):
                     self.endTime = int(child.attrib["time"])
             
     def run(self): # Fonction pour afficher notre cinematique a l'écran
+        # - Calcul de dt -
         if self.lastOnDrawTime != None:
             self.dt = time.time() - self.lastOnDrawTime
             self.time += self.dt
@@ -69,7 +70,7 @@ class Cinematic(object):
         if(int(self.time) > self.endTime): # Fin de la cinematique
             return False
                 
-        # - Calcul de dt -
+
 
         
 
@@ -202,6 +203,7 @@ class Image(pyglet.sprite.Sprite):
         self.y = int(y)
         self.actualX = self.x # On sauvegarde x et y
         self.actualY = self.y
+        
         # - Temps -
         self.time = 0
         
