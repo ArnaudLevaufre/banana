@@ -19,7 +19,7 @@ class Cinematic(object):
         #   =========
         
         # - Gestion du temps -
-        self.lastOnDrawTime = time.time()
+        self.lastOnDrawTime = None
         self.dt = 0
         self.time = 0
         self.endTime = 1000
@@ -57,20 +57,20 @@ class Cinematic(object):
                     self.endTime = int(child.attrib["time"])
             
     def run(self): # Fonction pour afficher notre cinematique a l'écran
-        
-        # - Calcul de dt -
-        self.dt = time.time() - self.lastOnDrawTime 
-        
-        self.time += self.dt
-        
+        if self.lastOnDrawTime != None:
+            self.dt = time.time() - self.lastOnDrawTime
+            self.time += self.dt
+
         # - Render/Animation -
         for elmt in self.elements:
             elmt.animate(self.dt) # On anime tous les elements
-        self.lastOnDrawTime = time.time()  
         self.mainDrawingBatch.draw()
-        
+        self.lastOnDrawTime = time.time() 
         if(int(self.time) > self.endTime): # Fin de la cinematique
             return False
+                
+        # - Calcul de dt -
+
         
 
 # -----------------------------------------------------------
@@ -218,7 +218,6 @@ class Image(pyglet.sprite.Sprite):
         """
         Anime le tout selon les parametres definis auparavant
         """
-        
         self.time += dt
         delete = ""
 

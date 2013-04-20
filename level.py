@@ -1,4 +1,4 @@
-import math, os
+import os
 import xml.dom.minidom as xmlParser
 import entity, cinematic, map
 
