@@ -19,6 +19,7 @@ class GameEngine(pyglet.window.Window):
         pyglet.clock.schedule_interval(self.physicEngine, 1/100.0)
         
         pyglet.gl.glEnable(pyglet.gl.GL_BLEND)
+        pyglet.gl.glClearColor(0.5,0.75,1,1)
         
 
         # Input handler        
@@ -43,7 +44,6 @@ class GameEngine(pyglet.window.Window):
     
     def on_draw(self):
         self.clear()
-        pyglet.gl.glClearColor(0.5,0.75,1,1)
         self.fpsText.text = str( round(pyglet.clock.get_fps(), 2) )
         
         if self._state == "askForCin":
