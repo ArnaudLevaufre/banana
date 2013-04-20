@@ -34,10 +34,16 @@ class Enemy(Entity):
     Ennemie pour tester l'IA, il essaie juste de toucher le joueur
     """
     def __init__(self, x, y):
+        # - Objets -
         Entity.__init__(self, x, y)
+        
+        # - Constantes -
         self.width = 48
         self.height = 48
         self.speed = 30
+        self.sprite = pyglet.sprite.Sprite(pyglet.image.load("sprites/blarg.png").get_texture())
+        
+        # - Mouvements -
         self.blocked = False
         self.sprite = pyglet.sprite.Sprite(pyglet.image.load("sprites/blarg.png").get_texture())
         self.x = int(x)  * game.map.Tile.SIZE
@@ -79,32 +85,30 @@ class Player(Entity):
     Joueur
     """
     def __init__(self, x, y):
+        # - Objets -
         Entity.__init__(self, x, y)
+       
+        # - Constantes -
         self.width = 48
         self.height = 48
         self.aimVector = [0,0]
         self.mouthOffset = 7
-        self.isFiring = False
-        self.lastShoot = time.time()
-        
         self.sprite = pyglet.sprite.Sprite(pyglet.image.load("sprites/blarg.png").get_texture())
         self.sprite.x = gameEngine.GameEngine.W_WIDTH/2 - self.width/2
         self.sprite.y = gameEngine.GameEngine.W_HEIGHT/2 - self.height/2
         
-        # Caractéristiques du joueur.
+        # - Tir -
+        self.isFiring = False
+        self.lastShoot = time.time()
+    
+        # - Caractéristiques -
         self.maxHp = 100
         self.hp = 100
         self.speed = 30
         self.shieldCapacity = 50
         self.shield = 50
         self.fireRate = 20.0
-    
-    def getHp(self):
-        return self.hp
-    
-    def getMaxHp(self):
-        return self.maxHp
-    
+        
     def aim(self, x, y):
         """
         Détermine le vecteur directeur de la droite passant par 
@@ -129,13 +133,6 @@ class Player(Entity):
         if self.isFiring and time.time() - self.lastShoot > 1/self.fireRate:
             self.lastShoot = time.time()
             bullets.append(Bullet( self.x, self.y + self.mouthOffset, self.aimVector[0]*1000, self.aimVector[1]*1000, "player" ))
-        
-        
-#     def move(self, x,y, gameMap ,dt):
-#         
-#         if not gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
-#             self.x += int(x * dt * self.speed)
-#             self.y += int(y * dt * self.speed)
                     
     def render(self):
         self.sprite.x = self.x - self.width/2
@@ -164,16 +161,17 @@ class Bullet(Entity):
     SIZE = 10
     
     def __init__(self, x,y, xVel, yVel, owner):
-        self.initX = x
-        self.initY = y
-        self.height = 10
+        # - Objet -
+        super(Bullet, self).__init__(x, y, xVel, yVel)
+        
+        # - Constantes -
         self.width = 10
+        self.height = 10
         self.speed = 1
         self.range = 200
-        super(Bullet, self).__init__(x, y, xVel, yVel)
-        self.owner = owner
-        print self.initX
-        
+        self.initX = x
+        self.initY = y
+        self.owner = owner     
         
     def simulate(self,gameMap, dt=1):
         norm = math.sqrt((self.initX - self.x)**2 + (self.initY - self.y)**2)
