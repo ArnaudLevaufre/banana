@@ -13,16 +13,24 @@ class Cinematic(object):
         
         :type filename: str
         """
-        # ---- Variables ---- #
+        
+        #   =========
+        # ~ VARIABLES ~
+        #   =========
+        
+        # - Gestion du temps -
         self.lastOnDrawTime = time.time()
         self.dt = 0
         self.time = 0
         self.endTime = 1000
-        self.WHEIGHT = gameEngine.GameEngine.W_HEIGHT
-        self.WWIDTH = gameEngine.GameEngine.W_WIDTH
+        
+        # - Objets -
         self.mainDrawingBatch = pyglet.graphics.Batch() # Batch que l'on va draw
+        
+        # - Divers -
         self.elements = [] # Elements de la cinématique
-        # Construction
+        
+        # - Construction -
         self.constructFromFile(filename)
 
     def constructFromFile(self, filename =None):
@@ -34,7 +42,8 @@ class Cinematic(object):
         :type filename: str
         """
         
-        fileName = "Cin/1.xml" 
+        fileName = "Cin/1.xml" # A enlever plus tard
+        
         # On parse le XML
         tree = ET.parse(fileName)
         root = tree.getroot()
@@ -49,20 +58,23 @@ class Cinematic(object):
             
     def run(self): # Fonction pour afficher notre cinematique a l'écran
         
-        self.dt = time.time() - self.lastOnDrawTime # Calcul de dt
+        # - Calcul de dt -
+        self.dt = time.time() - self.lastOnDrawTime 
+        
         self.time += self.dt
+        
+        # - Render/Animation -
         for elmt in self.elements:
             elmt.animate(self.dt) # On anime tous les elements
         self.lastOnDrawTime = time.time()  
         self.mainDrawingBatch.draw()
-        print int(self.time) , self.endTime
-        if(int(self.time) > self.endTime):
+        
+        if(int(self.time) > self.endTime): # Fin de la cinematique
             return False
         
-        
-#########################################################   
-#                     Bordure                           #
-#########################################################
+
+# -----------------------------------------------------------
+
 class Border(pyglet.sprite.Sprite):
         
     def __init__(self,batch,ch = None,text = "", textSize = "24", pos = "bot", height = None, width = None, velY = 80, maxY = None):
@@ -83,27 +95,29 @@ class Border(pyglet.sprite.Sprite):
         :type maxY: int
         """
         
-        # ---- Constantes ---- #
-        self._batch = batch
+        # - Constantes -
         self.W_HEIGHT = gameEngine.GameEngine.W_HEIGHT
         self.W_WIDTH = gameEngine.GameEngine.W_WIDTH
         
-        # ---- Temps ---- #
+        # - Objets -
+        self._batch = batch
+        
+        # - Temps -
         self.time = 0
         
-        # ---- Taille ---- #
+        # - Taille -
         if(height == None):
             height = self.W_HEIGHT/4
         if(width == None):
             width = self.W_WIDTH
             
-        # ---- Vitesse ---- #
+        # - Vitesse -
         self.velY = int(velY)
         
-        # ---- Image ---- #
+        # - Image -
         super(Border, self).__init__(pyglet.image.create(width, height, pyglet.image.SolidColorImagePattern((0,0,0,255))))
         
-        # ---- Position ---- #
+        # - Position -
         self.pos = pos
         if(pos == "bot"):
             self.y = -self.height
@@ -118,13 +132,15 @@ class Border(pyglet.sprite.Sprite):
                 self.maxY = int(maxY)
             self.y = self.W_HEIGHT 
                
-        # ---- Texte ---- #
+        # - Texte -
         if(text != None):
-            # ---- Contenu ---- #
+            # - Contenu -
             self.textContent = text
-            # ---- Size ---- #
+            
+            # - Size -
             self.textSize = int(textSize)
             self.text = pyglet.text.Label(self.textContent,font_size=self.textSize, batch=self._batch,anchor_x ="center", anchor_y="center",x=self.width/2, y=self.height/2, color=(255,255,255,255))
+        
         else:
             self.text = None
             
@@ -154,9 +170,9 @@ class Border(pyglet.sprite.Sprite):
                     self.text.y = self.y + self.height /2 # Et on le place au centre
                     self.text.x = self.x + self.width /2
 
-###############################################
-#                   Image                     #
-###############################################
+
+# -----------------------------------------------------------
+
 class Image(pyglet.sprite.Sprite):
 
     def __init__(self, batch,ch = None, path = None, x= 250, y = 250):
@@ -177,17 +193,19 @@ class Image(pyglet.sprite.Sprite):
         :type x: str | int
         :type y: str | int
         """
+        # - Objets -
         self._batch = batch
         super(Image, self).__init__(pyglet.image.load(path))
-        # ---- Position ---- #
+        
+        # - Position -
         self.x = int(x)
         self.y = int(y)
-        
-        # ---- Temps ---- #
+        self.actualX = self.x # On sauvegarde x et y
+        self.actualY = self.y
+        # - Temps -
         self.time = 0
-        self.firstAnim = True
         
-        # ---- Parsage des enfants avec des petits pois ---- #
+        # - Parsage des enfants avec des petits pois -
         self.toDoMovement = {}
         for elmt in ch:
             if elmt.tag == "move": # Si on demande de move
@@ -203,20 +221,17 @@ class Image(pyglet.sprite.Sprite):
         
         self.time += dt
         delete = ""
-        if self.firstAnim: # Si c'est le premier appel
-            self.actualX = self.x # On sauvegarde x et y
-            self.actualY = self.y
 
         for elmt in self.toDoMovement: # On regarde la liste de todo
-            if(int(self.toDoMovement[elmt]['timeStop']) >= int(self.time) >= int(elmt)) and not self.firstAnim: # Si on est entre le timeStart et le timeStop d'un move, on bouge l'image
+            if(int(self.toDoMovement[elmt]['timeStop']) >= int(self.time) >= int(elmt)): # Si on est entre le timeStart et le timeStop d'un move, on bouge l'image
                     self.x += dt * (int(self.toDoMovement[str(int(elmt))]['x']) - self.actualX) / (int(self.toDoMovement[str(int(elmt))]['timeStop']) - int(self.toDoMovement[str(int(elmt))]['timeStart']))
                     self.y += dt * (int(self.toDoMovement[str(int(elmt))]['y']) - self.actualY) / (int(self.toDoMovement[str(int(elmt))]['timeStop']) - int(self.toDoMovement[str(int(elmt))]['timeStart']))
+            
             if(int(self.time) >= int(self.toDoMovement[elmt]['timeStop'])): # Si on a depassé le timeStop, la tache est faite, on prepare la deletion de cette derniere
                 self.actualX = self.x # Et on enregistre la nouvelle position
                 self.actualY = self.y
                 delete=str(int(elmt))
-            if(self.firstAnim): # Si on passe une fois ici, ce n'est plus le premier appel
-                self.firstAnim = False
+
         if(self.toDoMovement.has_key(delete)): # On delete le todo
             self.toDoMovement.pop(delete)
         
