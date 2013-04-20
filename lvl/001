@@ -1,4 +1,17 @@
 <?xml version="1.0" ?>
-<lvl>
-	<enemy x="2" y="2" />
-</lvl>
+<level>
+	<init>
+		<cinematique file="1.xml" />
+		<next level="next" />
+		<player skin="blarg.png" x="5" y="5" width="48" height="48" />
+		<map name="001" />
+	</init>
+	
+	<enemies>
+		<enemy x="100" y="0" type="" />
+		<enemy x="0" y="0" type="" />
+		<enemy x="0" y="0" type="" />
+		<enemy x="0" y="0" type="" />
+		<enemy x="0" y="0" type="" />
+	</enemies>
+</level>
