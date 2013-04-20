@@ -3,7 +3,7 @@
 	<init>
 		<cinematique file="1.xml" />
 		<next level="next" />
-		<player skin="blarg.png" x="5" y="5" width="48" height="48" />
+		<player skin="blarg.png" x="5" y="8" width="48" height="48" />
 		<map name="001" />
 	</init>
 	
