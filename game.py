@@ -41,7 +41,12 @@ class Game:
             for bullet in self.bullets:
                 if bullet.simulate(self.map, dt) == False:
                     self.bullets.remove(bullet)
-                    
+            
+            for ent in self.level.enemies:
+                norm = math.sqrt((ent.x - self.player.x)**2 + (ent.y - self.player.y)**2)/5
+                ent.move((self.player.x - ent.x)/norm,(self.player.y-ent.y)/norm, self.map ,dt)
+                
+                
             # on repositionne la carte.
             self.camera.setPos(self.player.x, self.player.y)
         
@@ -64,6 +69,7 @@ class Game:
             self.ui.render(self.camera.x, self.camera.y, self.player)
             self.player.render()
             
+                
             for bullet in self.bullets:
                 if self.player.x - gameEngine.GameEngine.W_WIDTH/2 < bullet.x < self.player.x + gameEngine.GameEngine.W_WIDTH/2 and self.player.y - gameEngine.GameEngine.W_HEIGHT/2 < bullet.y < self.player.y + gameEngine.GameEngine.W_WIDTH/2:
                     pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
@@ -74,6 +80,9 @@ class Game:
                     pyglet.gl.glEnd()
                 else:
                     self.bullets.remove(bullet)
+                    
+            for ent in self.level.enemies:
+                ent.render()
         else:
             self.cinematiqueIsPlaying = self.level.cinematique.run()
 # ---------------------------------------------------
