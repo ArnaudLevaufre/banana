@@ -9,7 +9,6 @@
 	
 	<enemies>
 		<enemy x="7" y="5" type="" />
-		<enemy x="6" y="7" type="" />
-				<enemy x="8" y="5" type="" />
+		
 	</enemies>
 </level>
