@@ -63,8 +63,7 @@ class Game:
             self.map.render()    
             self.ui.render(self.camera.x, self.camera.y, self.player)
             self.player.render()
-    #         print "[BULLETS] <", len(self.bullets), ">"
-    
+            
             for bullet in self.bullets:
                 if self.player.x - gameEngine.GameEngine.W_WIDTH/2 < bullet.x < self.player.x + gameEngine.GameEngine.W_WIDTH/2 and self.player.y - gameEngine.GameEngine.W_HEIGHT/2 < bullet.y < self.player.y + gameEngine.GameEngine.W_WIDTH/2:
                     pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
