@@ -46,8 +46,8 @@ class Enemy(Entity):
         # - Mouvements -
         self.blocked = False
         self.sprite = pyglet.sprite.Sprite(pyglet.image.load("sprites/blarg.png").get_texture())
-        self.x = int(x)  * game.map.Tile.SIZE
-        self.y = int(y)  * game.map.Tile.SIZE
+        self.x = int(x)
+        self.y = int(y)
         
     def render(self):
         self.sprite.x = self.x - self.width/2
