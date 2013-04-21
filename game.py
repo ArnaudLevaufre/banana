@@ -14,7 +14,6 @@ class Game:
         self.level.load("001")
         self.map = self.level.map
         self.player = self.level.player
-        
         self.bullets = []
         self.cinematiqueIsPlaying = True
         
@@ -41,7 +40,7 @@ class Game:
             for bullet in self.bullets:
                 if bullet.simulate(self.map, dt) == False:
                     self.bullets.remove(bullet)
-            
+             
             for ent in self.level.enemies:
                 norm = math.sqrt((ent.x - self.player.x)**2 + (ent.y - self.player.y)**2)/5
                 ent.move((self.player.x - ent.x)/norm,(self.player.y-ent.y)/norm, self.map ,dt)
@@ -65,11 +64,10 @@ class Game:
             
     def render(self):
         if self.cinematiqueIsPlaying == False:
-            self.map.render()    
+            self.map.render()
             self.ui.render(self.camera.x, self.camera.y, self.player)
             self.player.render()
             
-                
             for bullet in self.bullets:
                 if self.player.x - gameEngine.GameEngine.W_WIDTH/2 < bullet.x < self.player.x + gameEngine.GameEngine.W_WIDTH/2 and self.player.y - gameEngine.GameEngine.W_HEIGHT/2 < bullet.y < self.player.y + gameEngine.GameEngine.W_WIDTH/2:
                     pyglet.gl.glBegin(pyglet.gl.GL_QUADS)

@@ -31,7 +31,6 @@ class Level(object):
                 
                 enemies = xml.getElementsByTagName("enemy")
                 for e in enemies:
-                    print e.getAttribute("x")
                     self.enemies.append(entity.Enemy(int(e.getAttribute("x")) * map.Tile.SIZE, int(e.getAttribute("y")) * map.Tile.SIZE) )
                 
                 
