@@ -108,6 +108,9 @@ class Player(Entity):
         self.shieldCapacity = 50
         self.shield = 50
         self.fireRate = 20.0
+        self.resistance = 10
+        self.attack = 10
+        
         
     def aim(self, x, y):
         """

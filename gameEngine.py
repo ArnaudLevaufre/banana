@@ -46,15 +46,17 @@ class GameEngine(pyglet.window.Window):
         # - Objets -
         self._menu = menu.MainMenu()
         self._game = game.Game()
-        self.fpsText = pyglet.text.Label("", x=4, y=self.height, anchor_y="top", batch=self.mainDrawingBatch, color=(0,0,0,255))
 
     def physicEngine(self, dt):
         if self._state == "playing" and self._game:
             self._game.simulate(dt, self.keysHandler)
     
+    def on_key_press(self, symbol, modifier):
+        if symbol == pyglet.window.key.F1:
+            self._game.ui.toggleDevTool()
+        
     def on_draw(self):
         self.clear()
-        self.fpsText.text = str( round(pyglet.clock.get_fps(), 2) )
         
         # ----------------------------
         

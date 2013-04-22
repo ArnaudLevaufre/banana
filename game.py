@@ -42,9 +42,11 @@ class Game:
                     self.bullets.remove(bullet)
              
             for ent in self.level.enemies:
-                norm = math.sqrt((ent.x - self.player.x)**2 + (ent.y - self.player.y)**2)/5
-                ent.move((self.player.x - ent.x)/norm,(self.player.y-ent.y)/norm, self.map ,dt)
-                
+                try:
+                    norm = math.sqrt((ent.x - self.player.x)**2 + (ent.y - self.player.y)**2)/5
+                    ent.move((self.player.x - ent.x)/norm,(self.player.y-ent.y)/norm, self.map ,dt)
+                except ZeroDivisionError:
+                    pass
                 
             # on repositionne la carte.
             self.camera.setPos(self.player.x, self.player.y)

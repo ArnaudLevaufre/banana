@@ -8,12 +8,5 @@
 	</init>
 	
 	<enemies>
-		<enemy x="7" y="5" type="" />
-<<<<<<< HEAD
-		<enemy x="6" y="7" type="" />
-		<enemy x="8" y="5" type="" />		
-=======
-		
->>>>>>> 05750c4ba3638355b6d1ee1abc3d989f45fb2a0c
 	</enemies>
 </level>
