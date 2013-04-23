@@ -3,7 +3,7 @@ import math, time
 import pyglet
 import gameEngine
 import game, map
-
+import IA
 # ---------------------------------------------------
 
 class Entity(object):
@@ -33,14 +33,14 @@ class Enemy(Entity):
     """
     Ennemie pour tester l'IA, il essaie juste de toucher le joueur
     """
-    def __init__(self, x, y):
+    def __init__(self, x, y, gameMap):
         # - Objets -
         Entity.__init__(self, x, y)
-        
+
         # - Constantes -
         self.width = 48
         self.height = 48
-        self.speed = 30
+        self.speed = 300
         self.sprite = pyglet.sprite.Sprite(pyglet.image.load("sprites/blarg.png").get_texture())
         
         # - Mouvements -
@@ -49,35 +49,25 @@ class Enemy(Entity):
         self.x = int(x)
         self.y = int(y)
         
+        # - IA -
+        self.IA = IA.IA(self.x, self.y, gameMap)
+        self.caseX = self.x / 64
+        self.caseY = self.y / 64
+        
+        print self.caseX, self.caseY
     def render(self):
         self.sprite.x = self.x - self.width/2
         self.sprite.y = self.y - self.height/2
         self.sprite.draw()
         
-    def move(self, x,y, gameMap ,dt, recurs = False):   
+    def move(self, x,y, gameMap ,dt, target):
         if not gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
             # Si il ne collisione pas, il se déplace normalement
             self.x += int(x * dt * self.speed)
             self.y += int(y * dt * self.speed)
-            self.blocked = False
-        if not recurs:
-            if gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2, self.width, self.height):
-                # Si c'est en x que l'on collide, on se déplace en y dans la direction vers le joueur
-                if(y >= 0 or self.blocked == "top" and not self.blocked == "bot"):
-                    self.move(0,10, gameMap ,dt, True)
-                    self.blocked = "top"
-                elif(y < 0 or self.blocked == "bot" and not self.blocked == "top"):
-                    self.move(0,-10, gameMap ,dt, True)
-                    self.blocked= "bot"
-            elif gameMap.collide( self.x - self.width/2 , self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
-                # Si c'est en y que l'on collide, on se déplace en x dans la direction vers le joueur
-                if(x >= 0 or self.blocked == "right" and not self.blocked == "left"):  
-                    self.move(10,0, gameMap ,dt, True)
-                    self.blocked ="right"
-                elif(x < 0 or self.blocked == "left" and not self.blocked == "right"):
-                    self.move(-10,0, gameMap ,dt, True)
-                    self.blocked = "left"
-                
+            self.caseX = (self.x+32) / 64
+            self.caseY = (self.y+32) / 64
+
 # ---------------------------------------------------     
 
 class Player(Entity):

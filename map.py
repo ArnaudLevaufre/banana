@@ -12,7 +12,12 @@ class Map(object):
         self.map = []
         self.textures = []
         self.sprites = []
-
+        
+        # -IA -
+        self.sizeX = 0
+        self.sizeY = 0
+        self.collidable = []
+        
         self.loadTextures()
         
     def loadTextures(self):
@@ -34,8 +39,13 @@ class Map(object):
                 if child.tag == "tile":
                     # On ajoute la case dans le tableau représentant la carte
                     self.map.append(Tile( **child.attrib ))
+                    if(child.attrib['collision'] == "True"):
+                        self.collidable.append((int( child.attrib["x"]),int(child.attrib["y"])))
+                                        
                     # On ajoute la texture de la case dans le batch
                     self.sprites.append(pyglet.sprite.Sprite(self.textures[int(child.attrib["type"])], x=int(child.attrib["x"])*Tile.SIZE, y=int(child.attrib["y"])*Tile.SIZE , batch=self.batch ))
+                    self.sizeX = int(child.attrib["x"])
+                    self.sizeY = int(child.attrib["y"])
         else:
             print "couldn't load the map ["+fileName+"]. No such file."
                             

@@ -42,9 +42,11 @@ class Game:
                     self.bullets.remove(bullet)
              
             for ent in self.level.enemies:
-                norm = math.sqrt((ent.x - self.player.x)**2 + (ent.y - self.player.y)**2)/5
-                ent.move((self.player.x - ent.x)/norm,(self.player.y-ent.y)/norm, self.map ,dt)
-                
+                try:
+                    ent.IA._recompute_path(self.player.x, self.player.y, ent.caseX, ent.caseY)
+                    ent.move((ent.IA.path[-2][0] - ent.caseX),(ent.IA.path[-2][1]-ent.caseY) , self.map ,dt, ent.IA.path[-2])
+                except:
+                    pass
                 
             # on repositionne la carte.
             self.camera.setPos(self.player.x, self.player.y)
