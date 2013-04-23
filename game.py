@@ -16,8 +16,10 @@ class Game:
         self.player = self.level.player
         self.bullets = []
         self.cinematiqueIsPlaying = True
+        self.tick = 0
         
     def simulate(self, dt, keysHandler):
+        self.tick +=1
         if self.cinematiqueIsPlaying == False:
             if keysHandler[key.Z]:
                 self.player.move(0,10, self.map,dt)
@@ -40,10 +42,11 @@ class Game:
             for bullet in self.bullets:
                 if bullet.simulate(self.map, dt) == False:
                     self.bullets.remove(bullet)
-             
+            
             for ent in self.level.enemies:
                 try:
-                    ent.IA._recompute_path(self.player.x, self.player.y, ent.caseX, ent.caseY)
+                    if self.tick % 5 == 0:
+                        ent.IA._recompute_path(self.player.x, self.player.y, ent.caseX, ent.caseY)
                     ent.move((ent.IA.path[-2][0] - ent.caseX),(ent.IA.path[-2][1]-ent.caseY) , self.map ,dt, ent.IA.path[-2])
                 except:
                     pass
