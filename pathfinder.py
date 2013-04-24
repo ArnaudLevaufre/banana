@@ -143,31 +143,6 @@ class PathFinder(object):
             return self.__str__()
 
 
-if __name__ == "__main__":
-    from gridmap import GridMap          
-            
-    start = 0, 0
-    goal = 1, 7
-    
-    tm = GridMap(8, 8)
-    for b in [  (1, 1), (0, 2), (1, 2), (0, 3), (1, 3), (2, 3),
-                (2, 5), (2, 5), (2, 5), (2, 7)]:
-        tm.set_blocked(b)
-    
-    tm.printme()
-    
-    pf = PathFinder(tm.successors, tm.move_cost, tm.move_cost)
-    
-    import time
-    t = time.clock()
-    path = list(pf.compute_path(start, goal))
-    print "Elapsed: %s" % (time.clock() - t)
-    
-    print path
-    
-    #~ import cProfile
-    #~ cProfile.run("list(pf.compute_path(start, goal))")
-    
     
     
 

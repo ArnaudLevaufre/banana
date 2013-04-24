@@ -17,10 +17,7 @@ class Entity(object):
         self.yVel = yVel
 
     def simulate(self, dt=1):
-        if self.xVel != 0:
-            self.x += self.xVel * dt
-        if self.yVel != 0:
-            self.y += self.yVel * dt
+        pass
             
     def move(self, x,y, gameMap ,dt):
         if not gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
@@ -54,7 +51,9 @@ class Enemy(Entity):
         self.caseX = self.x / 64
         self.caseY = self.y / 64
         
-        print self.caseX, self.caseY
+        # - Caracs -
+        self.hp = 100
+
     def render(self):
         self.sprite.x = self.x - self.width/2
         self.sprite.y = self.y - self.height/2
@@ -67,7 +66,10 @@ class Enemy(Entity):
             self.y += int(y * dt * self.speed)
             self.caseX = (self.x+32) / 64
             self.caseY = (self.y+32) / 64
-
+            
+    def shoot(self):
+        self.hp -= 10
+        print self.hp
 # ---------------------------------------------------     
 
 class Player(Entity):
@@ -97,7 +99,7 @@ class Player(Entity):
         self.speed = 30
         self.shieldCapacity = 50
         self.shield = 50
-        self.fireRate = 20.0
+        self.fireRate = 1.0
         self.resistance = 10
         self.attack = 10
         
@@ -166,10 +168,38 @@ class Bullet(Entity):
         self.initY = y
         self.owner = owner     
         
-    def simulate(self,gameMap, dt=1):
+    def simulate(self,gameMap,ennemies, dt=0.1):
         norm = math.sqrt((self.initX - self.x)**2 + (self.initY - self.y)**2)
         if not gameMap.collide( self.x - self.width/2 + self.xVel * dt * self.speed, self.y - self.height/2 + self.yVel * dt * self.speed, self.width, self.height) and norm < self.range:
             self.x += int(self.xVel * dt * self.speed)
             self.y += int(self.yVel * dt * self.speed)
         else:
             return False
+        for en in ennemies:
+            if self.collide(en):
+                en.shoot()
+                return False
+    def collide(self, ent):
+        """
+                                == COLlIDE ==
+
+        Voir gameMap.collide() pour les explications
+        
+        :param ent: ennemi avec lequel check les collisions
+        
+        :type ent: Ennemy
+        """
+        # One does not simply understand what's written there
+        if self.x <= ent.x <= self.x + self.width or self.x <= ent.x+ent.width <= self.x + self.width:
+            if self.y <= ent.y <= self.y + self.height or self.y <= ent.y+ent.height <= self.y + self.height:
+                return True
+            elif ent.y <= self.y <= ent.y+ent.height or ent.y <= self.y + self.height <= ent.y+ent.height:
+                return True
+            
+        elif ent.x <= self.x <= ent.x+ent.width or ent.x <= self.x + self.width <= ent.x+ent.width:
+            if (self.y <= ent.y <= self.y + self.height) or (self.y <= ent.y+ent.height <= self.y + self.height):
+                return True
+            elif ent.y <= self.y <= ent.y+ent.height or ent.y <= self.y + self.height <= ent.y+ent.height:
+                return True
+                    
+        return False

@@ -40,12 +40,14 @@ class Game:
             self.player.shoot(self.bullets)
             
             for bullet in self.bullets:
-                if bullet.simulate(self.map, dt) == False:
+                if bullet.simulate(self.map,self.level.enemies, dt) == False:
                     self.bullets.remove(bullet)
             
-            for ent in self.level.enemies:
+            for ent in self.level.enemies: # Simulation des ennemis
                 try:
-                    if self.tick % 5 == 0:
+                    if ent.hp < 0:
+                        self.level.enemies.remove(ent)
+                    if self.tick % 2 == 0:
                         ent.IA._recompute_path(self.player.x, self.player.y, ent.caseX, ent.caseY)
                     ent.move((ent.IA.path[-2][0] - ent.caseX),(ent.IA.path[-2][1]-ent.caseY) , self.map ,dt, ent.IA.path[-2])
                 except:
