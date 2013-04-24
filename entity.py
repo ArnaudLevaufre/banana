@@ -2,8 +2,10 @@
 import math, time
 import pyglet
 import gameEngine
-import game, map
+import random
 import IA
+import item
+from random import Random
 # ---------------------------------------------------
 
 class Entity(object):
@@ -69,7 +71,15 @@ class Enemy(Entity):
             
     def shoot(self):
         self.hp -= 10
-        print self.hp
+        
+    def loot(self):
+        print "test"
+# #             objet = random.randint(1,2)
+        itemToReturn = item.Shield(self.x,self.y)    
+        print "Blarf"
+        return itemToReturn
+        return None
+
 # ---------------------------------------------------     
 
 class Player(Entity):
@@ -99,7 +109,7 @@ class Player(Entity):
         self.speed = 30
         self.shieldCapacity = 50
         self.shield = 50
-        self.fireRate = 1.0
+        self.fireRate = 50.0
         self.resistance = 10
         self.attack = 10
         
@@ -179,6 +189,7 @@ class Bullet(Entity):
             if self.collide(en):
                 en.shoot()
                 return False
+            
     def collide(self, ent):
         """
                                 == COLlIDE ==

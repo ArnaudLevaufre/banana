@@ -1,7 +1,6 @@
 #-*- encoding: utf-8 -*-
-import pyglet, pyglet.window.key as key, os, xml.etree.ElementTree as xml
+import pyglet, pyglet.window.key as key
 import gameEngine, entity, ui, map, level
-import math
 
 # ---------------------------------------------------
 
@@ -45,8 +44,12 @@ class Game:
             
             for ent in self.level.enemies: # Simulation des ennemis
                 try:
-                    if ent.hp < 0:
+                    if ent.hp < 0: # Si l'ennemi est mort
                         self.level.enemies.remove(ent)
+                        loot = ent.loot()
+                        if loot != None:
+                            self.level.items.append(loot)
+ 
                     if self.tick % 2 == 0:
                         ent.IA._recompute_path(self.player.x, self.player.y, ent.caseX, ent.caseY)
                     ent.move((ent.IA.path[-2][0] - ent.caseX),(ent.IA.path[-2][1]-ent.caseY) , self.map ,dt, ent.IA.path[-2])
@@ -88,6 +91,9 @@ class Game:
                     
             for ent in self.level.enemies:
                 ent.render()
+                
+            for item in self.level.items:
+                item.render()
         else:
             self.cinematiqueIsPlaying = self.level.cinematique.run()
 # ---------------------------------------------------

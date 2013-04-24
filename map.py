@@ -34,7 +34,8 @@ class Map(object):
         if os.path.isfile("maps/"+fileName):
             xmlTree = xml.parse("maps/"+fileName)
             root = xmlTree.getroot()
-            
+            self.sizeX = int(root.attrib['sizeX'])
+            self.sizeY = int(root.attrib['sizeY'])
             for child in root:
                 if child.tag == "tile":
                     # On ajoute la case dans le tableau représentant la carte
@@ -44,8 +45,6 @@ class Map(object):
                                         
                     # On ajoute la texture de la case dans le batch
                     self.sprites.append(pyglet.sprite.Sprite(self.textures[int(child.attrib["type"])], x=int(child.attrib["x"])*Tile.SIZE, y=int(child.attrib["y"])*Tile.SIZE , batch=self.batch ))
-                    self.sizeX = int(child.attrib["x"])
-                    self.sizeY = int(child.attrib["y"])
         else:
             print "couldn't load the map ["+fileName+"]. No such file."
                             
