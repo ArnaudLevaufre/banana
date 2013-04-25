@@ -46,6 +46,11 @@ class Vector(object):
 		for arg in args:
 			self.coords.append(arg)
 	
+	def set(self, *args):
+		if len(args) == len(self.coords):
+			for i in xrange(len(args)):
+				self.coords[i] = args[i]
+	
 	def getNorm(self):
 		"""
 		Calculate the norm of the vector

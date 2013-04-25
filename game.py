@@ -13,6 +13,7 @@ class Game:
         self.level.load("001")
         self.map = self.level.map
         self.player = self.level.player
+        self.playerdx, self.player.dy = 0,0
         self.bullets = []
         self.cinematiqueIsPlaying = True
         self.tick = 0
@@ -20,6 +21,8 @@ class Game:
     def simulate(self, dt, keysHandler):
         self.tick +=1
         if self.cinematiqueIsPlaying == False:
+            self.playerdx, self.playerdy = self.player.x, self.player.y 
+            
             if keysHandler[key.Z]:
                 self.player.move(0,10, self.map,dt)
             elif keysHandler[key.S]:
@@ -35,14 +38,18 @@ class Game:
             else:
                 self.ui.toggleMenu(False)
             
+            self.playerdx = self.player.x - self.playerdx
+            self.playerdy = self.player.y - self.playerdy
+            
             # tir du joueur
             self.player.shoot(self.bullets)
             
             for bullet in self.bullets:
-                if bullet.simulate(self.map,self.level.enemies, dt) == False:
+                if bullet.simulate(self.map,self.player, self.level.enemies, dt) == False:
                     self.bullets.remove(bullet)
             
             for ent in self.level.enemies: # Simulation des ennemis
+                ent.shoot(self.player.x + self.playerdx*10, self.player.y + self.playerdy * 10, self.bullets)
                 try:
                     if ent.hp < 0: # Si l'ennemi est mort
                         self.level.enemies.remove(ent)

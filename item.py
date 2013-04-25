@@ -12,9 +12,8 @@ class Item(object):
                         == COLlIDE ==
 
         Voir gameMap.collide() pour les explications
-        
+
         :param ent: player avec lequel check les collisions
-        
         :type ent: Player
         """
         # One does not simply understand what's written there

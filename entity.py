@@ -5,6 +5,7 @@ import gameEngine
 import random
 import IA
 import item
+import vector
 from random import Random
 # ---------------------------------------------------
 
@@ -41,6 +42,7 @@ class Enemy(Entity):
         self.height = 48
         self.speed = 300
         self.sprite = pyglet.sprite.Sprite(pyglet.image.load("sprites/blarg.png").get_texture())
+        self.type = "enemy"
         
         # - Mouvements -
         self.blocked = False
@@ -55,6 +57,9 @@ class Enemy(Entity):
         
         # - Caracs -
         self.hp = 100
+        self.fireRate = 10.0
+        self.bulletSpeed = 500.0
+        self.attack = 1
 
     def render(self):
         self.sprite.x = self.x - self.width/2
@@ -69,9 +74,16 @@ class Enemy(Entity):
             self.caseX = (self.x+32) / 64
             self.caseY = (self.y+32) / 64
             
-    def shoot(self):
+    def hit(self):
         self.hp -= 10
         
+    def shoot(self, x, y, bulletList):
+        print x,y,bulletList
+        if random.random() < self.fireRate/200:
+            aimDirection = vector.Vector2(x - self.x, y - self.y).getUnitary()
+            bulletList.append(Bullet(self.x, self.y, aimDirection.x * self.bulletSpeed, aimDirection.y * self.bulletSpeed, self ))
+            
+            
     def loot(self):
         objet = random.randint(1,2)
         if objet == 1: # Shield
@@ -93,21 +105,21 @@ class Player(Entity):
         # - Constantes -
         self.width = 48
         self.height = 48
-        self.aimVector = [0,0]
+        self.aimVector = vector.Vector2(0,0)
         self.mouthOffset = 7
         self.sprite = pyglet.sprite.Sprite(pyglet.image.load("sprites/blarg.png").get_texture())
         self.sprite.x = gameEngine.GameEngine.W_WIDTH/2 - self.width/2
         self.sprite.y = gameEngine.GameEngine.W_HEIGHT/2 - self.height/2
-        
+        self.type = "player"
         # - Tir -
         self.isFiring = False
         self.lastShoot = time.time()
     
         # - Caractéristiques -
-        self.maxHp = 1000.0
+        self.maxHp = 100.0
         self.hp = 100.0
         self.speed = 30.0
-        self.shieldCapacity = 500.0
+        self.shieldCapacity = 50.0
         self.shield = 50.0
         self.fireRate = 50.0
         self.resistance = 10
@@ -124,41 +136,27 @@ class Player(Entity):
         centerX = gameEngine.GameEngine.W_WIDTH/2
         centerY = gameEngine.GameEngine.W_HEIGHT/2 + self.mouthOffset
         
-        norm = math.sqrt( (x - centerX)**2 + (y - centerY)**2 )
-        
-        try:
-            self.aimVector[0] = (x - centerX) / norm
-            self.aimVector[1] = (y - centerY) / norm
-        except ZeroDivisionError:
-            print "Do or do not, there is no try!"
-            self.aimVector[0] = 0
-            self.aimVector[1] = 1
+        self.aimVector.set(x-centerX, y-centerY)
+        self.aimVector = self.aimVector.getUnitary()
+
     
     def shoot(self, bullets):
         if self.isFiring and time.time() - self.lastShoot > 1/self.fireRate:
             self.lastShoot = time.time()
-            bullets.append(Bullet( self.x, self.y + self.mouthOffset, self.aimVector[0]*1000, self.aimVector[1]*1000, "player" ))
-                    
+            bullets.append(Bullet( self.x, self.y + self.mouthOffset, self.aimVector.x*1000, self.aimVector.y*1000, self ))
+    
+    def hit(self, attack):
+        # pour le moment on se contente de dégager de la vie
+        if self.hp - attack > 0: 
+            self.hp -= attack
+        else:
+            self.hp =  0
+        
     def render(self):
         self.sprite.x = self.x - self.width/2
         self.sprite.y = self.y - self.height/2
         self.sprite.draw()
 
-# ---------------------------------------------------
-
-class Npc(object):
-    def __init__(self,x,y):
-        super(Npc, self).__init__(x,y)
-        
-        
-    def move(self, map):
-        pass
-    
-    def render(self):
-        pass
-    
-    def kill(self):
-        pass
     
 # ---------------------------------------------------   
 
@@ -173,12 +171,12 @@ class Bullet(Entity):
         self.width = 10
         self.height = 10
         self.speed = 1
-        self.range = 200
+        self.range = 1000
         self.initX = x
         self.initY = y
-        self.owner = owner     
+        self.owner = owner
         
-    def simulate(self,gameMap,ennemies, dt=0.1):
+    def simulate(self,gameMap,player, ennemies, dt=0.1):
         norm = math.sqrt((self.initX - self.x)**2 + (self.initY - self.y)**2)
         if not gameMap.collide( self.x - self.width/2 + self.xVel * dt * self.speed, self.y - self.height/2 + self.yVel * dt * self.speed, self.width, self.height) and norm < self.range:
             self.x += int(self.xVel * dt * self.speed)
@@ -187,8 +185,10 @@ class Bullet(Entity):
             return False
         for en in ennemies:
             if self.collide(en):
-                en.shoot()
+                en.hit()
                 return False
+        if self.collide(player):
+            player.hit(self.owner.attack)
             
     def collide(self, ent):
         """
@@ -197,20 +197,20 @@ class Bullet(Entity):
         Voir gameMap.collide() pour les explications
         
         :param ent: ennemi avec lequel check les collisions
-        
         :type ent: Ennemy
         """
-        # One does not simply understand what's written there
-        if self.x <= ent.x <= self.x + self.width or self.x <= ent.x+ent.width <= self.x + self.width:
-            if self.y <= ent.y <= self.y + self.height or self.y <= ent.y+ent.height <= self.y + self.height:
-                return True
-            elif ent.y <= self.y <= ent.y+ent.height or ent.y <= self.y + self.height <= ent.y+ent.height:
-                return True
-            
-        elif ent.x <= self.x <= ent.x+ent.width or ent.x <= self.x + self.width <= ent.x+ent.width:
-            if (self.y <= ent.y <= self.y + self.height) or (self.y <= ent.y+ent.height <= self.y + self.height):
-                return True
-            elif ent.y <= self.y <= ent.y+ent.height or ent.y <= self.y + self.height <= ent.y+ent.height:
-                return True
+        if ent.type != self.owner.type:
+            # One does not simply understand what's written there
+            if self.x <= ent.x <= self.x + self.width or self.x <= ent.x+ent.width <= self.x + self.width:
+                if self.y <= ent.y <= self.y + self.height or self.y <= ent.y+ent.height <= self.y + self.height:
+                    return True
+                elif ent.y <= self.y <= ent.y+ent.height or ent.y <= self.y + self.height <= ent.y+ent.height:
+                    return True
+                
+            elif ent.x <= self.x <= ent.x+ent.width or ent.x <= self.x + self.width <= ent.x+ent.width:
+                if (self.y <= ent.y <= self.y + self.height) or (self.y <= ent.y+ent.height <= self.y + self.height):
+                    return True
+                elif ent.y <= self.y <= ent.y+ent.height or ent.y <= self.y + self.height <= ent.y+ent.height:
+                    return True
                     
         return False
