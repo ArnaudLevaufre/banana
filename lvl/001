@@ -9,9 +9,8 @@
 	
 	<enemies>
 		<enemy x="7" y="5" type="" />
-		<enemy x="7" y="6" type="" />
-		<enemy x="7" y="7" type="" />
-		<enemy x="7" y="4" type="" />
-		<enemy x="7" y="3" type="" />
+				<enemy x="7" y="6" type="" />
+						<enemy x="7" y="7" type="" />
+								<enemy x="7" y="8" type="" />
 	</enemies>
 </level>

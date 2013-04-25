@@ -42,7 +42,7 @@ class Map(object):
                     self.map.append(Tile( **child.attrib ))
                     if(child.attrib['collision'] == "True"):
                         self.collidable.append((int( child.attrib["x"]),int(child.attrib["y"])))
-                                        
+#                     pyglet.text.Label( str((child.attrib["x"],child.attrib["y"])),x=int(child.attrib["x"])*Tile.SIZE +32, y=int(child.attrib["y"])*Tile.SIZE +32 , batch=self.batch, anchor_x="center", anchor_y="center", bold=True, font_size=8)                     
                     # On ajoute la texture de la case dans le batch
                     self.sprites.append(pyglet.sprite.Sprite(self.textures[int(child.attrib["type"])], x=int(child.attrib["x"])*Tile.SIZE, y=int(child.attrib["y"])*Tile.SIZE , batch=self.batch ))
         else:

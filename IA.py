@@ -17,3 +17,4 @@ class IA(object):
         self.start_pos = xEnt, yEnt
 
         self.path = list(self.pf.compute_path(self.start_pos, self.goal_pos))
+        print self.path

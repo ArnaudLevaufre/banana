@@ -49,6 +49,8 @@ class Enemy(Entity):
         self.sprite = pyglet.sprite.Sprite(pyglet.image.load("sprites/blarg.png").get_texture())
         self.x = int(x)
         self.y = int(y)
+        self.canMove = True
+        self.vector = []
         
         # - IA -
         self.IA = IA.IA(self.x, self.y, gameMap)
@@ -67,13 +69,21 @@ class Enemy(Entity):
         self.sprite.draw()
         
     def move(self, x,y, gameMap ,dt, target):
-        if not gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
+        if self.canMove:
+                self.vector = [x,y]
+                self.canMove = False
+        if not gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height) and sum(self.vector)**2 == 1:
             # Si il ne collisione pas, il se déplace normalement
-            self.x += int(x * dt * self.speed)
-            self.y += int(y * dt * self.speed)
-            self.caseX = (self.x+32) / 64
-            self.caseY = (self.y+32) / 64
-            
+            self.x += int(self.vector[0] * dt * self.speed)
+            self.y += int(self.vector[1] * dt * self.speed)
+            if ((self.x + self.width/2 + 1) / 64) == ((self.x) / 64) == ((self.x -self.width/2 - 1)/ 64) and ((self.y +self.height/2 + 1) / 64) == ((self.y) / 64) == ((self.y -self.height/2 - 1) / 64): # Pour verifier si on est completement dans une case
+                self.canMove = True # Si on a changé de case, on change de vecteur deplacement
+                self.vector = []
+                self.caseX = int((self.x) / 64)
+                self.caseY = int((self.y) / 64)
+        else:
+            self.canMove = True
+
     def hit(self):
         self.hp -= 10
         

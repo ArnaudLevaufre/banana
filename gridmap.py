@@ -36,7 +36,7 @@ class GridMap(object):
 
         diagonal = abs(c1[0] - c2[0]) == 1 and abs(c1[1] - c2[1]) == 1
         if diagonal:
-            return 50
+            return 50000000
         return sqrt((c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2) 
     
     def successors(self, c):
