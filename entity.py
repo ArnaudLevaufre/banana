@@ -104,7 +104,7 @@ class Player(Entity):
         self.lastShoot = time.time()
     
         # - Caractéristiques -
-        self.maxHp = 100
+        self.maxHp = 1000
         self.hp = 100
         self.speed = 30
         self.shieldCapacity = 50

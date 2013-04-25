@@ -56,6 +56,11 @@ class Game:
                 except:
                     pass
                 
+            for item in self.level.items:
+                if item.collide(self.player):
+                    self.level.items.remove(item)
+                    self.player.shieldCapacity += item.value
+                    self.player.shield += item.value
             # on repositionne la carte.
             self.camera.setPos(self.player.x, self.player.y)
         

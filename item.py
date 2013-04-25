@@ -5,9 +5,35 @@ class Item(object):
     def __init__(self, x, y):
         self.x = x
         self.y = y 
-
+        self.SIZE = 24
     def render(self):
         pass
+    
+    def collide(self, ent):
+        """
+                        == COLlIDE ==
+
+        Voir gameMap.collide() pour les explications
+        
+        :param ent: player avec lequel check les collisions
+        
+        :type ent: Player
+        """
+        # One does not simply understand what's written there
+        if self.x <= ent.x <= self.x + self.SIZE or self.x <= ent.x+ent.width <= self.x + self.SIZE:
+            if self.y <= ent.y <= self.y + self.SIZE or self.y <= ent.y+ent.height <= self.y + self.SIZE:
+                return True
+            elif ent.y <= self.y <= ent.y+ent.height or ent.y <= self.y + self.SIZE <= ent.y+ent.height:
+                return True
+            
+        elif ent.x <= self.x <= ent.x+ent.width or ent.x <= self.x + self.SIZE <= ent.x+ent.width:
+            if (self.y <= ent.y <= self.y + self.SIZE) or (self.y <= ent.y+ent.height <= self.y + self.SIZE):
+                return True
+            elif ent.y <= self.y <= ent.y+ent.height or ent.y <= self.y + self.SIZE <= ent.y+ent.height:
+                return True
+                    
+        return False
+    
     
 class Shield(Item):
     def __init__(self, x, y):
@@ -17,17 +43,12 @@ class Shield(Item):
         # - Constantes -
         self.type = "shield"
         self.value = 50
-        self.SIZE = 16
-        
-        # - Divers -
-        self.tick = 0
-        
+
     def render(self):
-        self.tick +=1
         
         pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
-        pyglet.gl.glVertex2d(self.x - self.SIZE/2 ,self.y - self.SIZE/2 + 5 * math.cos(5 * time.time()))
-        pyglet.gl.glVertex2d(self.x - self.SIZE/2 + self.SIZE ,self.y - self.SIZE/2+ 5 * math.cos(5 * time.time()))
-        pyglet.gl.glVertex2d(self.x - self.SIZE/2 + self.SIZE, self.y - self.SIZE/2 + self.SIZE+ 5 * math.cos(5 * time.time()))
-        pyglet.gl.glVertex2d(self.x - self.SIZE/2 ,self.y - self.SIZE/2 + self.SIZE+ 5 * math.cos(5 * time.time()))
+        pyglet.gl.glVertex2d(self.x - self.SIZE/2 ,self.y - self.SIZE/2 + 5 *math.cos(5*time.time()))
+        pyglet.gl.glVertex2d(self.x - self.SIZE/2 + self.SIZE ,self.y - self.SIZE/2 + 5 * math.cos(5*time.time()))
+        pyglet.gl.glVertex2d(self.x - self.SIZE/2 + self.SIZE, self.y - self.SIZE/2 + self.SIZE+5 *  math.cos(5*time.time()))
+        pyglet.gl.glVertex2d(self.x - self.SIZE/2 ,self.y - self.SIZE/2 + self.SIZE + 5 * math.cos(5*time.time()))
         pyglet.gl.glEnd()
