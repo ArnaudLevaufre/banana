@@ -57,9 +57,9 @@ class Enemy(Entity):
         
         # - Caracs -
         self.hp = 100
-        self.fireRate = 10.0
+        self.fireRate = 1.0
         self.bulletSpeed = 500.0
-        self.attack = 1
+        self.attack = 10
 
     def render(self):
         self.sprite.x = self.x - self.width/2
@@ -78,7 +78,6 @@ class Enemy(Entity):
         self.hp -= 10
         
     def shoot(self, x, y, bulletList):
-        print x,y,bulletList
         if random.random() < self.fireRate/200:
             aimDirection = vector.Vector2(x - self.x, y - self.y).getUnitary()
             bulletList.append(Bullet(self.x, self.y, aimDirection.x * self.bulletSpeed, aimDirection.y * self.bulletSpeed, self ))
@@ -119,10 +118,10 @@ class Player(Entity):
         self.maxHp = 100.0
         self.hp = 100.0
         self.speed = 30.0
-        self.shieldCapacity = 50.0
-        self.shield = 50.0
+        self.shieldCapacity = 5000.0
+        self.shield = 5000.0
         self.fireRate = 50.0
-        self.resistance = 10
+        self.resistance = 100
         self.attack = 10
         
         
@@ -146,11 +145,16 @@ class Player(Entity):
             bullets.append(Bullet( self.x, self.y + self.mouthOffset, self.aimVector.x*1000, self.aimVector.y*1000, self ))
     
     def hit(self, attack):
-        # pour le moment on se contente de dégager de la vie
-        if self.hp - attack > 0: 
-            self.hp -= attack
+        if self.shield - attack > 0:
+            self.shield -= attack
+        elif self.hp - (attack - self.shield) / (1 + math.log( 1 + self.resistance/25 )) > 0:
+            self.shield = 0 
+            self.hp -= (attack - self.shield) / (1 + math.log( 1 + self.resistance/25 ))
+            print (attack - self.shield) / (1 + math.log( 1 + self.resistance/25 ))
         else:
-            self.hp =  0
+            self.hp = 0
+            self.shield = 0
+            
         
     def render(self):
         self.sprite.x = self.x - self.width/2
