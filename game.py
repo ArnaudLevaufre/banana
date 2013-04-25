@@ -59,8 +59,14 @@ class Game:
             for item in self.level.items:
                 if item.collide(self.player):
                     self.level.items.remove(item)
-                    self.player.shieldCapacity += item.value
-                    self.player.shield += item.value
+                    if item.type == "shield":
+                        self.player.shieldCapacity += item.value
+                        self.player.shield += item.value
+                    elif item.type == "life":
+                        if self.player.hp + item.value > self.player.maxHp:
+                            self.player.hp = self.player.maxHp
+                        else:
+                            self.player.hp += item.value
             # on repositionne la carte.
             self.camera.setPos(self.player.x, self.player.y)
         

@@ -73,12 +73,12 @@ class Enemy(Entity):
         self.hp -= 10
         
     def loot(self):
-        print "test"
-# #             objet = random.randint(1,2)
-        itemToReturn = item.Shield(self.x,self.y)    
-        print "Blarf"
+        objet = random.randint(1,2)
+        if objet == 1: # Shield
+            itemToReturn = item.Shield(self.x,self.y, 50)    
+        else:
+            itemToReturn = item.Life(self.x, self.y, 50)
         return itemToReturn
-        return None
 
 # ---------------------------------------------------     
 
@@ -104,11 +104,11 @@ class Player(Entity):
         self.lastShoot = time.time()
     
         # - Caractéristiques -
-        self.maxHp = 100
-        self.hp = 100
-        self.speed = 30
-        self.shieldCapacity = 50
-        self.shield = 50
+        self.maxHp = 1000.0
+        self.hp = 100.0
+        self.speed = 30.0
+        self.shieldCapacity = 500.0
+        self.shield = 50.0
         self.fireRate = 50.0
         self.resistance = 10
         self.attack = 10
