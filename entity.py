@@ -203,7 +203,8 @@ class Bullet(Entity):
                 return False
         if self.collide(player):
             player.hit(self.owner.attack)
-            
+            return False
+        
     def collide(self, ent):
         """
                                 == COLlIDE ==

@@ -1,5 +1,6 @@
 from collections import defaultdict
 from math import sqrt
+import math
 
 
 class GridMap(object):
@@ -33,10 +34,6 @@ class GridMap(object):
             
             The cost is the Euclidean distance.
         """
-
-        diagonal = abs(c1[0] - c2[0]) == 1 and abs(c1[1] - c2[1]) == 1
-        if diagonal:
-            return 50000000
         return sqrt((c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2) 
     
     def successors(self, c):
@@ -47,7 +44,9 @@ class GridMap(object):
         for drow in (-1, 0, 1):
             for dcol in (-1, 0, 1):
                 if drow == 0 and dcol == 0:
-                    continue 
+                    continue
+                elif (drow**2 + dcol**2) == 2: 
+                    continue
                     
                 newrow = c[0] + drow
                 newcol = c[1] + dcol
@@ -58,12 +57,3 @@ class GridMap(object):
                     slist.append((newrow, newcol))
         
         return slist
-    
-    def printme(self):
-        """ Print the map to stdout in ASCII
-        """
-        for row in range(self.nrows):
-            for col in range(self.ncols):
-                print "%s" % ('O' if self.map[col][row] else '.'),
-            print ''
-
