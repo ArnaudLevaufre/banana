@@ -18,7 +18,7 @@ class Entity(object):
         self.y = int(y)
         self.xVel = xVel
         self.yVel = yVel
-
+        
     def simulate(self, dt=1):
         pass
             
