@@ -6,7 +6,6 @@ import random
 import IA
 import item
 import vector
-from random import Random
 # ---------------------------------------------------
 
 class Entity(object):
@@ -120,6 +119,7 @@ class Player(Entity):
         self.sprite.x = gameEngine.GameEngine.W_WIDTH/2 - self.width/2
         self.sprite.y = gameEngine.GameEngine.W_HEIGHT/2 - self.height/2
         self.type = "player"
+        
         # - Tir -
         self.isFiring = False
         self.lastShoot = time.time()
@@ -160,7 +160,7 @@ class Player(Entity):
         elif self.hp - (attack - self.shield) / (1 + math.log( 1 + self.resistance/25 )) > 0:
             self.shield = 0 
             self.hp -= (attack - self.shield) / (1 + math.log( 1 + self.resistance/25 ))
-            print (attack - self.shield) / (1 + math.log( 1 + self.resistance/25 ))
+#             print (attack - self.shield) / (1 + math.log( 1 + self.resistance/25 ))
         else:
             self.hp = 0
             self.shield = 0
