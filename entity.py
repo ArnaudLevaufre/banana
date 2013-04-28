@@ -6,6 +6,7 @@ import random
 import IA
 import item
 import vector
+
 # ---------------------------------------------------
 
 class Entity(object):
@@ -110,15 +111,18 @@ class Player(Entity):
         # - Objets -
         Entity.__init__(self, x, y)
        
+       
         # - Constantes -
         self.width = 48
         self.height = 48
         self.aimVector = vector.Vector2(0,0)
         self.mouthOffset = 7
-        self.sprite = pyglet.sprite.Sprite(pyglet.image.load("sprites/blarg.png").get_texture())
+        self.sprite = pyglet.sprite.Sprite(pyglet.image.load("sprites/blarg.png"))
         self.sprite.x = gameEngine.GameEngine.W_WIDTH/2 - self.width/2
         self.sprite.y = gameEngine.GameEngine.W_HEIGHT/2 - self.height/2
         self.type = "player"
+        self.frame = 0
+        self.lastFrameChange = time.time()
         
         # - Tir -
         self.isFiring = False
@@ -133,7 +137,39 @@ class Player(Entity):
         self.fireRate = 50.0
         self.resistance = 100
         self.attack = 10
+
+        # - Chargement textures et animations -
+        self.loadTextures()
+    
+    def loadTextures(self):
+        sprite = pyglet.image.load("sprites/blarg.png")
+        tileList = pyglet.image.ImageGrid(sprite, sprite.width / self.width, sprite.height / self.height)
         
+        self.animTL = [
+                       pyglet.sprite.Sprite(tileList[4]),
+                       pyglet.sprite.Sprite(tileList[5]),
+                       pyglet.sprite.Sprite(tileList[6]),
+                       pyglet.sprite.Sprite(tileList[7])
+                       ]
+        self.animTR = [
+                       pyglet.sprite.Sprite(tileList[0]),
+                       pyglet.sprite.Sprite(tileList[1]),
+                       pyglet.sprite.Sprite(tileList[2]),
+                       pyglet.sprite.Sprite(tileList[3])
+                       ] 
+        self.animBL = [
+                       pyglet.sprite.Sprite(tileList[12]),
+                       pyglet.sprite.Sprite(tileList[13]),
+                       pyglet.sprite.Sprite(tileList[14]),
+                       pyglet.sprite.Sprite(tileList[15])
+                       ] 
+        self.animBR = [
+                       pyglet.sprite.Sprite(tileList[8]),
+                       pyglet.sprite.Sprite(tileList[9]),
+                       pyglet.sprite.Sprite(tileList[10]),
+                       pyglet.sprite.Sprite(tileList[11])
+                       ] 
+                
         
     def aim(self, x, y):
         """
@@ -167,9 +203,39 @@ class Player(Entity):
             
         
     def render(self):
-        self.sprite.x = self.x - self.width/2
-        self.sprite.y = self.y - self.height/2
-        self.sprite.draw()
+        # - On récupere l'orientation du joueur -
+        if time.time() - self.lastFrameChange > 0.1:
+            self.lastFrameChange = time.time()
+            
+            if self.frame == 3:
+                self.frame = 0
+            else:
+                self.frame += 1
+            
+        
+        if self.aimVector.x < 0 and self.aimVector.y < 0:
+            # Bottom Left 
+            self.animBL[self.frame].x = self.x - self.width / 2
+            self.animBL[self.frame].y = self.y - self.height / 2
+            self.animBL[self.frame].draw()
+            
+        elif self.aimVector.x > 0 and self.aimVector.y < 0:
+            # Bottom Right
+            self.animBR[self.frame].x = self.x - self.width / 2
+            self.animBR[self.frame].y = self.y - self.height / 2
+            self.animBR[self.frame].draw()
+            
+        elif self.aimVector.x < 0 and self.aimVector.y > 0:
+            # Top left
+            self.animTL[self.frame].x = self.x - self.width / 2
+            self.animTL[self.frame].y = self.y - self.height / 2
+            self.animTL[self.frame].draw()
+            
+        elif self.aimVector.x > 0 and self.aimVector.y > 0:
+            # Top right
+            self.animTR[self.frame].x = self.x - self.width / 2
+            self.animTR[self.frame].y = self.y - self.height / 2
+            self.animTR[self.frame].draw()
 
     
 # ---------------------------------------------------   
