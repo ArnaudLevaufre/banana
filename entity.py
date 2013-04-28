@@ -203,7 +203,7 @@ class Player(Entity):
         
     def render(self):
         # - On récupere l'orientation du joueur -
-        if time.time() - self.lastFrameChange > 0.1:
+        if time.time() - self.lastFrameChange > 0.2:
             self.lastFrameChange = time.time()
             
             if self.frame == 3:
