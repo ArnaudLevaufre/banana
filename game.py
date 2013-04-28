@@ -85,10 +85,13 @@ class Game:
     def on_mouse_release(self, x, y, button, modifiers):
         if button == pyglet.window.mouse.LEFT:
             self.player.isFiring = False
-            
-    def on_mouse_drag(self,x, y, dx, dy, buttons, modifiers):
-        if(buttons == pyglet.window.mouse.LEFT):
+    
+    def on_mouse_drag(self,x, y, dx, dy, button, mod):
+        if button == pyglet.window.mouse.LEFT:
             self.player.aim(x,y)
+    
+    def on_mouse_motion(self,x, y, dx, dy):
+        self.player.aim(x,y)
             
     def render(self):
         if self.cinematiqueIsPlaying == False:

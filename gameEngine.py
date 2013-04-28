@@ -83,7 +83,6 @@ class GameEngine(pyglet.window.Window):
         if self._state == "playing":
             self._game.on_mouse_release(x, y, button, modifiers)
         
-        
     def on_mouse_drag(self,x, y, dx, dy, buttons, modifiers):
         # - Passage des evenements aux autres objets
         if self._state == "playing":
@@ -93,6 +92,9 @@ class GameEngine(pyglet.window.Window):
         # - Passage des evenements aux autres objets
         if self._state == "menu":
             self._menu.on_mouse_motion(x, y, dx, dy)
+            
+        if self._state == "playing":
+            self._game.on_mouse_motion(x, y, dx, dy)
         
     def start(self):
         pyglet.app.run()
