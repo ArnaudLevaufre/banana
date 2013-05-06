@@ -65,18 +65,24 @@ class Vector(object):
 		"""
 		Calculate the unitary vector.
 		"""
-
-		norm = self.getNorm()
-		unitaryCoord = [ coord/norm for coord in self.coords ]
-		
-		# return a Vector or Vector2 or Vector3.
-		if len(self.coords) == 2:
-			return Vector2(*unitaryCoord)
-		elif len(self.coords) == 3:
-			return Vector3(*unitaryCoord)
-		else:
-			return Vector(*unitaryCoord)
-	
+		try:
+			norm = self.getNorm()
+			unitaryCoord = [ coord/norm for coord in self.coords ]
+			
+			# return a Vector or Vector2 or Vector3.
+			if len(self.coords) == 2:
+				return Vector2(*unitaryCoord)
+			elif len(self.coords) == 3:
+				return Vector3(*unitaryCoord)
+			else:
+				return Vector(*unitaryCoord)
+		except:
+			if len(self.coords) == 2:
+				return Vector2(0,1)
+			elif len(self.coords) == 3:
+				return Vector3(0,0,1)
+			else:
+				return Vector(0,0,1)
 class Vector2(Vector):
 	def __init__(self, x,y):
 		super(Vector2, self).__init__(x,y)
