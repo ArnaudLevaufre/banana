@@ -6,7 +6,7 @@ import time
 
 class Cinematic(object):
     def __init__(self, filename = None):
-        """
+        """ 
         Créé une cinématique a partir du fichier XML filename
         
         :param filename: Chemin du fichier
@@ -23,7 +23,7 @@ class Cinematic(object):
         self.dt = 0
         self.time = 0
         self.endTime = 1000
-        
+
         # - Objets -
         self.mainDrawingBatch = pyglet.graphics.Batch() # Batch que l'on va draw
         

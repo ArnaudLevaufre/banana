@@ -26,7 +26,7 @@ class Entity(object):
         if not gameMap.collide( self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
             self.x += int(x * dt * self.speed)
             self.y += int(y * dt * self.speed)
-            
+        
 # ---------------------------------------------------
 
 class Enemy(Entity):
@@ -273,7 +273,7 @@ class Bullet(Entity):
         
     def collide(self, ent):
         """
-                                == COLlIDE ==
+                              == COLLIDE ==
 
         Voir gameMap.collide() pour les explications
         

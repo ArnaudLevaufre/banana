@@ -8,7 +8,7 @@ class UI(object):
         self.batch = pyglet.graphics.Batch()
         self.batchPanel = pyglet.graphics.Batch() 
         self.menuOpened = False
-        self.showDevTool = False
+        self.showDevTool = True
         
         # Proprietees de l'interface
         self.hpPos = {"x":5, "y":5}
@@ -28,7 +28,7 @@ class UI(object):
         
         self.panelTitle = pyglet.text.Label("= INFOS =", anchor_x="center", bold=True, batch=self.batchPanel)
         self.attackText = pyglet.text.Label("Attaque: ", batch=self.batchPanel)
-        self.resistanceText = pyglet.text.Label("Résistance: ", batch=self.batchPanel)
+        self.resistanceText = pyglet.text.Label("Resistance: ", batch=self.batchPanel)
         self.speedText = pyglet.text.Label("Vitesse: ", batch=self.batchPanel)
 
     def toggleMenu(self, state):

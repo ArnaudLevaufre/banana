@@ -7,10 +7,11 @@ import math
 class Game:
     def __init__(self):
 
+        self.lvl = 1
         self.camera = Camera()
         self.ui = ui.UI()
         self.level = level.Level()
-        self.level.load("001")
+        self.level.load("1")
         self.map = self.level.map
         self.player = self.level.player
         self.playerdx, self.player.dy = 0,0
@@ -74,9 +75,29 @@ class Game:
                             self.player.hp = self.player.maxHp
                         else:
                             self.player.hp += item.value
+            
+            if self.level.enemies == []:
+                print "FINI"
+                self.lvl += 1
+                self.reload()
             # on repositionne la carte.
             self.camera.setPos(self.player.x, self.player.y)
-        
+    
+    def reload(self):
+        # On load le level self.lvl
+        try:
+            self.camera = Camera()
+            self.ui = ui.UI()
+            self.level = level.Level()
+            self.level.load(str(self.lvl))
+            self.map = self.level.map
+            self.playerdx, self.player.dy = 0,0
+            self.bullets = []
+            self.cinematiqueIsPlaying = True
+            self.tick = 0
+        except:
+            print "FIN"
+            
     def on_mouse_press(self,x, y, button, modifiers):
         if(button == pyglet.window.mouse.LEFT):
             self.player.isFiring = True
@@ -130,7 +151,3 @@ class Camera:
         pyglet.gl.glLoadIdentity()
         pyglet.gl.glOrtho(x - gameEngine.GameEngine.W_WIDTH/2, x + gameEngine.GameEngine.W_WIDTH/2, y - gameEngine.GameEngine.W_HEIGHT/2, y + gameEngine.GameEngine.W_HEIGHT/2, -1, 1)
         pyglet.gl.glMatrixMode(pyglet.gl.GL_MODELVIEW)
-    
-
-
-        
