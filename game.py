@@ -91,7 +91,6 @@ class Game:
             self.level = level.Level()
             self.level.load(str(self.lvl))
             self.map = self.level.map
-            self.playerdx, self.player.dy = 0,0
             self.bullets = []
             self.cinematiqueIsPlaying = True
             self.tick = 0
