@@ -55,14 +55,12 @@ class Game:
                         self.level.enemies.remove(ent)
                         loot = ent.loot()
                         if loot != None:
-                            print loot
                             self.level.items.append(loot)
  
                     if self.tick % 4 == 0 and math.sqrt((self.player.x - ent.x)**2 + (self.player.y - ent.y)**2) < 64*8:
                         ent.IA._recompute_path(self.player.x, self.player.y, ent.caseX, ent.caseY)
                     ent.move((ent.IA.path[-2][0] - ent.caseX),(ent.IA.path[-2][1]-ent.caseY) , self.map ,dt, ent.IA.path[-2])
-                except BaseException, e:
-                    # print e
+                except:
                     pass
 
             for item in self.level.items:
