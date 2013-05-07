@@ -138,7 +138,7 @@ class Player(Entity):
 
         # - Chargement animations
         self.animation = animation.AnimationGroup()
-        self.animation.createFromImage(pyglet.image.load("sprites/blarg.png"), self.width, self.height)
+        self.animation.createFromImage(pyglet.image.load("data/sprites/blarg.png"), self.width, self.height)
         
     def aim(self, x, y):
         """
