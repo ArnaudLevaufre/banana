@@ -6,7 +6,7 @@ import random
 import IA
 import item
 import vector
-
+import animation
 # ---------------------------------------------------
 
 class Entity(object):
@@ -137,39 +137,11 @@ class Player(Entity):
         self.fireRate = 50.0
         self.resistance = 100
         self.attack = 10
+        self.isMoving = False
 
-        # - Chargement textures et animations -
-        self.loadTextures()
-    
-    def loadTextures(self):
-        sprite = pyglet.image.load("sprites/blarg.png")
-        tileList = pyglet.image.ImageGrid(sprite, sprite.width / self.width, sprite.height / self.height)
-        
-        self.animTL = [
-                       pyglet.sprite.Sprite(tileList[4]),
-                       pyglet.sprite.Sprite(tileList[5]),
-                       pyglet.sprite.Sprite(tileList[6]),
-                       pyglet.sprite.Sprite(tileList[7])
-                       ]
-        self.animTR = [
-                       pyglet.sprite.Sprite(tileList[0]),
-                       pyglet.sprite.Sprite(tileList[1]),
-                       pyglet.sprite.Sprite(tileList[2]),
-                       pyglet.sprite.Sprite(tileList[3])
-                       ] 
-        self.animBL = [
-                       pyglet.sprite.Sprite(tileList[12]),
-                       pyglet.sprite.Sprite(tileList[13]),
-                       pyglet.sprite.Sprite(tileList[14]),
-                       pyglet.sprite.Sprite(tileList[15])
-                       ] 
-        self.animBR = [
-                       pyglet.sprite.Sprite(tileList[8]),
-                       pyglet.sprite.Sprite(tileList[9]),
-                       pyglet.sprite.Sprite(tileList[10]),
-                       pyglet.sprite.Sprite(tileList[11])
-                       ] 
-                
+        # - Chargement animations
+        self.animation = animation.AnimationGroup()
+        self.animation.createFromImage(pyglet.image.load("sprites/blarg.png"), self.width, self.height)
         
     def aim(self, x, y):
         """
@@ -203,40 +175,27 @@ class Player(Entity):
             
         
     def render(self):
-        # - On récupere l'orientation du joueur -
-        if time.time() - self.lastFrameChange > 4/self.speed:
-            self.lastFrameChange = time.time()
-            
-            if self.frame == 3:
-                self.frame = 0
-            else:
-                self.frame += 1
-            
+        # update du framerate de l'animation
+        self.animation.setFrameRate(4/self.speed)
         
+        # Selection de l'animation en fonction de l'orientation de la vidée.
         if self.aimVector.x < 0 and self.aimVector.y < 0:
             # Bottom Left 
-            self.animBL[self.frame].x = self.x - self.width / 2
-            self.animBL[self.frame].y = self.y - self.height / 2
-            self.animBL[self.frame].draw()
+            self.animation.selectAnimation(3)            
             
         elif self.aimVector.x > 0 and self.aimVector.y < 0:
             # Bottom Right
-            self.animBR[self.frame].x = self.x - self.width / 2
-            self.animBR[self.frame].y = self.y - self.height / 2
-            self.animBR[self.frame].draw()
+            self.animation.selectAnimation(2)
             
         elif self.aimVector.x < 0 and self.aimVector.y > 0:
             # Top left
-            self.animTL[self.frame].x = self.x - self.width / 2
-            self.animTL[self.frame].y = self.y - self.height / 2
-            self.animTL[self.frame].draw()
+            self.animation.selectAnimation(1)
             
         elif self.aimVector.x > 0 and self.aimVector.y > 0:
             # Top right
-            self.animTR[self.frame].x = self.x - self.width / 2
-            self.animTR[self.frame].y = self.y - self.height / 2
-            self.animTR[self.frame].draw()
+            self.animation.selectAnimation(0)
 
+        self.animation.render(self.x - self.width/2, self.y - self.height/2)
     
 # ---------------------------------------------------   
 
