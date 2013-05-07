@@ -73,7 +73,6 @@ class Animation(object):
                 self.lastFrameChange = time.time()
                 
                 # on assure un bon cycle d'animation
-                print self.currentFrame, len(self.frames)
                 if self.currentFrame + 1 < len(self.frames):
                     self.currentFrame += 1
                 else:

@@ -1,7 +1,14 @@
 #-*- encoding: utf-8 -*-
-import pyglet, pyglet.window.key as key
-import gameEngine, entity, ui, map, level
+import pyglet
+import pyglet.window.key as key
+import gameEngine
+import entity
+import ui
+import map
+import level
 import math
+
+
 # ---------------------------------------------------
 
 class Game:

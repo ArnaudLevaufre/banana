@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<enemy>
+        <width>48</width>
+        <height> 48 </height>
+        <speed> 300 </speed>
+        <sprite>data/sprites/blarg.png</sprite>
+        <itemList>
+			<life value="50"/>
+			<shield value="50"/>
+        </itemList>
+
+        <hp> 100 </hp>
+        <fireRate> 1.0 </fireRate>
+        <bulletSpeed> 500.0 </bulletSpeed>
+        <attack> 10 </attack>
+</enemy>

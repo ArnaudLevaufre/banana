@@ -1,5 +1,7 @@
 #-*- encoding: utf-8 -*-
-import math, time
+import math
+import time
+import os
 import pyglet
 import gameEngine
 import random
@@ -7,6 +9,7 @@ import IA
 import item
 import vector
 import animation
+import xml.etree.ElementTree as xml
 # ---------------------------------------------------
 
 class Entity(object):
@@ -33,35 +36,55 @@ class Enemy(Entity):
     """
     Ennemie pour tester l'IA, il essaie juste de toucher le joueur
     """
-    def __init__(self, x, y, gameMap):
+    def __init__(self, x, y,fileName, gameMap):
         # - Objets -
         Entity.__init__(self, x, y)
 
         # - Constantes -
-        self.width = 48
-        self.height = 48
-        self.speed = 300
-        self.sprite = pyglet.sprite.Sprite(pyglet.image.load("data/sprites/blarg.png").get_texture())
         self.type = "enemy"
-        self.itemList = [["life",50], ["shield",50]]
-
+        self.name = fileName
+        
         # - Mouvements -
         self.blocked = False
         self.x = int(x)
         self.y = int(y)
         self.canMove = True
         self.vector = []
-        
+
         # - IA -
         self.IA = IA.IA(self.x, self.y, gameMap)
         self.caseX = self.x / 64
         self.caseY = self.y / 64
-        
-        # - Caracs -
-        self.hp = 100
-        self.fireRate = 1.0
-        self.bulletSpeed = 500.0
-        self.attack = 10
+
+        self.load(fileName)
+
+    def load(self, fileName):
+        if os.path.isfile("data/ennemies/"+fileName+".xml"):
+            xmlTree = xml.parse("data/ennemies/"+fileName+".xml")
+            root = xmlTree.getroot()
+            for child in root:
+                if child.tag == "width":
+                    self.width = int(child.text)
+                elif child.tag == "height":
+                    self.height = int(child.text)
+                elif child.tag == "speed":
+                    self.speed = float(child.text)
+                elif child.tag == "sprite":
+                    self.sprite = pyglet.sprite.Sprite(pyglet.image.load(child.text).get_texture())
+                elif child.tag == "itemList":
+                    self.itemList = []
+                    for e in child:
+                        self.itemList.append([e.tag,float(e.attrib["value"])])
+                elif child.tag == "hp":
+                    self.hp = float(child.text)
+                elif child.tag == "fireRate":
+                    self.fireRate = float(child.text)
+                elif child.tag == "bulletSpeed":
+                    self.bulletSpeed = float(child.text)
+                elif child.tag == "attack":
+                    self.attack = float(child.text)
+        else:
+            print "couldn't load the enemy ["+fileName+"]. No such file."
 
     def render(self):
         self.sprite.x = self.x - self.width/2
@@ -138,7 +161,7 @@ class Player(Entity):
 
         # - Chargement animations
         self.animation = animation.AnimationGroup()
-        self.animation.createFromImage(pyglet.image.load("sprites/blarg.png"), self.width, self.height)
+        self.animation.createFromImage(pyglet.image.load("data/sprites/blarg.png"), self.width, self.height)
         
     def aim(self, x, y):
         """

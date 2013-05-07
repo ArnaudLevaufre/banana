@@ -1,6 +1,8 @@
 import os
 import xml.dom.minidom as xmlParser
-import entity, cinematic, map
+import entity
+import cinematic
+import map
 
 class Level(object):
     def __init__(self):
@@ -30,4 +32,4 @@ class Level(object):
             
             enemies = xml.getElementsByTagName("enemy")
             for e in enemies:
-                self.enemies.append(entity.Enemy(int(e.getAttribute("x")) * map.Tile.SIZE +32, int(e.getAttribute("y")) * map.Tile.SIZE +32, self.map ) )
+                self.enemies.append(entity.Enemy(int(e.getAttribute("x")) * map.Tile.SIZE +32, int(e.getAttribute("y")) * map.Tile.SIZE +32,e.getAttribute("type"), self.map ) )

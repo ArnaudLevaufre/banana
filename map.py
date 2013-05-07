@@ -1,5 +1,7 @@
 #-*- encoding:utf-8 -*-
-import pyglet, os, xml.etree.ElementTree as xml
+import pyglet
+import os
+import xml.etree.ElementTree as xml
 
 # ---------------------------------------------------
 class Map(object):
