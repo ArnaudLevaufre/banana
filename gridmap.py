@@ -30,9 +30,7 @@ class GridMap(object):
                 
     def move_cost(self, c1, c2):
         """ Compute the cost of movement from one coordinate to
-            another. 
-            
-            The cost is the Euclidean distance.
+            another.
         """
         return sqrt((c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2) 
     

@@ -11,7 +11,7 @@ class MainMenu():
         self._batch = pyglet.graphics.Batch()
         self.principalMenuText = pyglet.text.Label("Menu principal",font_size=40, batch=self._batch,anchor_x ="center", anchor_y="top",x=gameEngine.GameEngine.W_WIDTH/2, y=gameEngine.GameEngine.W_HEIGHT-10, color=(255,255,255,255))
         self.colors = [[[33,33,33],[77,77,77]],[[77,77,77],[33,33,33]]]
-        self.bg = pyglet.sprite.Sprite(pyglet.image.load("sprites/fond.png").get_texture())
+        self.bg = pyglet.sprite.Sprite(pyglet.image.load("data/sprites/fond.png").get_texture())
 
         self.playColor = 0
         self.loadColor = 0
@@ -22,12 +22,12 @@ class MainMenu():
         self.loadText = pyglet.text.Label("Charger une partie",font_size=20, batch=self._batch,anchor_x ="center", anchor_y="top",x=gameEngine.GameEngine.W_WIDTH/2, y=self.playText.y -50, color=(255,255,255,255))
         self.quitText = pyglet.text.Label("Quitter",font_size=20, batch=self._batch,anchor_x ="center", anchor_y="top",x=gameEngine.GameEngine.W_WIDTH/2, y=self.loadText.y -50, color=(255,255,255,255))      
         
-
         self.returnState = "menu"
         
     def render(self):
         self.bg.draw()
-        # - Jouer -s
+        
+        # - Jouer -
         pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
         pyglet.gl.glColor3ub(self.colors[self.playColor][0][0],self.colors[self.playColor][0][1],self.colors[self.playColor][0][2])
         pyglet.gl.glVertex2i(self.playText.x-180, self.playText.y-37)    
@@ -56,6 +56,7 @@ class MainMenu():
         pyglet.gl.glVertex2i(self.quitText.x+180,self.quitText.y -1)
         pyglet.gl.glVertex2i(self.quitText.x-180,self.quitText.y-1)
         pyglet.gl.glEnd()
+
         self._batch.draw()
 
         return self.returnState

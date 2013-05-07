@@ -41,12 +41,12 @@ class Enemy(Entity):
         self.width = 48
         self.height = 48
         self.speed = 300
-        self.sprite = pyglet.sprite.Sprite(pyglet.image.load("sprites/blarg.png").get_texture())
+        self.sprite = pyglet.sprite.Sprite(pyglet.image.load("data/sprites/blarg.png").get_texture())
         self.type = "enemy"
-        
+        self.itemList = [["life",50], ["shield",50]]
+
         # - Mouvements -
         self.blocked = False
-        self.sprite = pyglet.sprite.Sprite(pyglet.image.load("sprites/blarg.png").get_texture())
         self.x = int(x)
         self.y = int(y)
         self.canMove = True
@@ -94,11 +94,8 @@ class Enemy(Entity):
             
             
     def loot(self):
-        objet = random.randint(1,2)
-        if objet == 1: # Shield
-            itemToReturn = item.Shield(self.x,self.y, 50)    
-        else:
-            itemToReturn = item.Life(self.x, self.y, 50)
+        objet = random.randint(0,len(self.itemList) -1)
+        itemToReturn = item.Item(self.x,self.y, self.itemList[objet][0],self.itemList[objet][1])    
         return itemToReturn
 
 # ---------------------------------------------------     
@@ -117,7 +114,7 @@ class Player(Entity):
         self.height = 48
         self.aimVector = vector.Vector2(0,0)
         self.mouthOffset = 7
-        self.sprite = pyglet.sprite.Sprite(pyglet.image.load("sprites/blarg.png"))
+        self.sprite = pyglet.sprite.Sprite(pyglet.image.load("data/sprites/blarg.png"))
         self.sprite.x = gameEngine.GameEngine.W_WIDTH/2 - self.width/2
         self.sprite.y = gameEngine.GameEngine.W_HEIGHT/2 - self.height/2
         self.type = "player"
@@ -142,7 +139,7 @@ class Player(Entity):
         self.loadTextures()
     
     def loadTextures(self):
-        sprite = pyglet.image.load("sprites/blarg.png")
+        sprite = pyglet.image.load("data/sprites/blarg.png")
         tileList = pyglet.image.ImageGrid(sprite, sprite.width / self.width, sprite.height / self.height)
         
         self.animTL = [

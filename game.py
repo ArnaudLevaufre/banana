@@ -14,7 +14,6 @@ class Game:
         self.level.load("1")
         self.map = self.level.map
         self.player = self.level.player
-        self.playerdx, self.player.dy = 0,0
         self.bullets = []
         self.cinematiqueIsPlaying = True
         self.tick = 0
@@ -56,14 +55,16 @@ class Game:
                         self.level.enemies.remove(ent)
                         loot = ent.loot()
                         if loot != None:
+                            print loot
                             self.level.items.append(loot)
  
                     if self.tick % 4 == 0 and math.sqrt((self.player.x - ent.x)**2 + (self.player.y - ent.y)**2) < 64*8:
                         ent.IA._recompute_path(self.player.x, self.player.y, ent.caseX, ent.caseY)
                     ent.move((ent.IA.path[-2][0] - ent.caseX),(ent.IA.path[-2][1]-ent.caseY) , self.map ,dt, ent.IA.path[-2])
-                except:
+                except BaseException, e:
+                    # print e
                     pass
-                
+
             for item in self.level.items:
                 if item.collide(self.player):
                     self.level.items.remove(item)
@@ -90,6 +91,7 @@ class Game:
             self.ui = ui.UI()
             self.level = level.Level()
             self.level.load(str(self.lvl))
+            self.player.x, self.player.y = self.level.player.x, self.level.player.y # On mets le joueur à la bonne place
             self.map = self.level.map
             self.bullets = []
             self.cinematiqueIsPlaying = True

@@ -18,7 +18,7 @@ class GameEngine(pyglet.window.Window):
         # - Options generales -
         self.set_vsync(False)
         self.set_caption("Blarg")
-        self.set_mouse_cursor(pyglet.window.ImageMouseCursor(pyglet.image.load('sprites/vis.png'), 8, 8)) # Curseur
+        self.set_mouse_cursor(pyglet.window.ImageMouseCursor(pyglet.image.load('data/sprites/vis.png'), 8, 8)) # Curseur
         
         # - Couleur de fond -
         pyglet.gl.glEnable(pyglet.gl.GL_BLEND)

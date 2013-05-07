@@ -33,7 +33,7 @@ class Cinematic(object):
         # - Construction -
         self.constructFromFile(filename)
 
-    def constructFromFile(self, filename =None):
+    def constructFromFile(self, fileName =None):
         """
         Construction d'une cinematique a partir d'un fichier xml
         
@@ -41,8 +41,6 @@ class Cinematic(object):
         
         :type filename: str
         """
-        
-        fileName = "Cin/1.xml" # A enlever plus tard
         
         # On parse le XML
         tree = ET.parse(fileName)

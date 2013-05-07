@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
 <level>
 	<init>
-		<cinematique file="1.xml" />
+		<cinematique file="data/cin/1.xml" />
 		<next level="next" />
-		<player skin="blarg.png" x="25" y="25" width="48" height="48" />
-		<map name="arena" />
+		<player skin="blarg.png" x="5" y="8" width="48" height="48" />
+		<map name="001" />
 	</init>
 	
 	<enemies>

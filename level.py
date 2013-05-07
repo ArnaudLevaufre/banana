@@ -17,8 +17,8 @@ class Level(object):
         self.load(self.nextLevel)
         
     def load(self, fileName):
-        if os.path.isfile("lvl/"+fileName):
-            xml = xmlParser.parse("lvl/"+fileName).documentElement
+        if os.path.isfile("data/lvl/"+fileName):
+            xml = xmlParser.parse("data/lvl/"+fileName).documentElement
             
             # - Chargement des parametres du niveau -              
             # - Chargement des informations -
@@ -31,6 +31,3 @@ class Level(object):
             enemies = xml.getElementsByTagName("enemy")
             for e in enemies:
                 self.enemies.append(entity.Enemy(int(e.getAttribute("x")) * map.Tile.SIZE +32, int(e.getAttribute("y")) * map.Tile.SIZE +32, self.map ) )
-            
-            
-            

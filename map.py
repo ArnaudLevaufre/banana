@@ -21,7 +21,7 @@ class Map(object):
         self.loadTextures()
         
     def loadTextures(self):
-        tileSheet = pyglet.image.load("sprites/tile-map.jpg")
+        tileSheet = pyglet.image.load("data/sprites/tile-map.jpg")
         imageGrid = pyglet.image.ImageGrid(tileSheet, tileSheet.width/64, tileSheet.height/64)
         
         # on réordonne les tiles de maniere plus propre
@@ -31,8 +31,8 @@ class Map(object):
                 self.textures.append(imageGrid[y*(tileSheet.height/64) + x])
 
     def load(self, fileName):
-        if os.path.isfile("maps/"+fileName):
-            xmlTree = xml.parse("maps/"+fileName)
+        if os.path.isfile("data/maps/"+fileName):
+            xmlTree = xml.parse("data/maps/"+fileName)
             root = xmlTree.getroot()
             self.sizeX = int(root.attrib['sizeX'])
             self.sizeY = int(root.attrib['sizeY'])
