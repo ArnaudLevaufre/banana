@@ -5,7 +5,6 @@ import xml.etree.ElementTree as xml
 
 # ---------------------------------------------------
 
-
 class Map(object):
     """
     La carte est un tableau d'objets Tile

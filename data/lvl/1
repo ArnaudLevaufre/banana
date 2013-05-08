@@ -3,8 +3,8 @@
 	<init>
 		<cinematique file="data/cin/1.xml" />
 		<next level="next" />
-		<player skin="blarg.png" x="5" y="5" width="48" height="48" />
-		<map name="grass-test" />
+		<player skin="blarg.png" x="25" y="25" width="48" height="48" />
+		<map name="arena" />
 	</init>
 
 	<enemies>
