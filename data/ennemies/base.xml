@@ -5,8 +5,8 @@
         <speed> 300 </speed>
         <sprite>data/sprites/blarg.png</sprite>
         <itemList>
-			<life value="50"/>
-			<shield value="50"/>
+                <life value="50"/>
+                <shield value="50"/>
         </itemList>
 
         <hp> 100 </hp>

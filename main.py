@@ -16,7 +16,7 @@ HISTOIRE:
     La princesse "x" possédée par le Démon se tranforme en immonde créature.
     Vous entendez parler d'un médaillon légendaire vous permettant de lui redonner
     forme blarg. Impavide vous vous élancez dans une longue quete permettant de
-    réunir les pieces permettant d'assembler le médaillon. 
+    réunir les pieces permettant d'assembler le médaillon.
 
                         ====================
 """
@@ -25,4 +25,3 @@ HISTOIRE:
 if __name__ == "__main__":
     game = gameEngine.GameEngine()
     game.start()
-    
