@@ -72,7 +72,9 @@ class Enemy(Entity):
                 elif child.tag == "speed":
                     self.speed = float(child.text)
                 elif child.tag == "sprite":
-                    self.sprite = pyglet.sprite.Sprite(pyglet.image.load(child.text).get_texture())
+                      # - Chargement animations
+                    self.animation = animation.AnimationGroup()
+                    self.animation.createFromImage(pyglet.image.load(child.text), self.width, self.height)
                 elif child.tag == "itemList":
                     self.itemList = []
                     for e in child:
@@ -89,9 +91,27 @@ class Enemy(Entity):
             print "couldn't load the enemy ["+fileName+"]. No such file."
 
     def render(self):
-        self.sprite.x = self.x - self.width/2
-        self.sprite.y = self.y - self.height/2
-        self.sprite.draw()
+        try:
+            self.animation.setFrameRate(4/(self.speed/10))
+            # Selection de l'animation en fonction de l'orientation de la vidée.
+            if self.IA.path[-2][0] - self.caseX < 0 and self.IA.path[-2][1] - self.caseY < 0:
+                # Bottom Left
+                self.animation.selectAnimation(3)
+            elif self.IA.path[-2][0] - self.caseX > 0 and self.IA.path[-2][1] - self.caseY < 0:
+                # Bottom Right
+                self.animation.selectAnimation(2)
+
+            elif self.IA.path[-2][0] - self.caseX < 0 and self.IA.path[-2][1] - self.caseY > 0:
+                # Top left
+                self.animation.selectAnimation(1)
+
+            elif self.IA.path[-2][0] - self.caseX > 0 and self.IA.path[-2][1] - self.caseY > 0:
+                # Top right
+                self.animation.selectAnimation(0)
+
+            self.animation.render(self.x - self.width/2, self.y - self.height/2)
+        except:
+            pass
 
     def move(self, x, y, gameMap, dt, target):
         if self.canMove:
@@ -151,7 +171,7 @@ class Player(Entity):
 
         # - Caractéristiques -
         self.maxHp = 100.0
-        self.hp = 100.0
+        self.hp = 25.0
         self.speed = 30.0
         self.shieldCapacity = 5000.0
         self.shield = 5000.0
@@ -159,6 +179,8 @@ class Player(Entity):
         self.resistance = 100
         self.attack = 10
         self.isMoving = False
+        self.mucus = 10
+        self.mucusMax = 10
 
         # - Chargement animations
         self.animation = animation.AnimationGroup()

@@ -81,7 +81,7 @@ class UI(object):
 
             self.resistanceText.x = originX + 5
             self.resistanceText.y = panelTop - 75
-            self.resistanceText.text = "Résistance: %i" % player.resistance
+            self.resistanceText.text = "Resistance: %i" % player.resistance
 
             self.speedText.x = originX + 5
             self.speedText.y = panelTop - 100

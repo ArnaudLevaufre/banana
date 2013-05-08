@@ -3,6 +3,7 @@ import xml.dom.minidom as xmlParser
 import entity
 import cinematic
 import map
+import item
 
 
 class Level(object):
@@ -23,7 +24,6 @@ class Level(object):
         if os.path.isfile("data/lvl/"+fileName):
             xml = xmlParser.parse("data/lvl/"+fileName).documentElement
 
-            # - Chargement des parametres du niveau -
             # - Chargement des informations -
             xmlPlayerNode = xml.getElementsByTagName("player")[0]
             self.player = entity.Player(int(xmlPlayerNode.getAttribute("x")) * map.Tile.SIZE + 32, int(xmlPlayerNode.getAttribute("y")) * map.Tile.SIZE + 32)
@@ -34,3 +34,7 @@ class Level(object):
             enemies = xml.getElementsByTagName("enemy")
             for e in enemies:
                 self.enemies.append(entity.Enemy(int(e.getAttribute("x")) * map.Tile.SIZE + 32, int(e.getAttribute("y")) * map.Tile.SIZE + 32, e.getAttribute("type"), self.map))
+
+            items = xml.getElementsByTagName("chest")
+            for i in items:
+                self.items.append(item.Item(int(i.getAttribute("x")) * map.Tile.SIZE + 32, int(i.getAttribute("y")) * map.Tile.SIZE + 32, "chest", 1))

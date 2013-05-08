@@ -60,7 +60,6 @@ class GameEngine(pyglet.window.Window):
         self.clear()
 
         # ----------------------------
-
         if self._state == "playing":
             self._game.render()
         elif self._state == "menu":

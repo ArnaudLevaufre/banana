@@ -36,9 +36,14 @@ class Item(object):
         return False
 
     def render(self):
+        if self.type == "chest":
+            decal = 1
+        else:
+            decal = math.sin(5 * time.time())
+
         pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
-        pyglet.gl.glVertex2d(self.x - self.SIZE / 2, self.y - self.SIZE / 2 + 5 * math.sin(5 * time.time()))
-        pyglet.gl.glVertex2d(self.x - self.SIZE / 2 + self.SIZE, self.y - self.SIZE / 2 + 5 * math.sin(5 * time.time()))
-        pyglet.gl.glVertex2d(self.x - self.SIZE / 2 + self.SIZE, self.y - self.SIZE / 2 + self.SIZE + 5 * math.sin(5 * time.time()))
-        pyglet.gl.glVertex2d(self.x - self.SIZE / 2, self.y - self.SIZE / 2 + self.SIZE + 5 * math.sin(5 * time.time()))
+        pyglet.gl.glVertex2d(self.x - self.SIZE / 2, self.y - self.SIZE / 2 + 5 * decal)
+        pyglet.gl.glVertex2d(self.x - self.SIZE / 2 + self.SIZE, self.y - self.SIZE / 2 + 5 * decal)
+        pyglet.gl.glVertex2d(self.x - self.SIZE / 2 + self.SIZE, self.y - self.SIZE / 2 + self.SIZE + 5 * decal)
+        pyglet.gl.glVertex2d(self.x - self.SIZE / 2, self.y - self.SIZE / 2 + self.SIZE + 5 * decal)
         pyglet.gl.glEnd()

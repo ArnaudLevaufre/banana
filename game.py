@@ -4,11 +4,13 @@ import pyglet.window.key as key
 import gameEngine
 import entity
 import ui
+import map
 import level
 import math
-
+import random
 
 # ---------------------------------------------------
+
 
 class Game:
     def __init__(self):
@@ -80,6 +82,32 @@ class Game:
                             self.player.hp = self.player.maxHp
                         else:
                             self.player.hp += item.value
+                    elif item.type == "attack":
+                        self.player.attack += item.value
+                    elif item.type == "speed":
+                        self.player.speed += item.value
+                    elif item.type == "hpMax":
+                        self.player.maxHp += item.Value
+                        self.player.hp += item.value
+                    elif item.type == "mucus":
+                        if self.player.mucus + item.value > self.player.mucusMax:
+                            self.player.mucus = self.player.mucusMax
+                        else:
+                            self.player.mucus += item.value
+                    elif item.type == "mucusMax":
+                        self.player.mucusMax += item.value
+                        self.player.mucus += item.value
+                    elif item.type == "fireRate":
+                        self.player.fireRate += item.value
+                    elif item.type == "resistance":
+                        self.player.resistance += item.value
+                    elif item.type == "chest":
+                        chest = entity.Enemy(item.x - map.Tile.SIZE, item.y - map.Tile.SIZE, "chest", self.map)
+                        if random.randint(0, 1) == 1:
+                            print "ennemi"
+                            self.level.enemies.append(chest)  # Rajouter le coffre comme monstre
+                        else:
+                            self.level.items.append(chest.loot())
 
             if self.level.enemies == []:
                 print "FINI"
