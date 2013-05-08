@@ -175,7 +175,7 @@ class Player(Entity):
         self.speed = 30.0
         self.shieldCapacity = 5000.0
         self.shield = 5000.0
-        self.fireRate = 50.0
+        self.fireRate = 2.0
         self.resistance = 100
         self.attack = 10
         self.isMoving = False
@@ -200,9 +200,10 @@ class Player(Entity):
         self.aimVector = self.aimVector.getUnitary()
 
     def shoot(self, bullets):
-        if self.isFiring and time.time() - self.lastShoot > 1/self.fireRate:
+        if self.isFiring and time.time() - self.lastShoot > 1/self.fireRate and self.mucus > 0:
             self.lastShoot = time.time()
             bullets.append(Bullet(self.x, self.y + self.mouthOffset, self.aimVector.x * 1000, self.aimVector.y*1000, self))
+            self.mucus -= 1
 
     def hit(self, attack):
         if self.shield - attack > 0:
