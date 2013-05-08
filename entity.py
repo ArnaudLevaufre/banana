@@ -181,10 +181,20 @@ class Player(Entity):
         self.isMoving = False
         self.mucus = 10
         self.mucusMax = 10
+        self.regenMucus = 0.01
+
+        self.increasedMucus = 0
 
         # - Chargement animations
         self.animation = animation.AnimationGroup()
         self.animation.createFromImage(pyglet.image.load("data/sprites/blarg.png"), self.width, self.height)
+
+    def increaseMucus(self):
+        self.increasedMucus += self.regenMucus
+        if self.increasedMucus >= 1:
+            if self.mucus < self.mucusMax:
+                self.mucus += 1
+            self.increasedMucus = 0
 
     def aim(self, x, y):
         """

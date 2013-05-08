@@ -52,6 +52,8 @@ class Game:
             # tir du joueur
             self.player.shoot(self.bullets)
 
+            self.player.increaseMucus()
+
             for bullet in self.bullets:
                 if bullet.simulate(self.map, self.player, self.level.enemies, dt) is False:
                     self.bullets.remove(bullet)
