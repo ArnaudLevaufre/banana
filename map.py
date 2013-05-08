@@ -16,7 +16,7 @@ class Map(object):
         self.map = []
         self.textures = []
         self.sprites = []
-
+        
         # -IA -
         self.sizeX = 0
         self.sizeY = 0
