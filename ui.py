@@ -32,6 +32,8 @@ class UI(object):
         self.resistanceText = pyglet.text.Label("Resistance: ", batch=self.batchPanel)
         self.speedText = pyglet.text.Label("Vitesse: ", batch=self.batchPanel)
 
+        self.mucusText = pyglet.text.Label("10 / 10", x=0, y=0, batch=self.batch, color=(0, 0, 0, 255))
+
     def toggleMenu(self, state):
         self.menuOpened = state
 
@@ -51,6 +53,12 @@ class UI(object):
         self.drawBar(originX + self.hpPos["x"], originY + self.hpPos["y"], self.hpSize["x"], self.hpSize["y"], (1, 0, 0), 3, player.hp/player.maxHp)
         if int(player.shield) > 0:
             self.drawBar(originX + 5, originY + self.shieldPos["y"], self.shieldSize["x"], self.shieldSize["y"], (0.10, 0.5, 1), 3, player.shield/player.shieldCapacity)
+
+        # - Mucus -
+        self.mucusText.x = originX + 850
+        self.mucusText.y = originY + 15
+
+        self.mucusText.text = "%i / %i " % (player.mucus, player.mucusMax)
 
         if self.menuOpened:
             pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
