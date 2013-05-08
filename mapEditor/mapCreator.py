@@ -8,7 +8,7 @@ import pyglet.window.key as key
 
 MAP_NAME="EXPORT"
 TILE_SIZE = 64
-TILEMAP_IMAGE_PATH = "../data/sprites/tile-map.jpg"
+TILEMAP_IMAGE_PATH = "../data/prites/tile-map.jpg"
 
 
 COLLISIONABLE = [
@@ -167,12 +167,18 @@ class App(pyglet.window.Window):
 	def on_mouse_press(self, x, y, button, modifiers):
 		if button == pyglet.window.mouse.LEFT:
 
-			# On check si il n'y a pas déja une tile, et on la surpprime si c'est le cas
-			for tile in self.map:
-				if tile.x == self.selectedCase.x * TILE_SIZE and tile.y == self.selectedCase.y * TILE_SIZE:
-					self.map.remove(tile)
-			
-			self.map.append( Tile( self.selectedCase.x, self.selectedCase.y, False, self.selectedTexture, self.textures, self.batch ))
+			if modifiers == 18: # MOD_CTRL ne fonctionne pas.
+				for tile in self.map:
+					if tile.x == self.selectedCase.x * TILE_SIZE and tile.y == self.selectedCase.y * TILE_SIZE:
+						self.map.remove(tile)
+
+			else:
+				# On check si il n'y a pas déja une tile, et on la surpprime si c'est le cas
+				for tile in self.map:
+					if tile.x == self.selectedCase.x * TILE_SIZE and tile.y == self.selectedCase.y * TILE_SIZE:
+						self.map.remove(tile)
+				
+				self.map.append( Tile( self.selectedCase.x, self.selectedCase.y, False, self.selectedTexture, self.textures, self.batch ))
 		
 		if button == pyglet.window.mouse.RIGHT:
 			for tile in self.map:
