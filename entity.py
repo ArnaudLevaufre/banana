@@ -93,7 +93,6 @@ class Enemy(Entity):
     def render(self):
         try:
             self.animation.setFrameRate(4/(self.speed/10))
-            print self.IA.path
             # Selection de l'animation en fonction de l'orientation de la vidée.
             if self.IA.path[-2][0] - self.caseX < 0 and self.IA.path[-2][1] - self.caseY < 0:
                 # Bottom Left
@@ -172,7 +171,7 @@ class Player(Entity):
 
         # - Caractéristiques -
         self.maxHp = 100.0
-        self.hp = 100.0
+        self.hp = 25.0
         self.speed = 30.0
         self.shieldCapacity = 5000.0
         self.shield = 5000.0
@@ -180,6 +179,8 @@ class Player(Entity):
         self.resistance = 100
         self.attack = 10
         self.isMoving = False
+        self.mucus = 10
+        self.mucusMax = 10
 
         # - Chargement animations
         self.animation = animation.AnimationGroup()

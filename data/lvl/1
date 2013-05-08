@@ -13,4 +13,8 @@
 		<enemy x="7" y="7" type="base" />
 		<enemy x="7" y="8" type="base" />
 	</enemies>
+
+	<items>
+		<chest x="9" y="9" />
+	</items>
 </level>
