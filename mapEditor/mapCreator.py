@@ -1,14 +1,40 @@
 #-*- encoding:utf-8 -*-
 
+"""
+		== DOCUMENTATION ==
+
+Control :
+---------
+
+Z : Aller en haut
+S : Aller en bas 
+Q : Aller vers la gauche
+D : Aller vers la droite
+SPACE : Doubler vitesse de déplacement
+
+E : exporter la carte
+
+CLIC GAUCHE : Poser texture selectionnée
+CLIC DROITE : Selectionner texture depuis celles déja posés
+MOLETTE HAUT: Parcourir texture
+MOLETTE BAS : Parcourir texture
+
+"""
+
+
 import pyglet
 import pyglet.window.key as key
+
 
 # ============================================ #
 # =                 SETTINGS                 = #
 
 MAP_NAME="EXPORT"
 TILE_SIZE = 64
-TILEMAP_IMAGE_PATH = "../data/prites/tile-map.jpg"
+TILEMAP_IMAGE_PATH = "../data/sprites/tile-map.jpg"
+
+W_WIDTH = 1280
+W_HEIGHT = 720
 
 
 COLLISIONABLE = [
@@ -24,14 +50,12 @@ COLLISIONABLE = [
 
 
 class App(pyglet.window.Window):
-	W_WIDTH = 1280
-	W_HEIGHT = 720
-
 	def __init__(self):
 		super(App, self).__init__()
-		self.set_size(self.W_WIDTH,self.W_HEIGHT)
+		self.set_size(W_WIDTH,W_HEIGHT)
 
 		# - refresh screen and input.
+		self.set_vsync(True)
 		pyglet.clock.schedule_interval(self.refresh, 1/100.0)
 
 
@@ -40,7 +64,7 @@ class App(pyglet.window.Window):
 		self.push_handlers(self.keysHandler)
 
 		# - variables -
-		self.offsetPos = Pos(0,0)
+		self.offsetPos = Pos(-W_WIDTH/2,-W_HEIGHT/2)
 		self.camera = Camera()
 		self.cursorPos = Pos(0,0)
 		self.selectedPos = Pos(0,0)
@@ -58,29 +82,36 @@ class App(pyglet.window.Window):
 
 		self.batch = pyglet.graphics.Batch()
 
-	def refresh(self, dx):
+	def refresh(self, dt):
+		if self.keysHandler[key.SPACE]:
+			speed = int(1500 * dt)
+
+		else : speed = int(1000 * dt)
+
 		if self.keysHandler[key.Z]:
-			self.offsetPos.y += 10
+			self.offsetPos.y += speed
 		elif self.keysHandler[key.S]:
-			self.offsetPos.y -= 10
+			self.offsetPos.y -= speed
 
 		if self.keysHandler[key.Q]:
-			self.offsetPos.x -= 10
+			self.offsetPos.x -= speed
 		elif self.keysHandler[key.D]:
-			self.offsetPos.x += 10
+			self.offsetPos.x += speed
 
 		# mise a jour de la position de la camera.
-		self.camera.setPos(self.offsetPos.x + self.W_WIDTH/2, self.offsetPos.y + self.W_HEIGHT/2)
+		self.camera.setPos(self.offsetPos.x + W_WIDTH/2, self.offsetPos.y + W_HEIGHT/2)
 
 	def on_draw(self):
 		self.clear()
 
+		# render de la map
+		self.batch.draw()
 
 		# - Tracé de la grille -
 		
 		pyglet.gl.glBegin(pyglet.gl.GL_LINES)
 
-		for i in xrange(self.offsetPos.x, self.offsetPos.x + self.W_WIDTH):
+		for i in xrange(self.offsetPos.x, self.offsetPos.x + W_WIDTH):
 			if i % TILE_SIZE == 0:
 				# Ligne rouge en x = 0
 				if i == 0:
@@ -89,9 +120,9 @@ class App(pyglet.window.Window):
 					pyglet.gl.glColor4f(0, 0, 0, 1)
 
 				pyglet.gl.glVertex2i(i, self.offsetPos.y)
-				pyglet.gl.glVertex2i(i, self.offsetPos.y + self.W_HEIGHT)
+				pyglet.gl.glVertex2i(i, self.offsetPos.y + W_HEIGHT)
 
-		for i in xrange(self.offsetPos.y, self.offsetPos.y + self.W_HEIGHT):
+		for i in xrange(self.offsetPos.y, self.offsetPos.y + W_HEIGHT):
 			if i % TILE_SIZE == 0:
 				# ligne rouge en y = 0
 				if i == 0:
@@ -100,15 +131,11 @@ class App(pyglet.window.Window):
 					pyglet.gl.glColor4f(0, 0, 0, 1)
 
 				pyglet.gl.glVertex2i(self.offsetPos.x, i)
-				pyglet.gl.glVertex2i(self.offsetPos.x + self.W_WIDTH, i)
+				pyglet.gl.glVertex2i(self.offsetPos.x + W_WIDTH, i)
 
 		pyglet.gl.glEnd()
 
-		# render de la map
-		self.batch.draw()
-
-		# Highlight de la case selectionnée.
-		
+		# Highlight de la case selectionnée.		
 		pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
 		pyglet.gl.glColor4f(1, 1, 1, 0.2)
 		pyglet.gl.glVertex2i(self.selectedCase.x * TILE_SIZE, self.selectedCase.y * TILE_SIZE)
@@ -119,24 +146,34 @@ class App(pyglet.window.Window):
 		pyglet.gl.glEnd()
 
 
-		# Draw selected texture.
-
+		# Panel de selection
 		pyglet.gl.glBegin(pyglet.gl.GL_POLYGON)
 		pyglet.gl.glColor4f(0, 0, 0, 0.75)
 		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y)
 		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE/2 + 30, self.offsetPos.y)
-		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 25, self.offsetPos.y + self.W_HEIGHT/2 - TILE_SIZE/2 - 10)
-		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 25, self.offsetPos.y + self.W_HEIGHT/2 + TILE_SIZE/2 + 10)
-		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE/2 + 30, self.offsetPos.y + self.W_HEIGHT)
-		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + self.W_HEIGHT)
+		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 15, self.offsetPos.y + W_HEIGHT/2 - TILE_SIZE/2 - 10)
+		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 15, self.offsetPos.y + W_HEIGHT/2 + TILE_SIZE/2 + 10)
+		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE/2 + 30, self.offsetPos.y + W_HEIGHT)
+		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + W_HEIGHT)
 		pyglet.gl.glEnd()
 
+		# carré de selection
 		pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
 		pyglet.gl.glColor4f(0, 0, 0, 1)
-		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + self.W_HEIGHT/2 - (10 + TILE_SIZE / 2) )
-		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 25, self.offsetPos.y + self.W_HEIGHT/2 - (10 + TILE_SIZE / 2) )
-		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 25, self.offsetPos.y + self.W_HEIGHT/2 + (10 + TILE_SIZE / 2))
-		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + self.W_HEIGHT/2 + (10 + TILE_SIZE / 2))
+		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + W_HEIGHT/2 - (10 + TILE_SIZE / 2) )
+		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 25, self.offsetPos.y + W_HEIGHT/2 - (10 + TILE_SIZE / 2) )
+		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 25, self.offsetPos.y + W_HEIGHT/2 + (10 + TILE_SIZE / 2))
+		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + W_HEIGHT/2 + (10 + TILE_SIZE / 2))
+		pyglet.gl.glColor4f(1, 1, 1, 1)
+		pyglet.gl.glEnd()
+
+		# contour blanc
+		pyglet.gl.glBegin(pyglet.gl.GL_LINE_STRIP)
+		pyglet.gl.glColor4f(1, 1, 1, 1)
+		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + W_HEIGHT/2 - (10 + TILE_SIZE / 2) )
+		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 25, self.offsetPos.y + W_HEIGHT/2 - (10 + TILE_SIZE / 2) )
+		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 25, self.offsetPos.y + W_HEIGHT/2 + (10 + TILE_SIZE / 2))
+		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + W_HEIGHT/2 + (10 + TILE_SIZE / 2))
 		pyglet.gl.glColor4f(1, 1, 1, 1)
 		pyglet.gl.glEnd()
 
@@ -150,7 +187,7 @@ class App(pyglet.window.Window):
 
 			sprite.scale =  1 - abs(self.selectedTexture - i) / 10.0
 			sprite.x = self.offsetPos.x + 10
-			sprite.y = y=self.offsetPos.y + self.W_HEIGHT / 2 - (self.selectedTexture - i) * (TILE_SIZE + 12) - TILE_SIZE/2 * sprite.scale
+			sprite.y = y=self.offsetPos.y + W_HEIGHT / 2 - (self.selectedTexture - i) * (TILE_SIZE + 12) - TILE_SIZE/2 * sprite.scale
 			sprite.draw()
 	
 
@@ -205,6 +242,8 @@ class App(pyglet.window.Window):
 	def on_key_press(self, symbol, modifiers):
 		if symbol == key.E:
 			exportMap(self.map)
+		if symbol == key.O:
+			self.offsetPos.set(-W_WIDTH/2,-W_HEIGHT/2)
 
 	def run(self):
 		pyglet.app.run()
@@ -212,17 +251,17 @@ class App(pyglet.window.Window):
 # ----------------------------------
 
 class Camera:
-    def __init__(self):
-        self.x = 0
-        self.y = 0
+	def __init__(self):
+		self.x = 0
+		self.y = 0
 
-    def setPos(self, x, y):
-        self.x = x
-        self.y = y
-        pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)
-        pyglet.gl.glLoadIdentity()
-        pyglet.gl.glOrtho(x - app.W_WIDTH/2, x + app.W_WIDTH/2, y - app.W_HEIGHT/2, y + app.W_HEIGHT/2, -1, 1)
-        pyglet.gl.glMatrixMode(pyglet.gl.GL_MODELVIEW)
+	def setPos(self, x, y):
+		self.x = x
+		self.y = y
+		pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)
+		pyglet.gl.glLoadIdentity()
+		pyglet.gl.glOrtho(x - W_WIDTH/2, x + W_WIDTH/2, y - W_HEIGHT/2, y + W_HEIGHT/2, -1, 1)
+		pyglet.gl.glMatrixMode(pyglet.gl.GL_MODELVIEW)
 
 # ----------------------------------
 
