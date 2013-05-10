@@ -1,7 +1,7 @@
 #-*- encoding: utf-8 -*-
 
 import gameEngine
-
+import pyglet
 """
                         ====================
                         ==  Banana Quest  ==
@@ -21,7 +21,7 @@ HISTOIRE:
                         ====================
 """
 
-
 if __name__ == "__main__":
+    
     game = gameEngine.GameEngine()
     game.start()

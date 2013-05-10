@@ -159,8 +159,8 @@ class Player(Entity):
         self.aimVector = vector.Vector2(0, 0)
         self.mouthOffset = 7
         self.sprite = pyglet.sprite.Sprite(pyglet.image.load("data/sprites/blarg.png"))
-        self.sprite.x = gameEngine.GameEngine.W_WIDTH/2 - self.width/2
-        self.sprite.y = gameEngine.GameEngine.W_HEIGHT/2 - self.height/2
+        self.sprite.x = x
+        self.sprite.y = y
         self.type = "player"
         self.frame = 0
         self.lastFrameChange = time.time()
@@ -171,16 +171,16 @@ class Player(Entity):
 
         # - Caractéristiques -
         self.maxHp = 100.0
-        self.hp = 25.0
+        self.hp = 100.0
         self.speed = 30.0
-        self.shieldCapacity = 5000.0
-        self.shield = 5000.0
-        self.fireRate = 2.0
+        self.shieldCapacity = 50.0
+        self.shield = 50.0
+        self.fireRate = 10.0
         self.resistance = 100
         self.attack = 10
         self.isMoving = False
-        self.mucus = 10
-        self.mucusMax = 10
+        self.mucus = 100
+        self.mucusMax = 100
         self.regenMucus = 0.01
 
         self.increasedMucus = 0
@@ -203,8 +203,10 @@ class Player(Entity):
         On le détermine en divisant le vecteur définit
         par le centre de l'écran et le cursor par sa norme.
         """
-        centerX = gameEngine.GameEngine.W_WIDTH/2
-        centerY = gameEngine.GameEngine.W_HEIGHT/2 + self.mouthOffset
+        width, height = gameEngine.getDinamicWindowSize()
+        
+        centerX = width/2
+        centerY = height/2 + self.mouthOffset
 
         self.aimVector.set(x-centerX, y-centerY)
         self.aimVector = self.aimVector.getUnitary()
@@ -212,7 +214,7 @@ class Player(Entity):
     def shoot(self, bullets):
         if self.isFiring and time.time() - self.lastShoot > 1/self.fireRate and self.mucus > 0:
             self.lastShoot = time.time()
-            bullets.append(Bullet(self.x, self.y + self.mouthOffset, self.aimVector.x * 1000, self.aimVector.y*1000, self))
+            bullets.append(Bullet(self.x, self.y + self.mouthOffset, self.aimVector.x * 1000, self.aimVector.y * 1000, self))
             self.mucus -= 1
 
     def hit(self, attack):

@@ -99,14 +99,16 @@ class App(object):
 			self.offsetPos.x += speed
 
 		# - Update camera pos -
-		self.camera.setPos(self.offsetPos.x + W_WIDTH/2, self.offsetPos.y + W_HEIGHT/2)
+		width, height = gameEngine.getDinamicWindowSize()
+		self.camera.setPos(self.offsetPos.x, self.offsetPos.y)
 
 	def render(self):
 		"""
 		Update screen.
 		Daw map, grid, interface, texture selector.
 		"""
-
+		width, height = gameEngine.getDinamicWindowSize()
+		
 		# - Display of the map -
 		self.batch.draw()
 
@@ -123,7 +125,7 @@ class App(object):
 		# - Display a grid over the map -
 		pyglet.gl.glBegin(pyglet.gl.GL_LINES)
 
-		for i in xrange(self.offsetPos.x, self.offsetPos.x + W_WIDTH):
+		for i in xrange(self.offsetPos.x, self.offsetPos.x + width):
 			# we draw all vertical lines with a gap of TILE_SIZE between them
 			# according to the offsetPos
 
@@ -135,9 +137,9 @@ class App(object):
 					pyglet.gl.glColor4f(0, 0, 0, 1)
 
 				pyglet.gl.glVertex2i(i, self.offsetPos.y)
-				pyglet.gl.glVertex2i(i, self.offsetPos.y + W_HEIGHT)
+				pyglet.gl.glVertex2i(i, self.offsetPos.y + height)
 
-		for i in xrange(self.offsetPos.y, self.offsetPos.y + W_HEIGHT):
+		for i in xrange(self.offsetPos.y, self.offsetPos.y + height):
 			# Same as previous for loop, but for horizontal lines
 
 			if i % TILE_SIZE == 0:
@@ -148,7 +150,7 @@ class App(object):
 					pyglet.gl.glColor4f(0, 0, 0, 1)
 
 				pyglet.gl.glVertex2i(self.offsetPos.x, i)
-				pyglet.gl.glVertex2i(self.offsetPos.x + W_WIDTH, i)
+				pyglet.gl.glVertex2i(self.offsetPos.x + width, i)
 
 		pyglet.gl.glEnd()
 
@@ -157,29 +159,29 @@ class App(object):
 		pyglet.gl.glColor4f(0, 0, 0, 0.75)
 		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y)
 		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE/2 + 30, self.offsetPos.y)
-		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 15, self.offsetPos.y + W_HEIGHT/2 - TILE_SIZE/2 - 10)
-		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 15, self.offsetPos.y + W_HEIGHT/2 + TILE_SIZE/2 + 10)
-		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE/2 + 30, self.offsetPos.y + W_HEIGHT)
-		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + W_HEIGHT)
+		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 15, self.offsetPos.y + height/2 - TILE_SIZE/2 - 10)
+		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 15, self.offsetPos.y + height/2 + TILE_SIZE/2 + 10)
+		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE/2 + 30, self.offsetPos.y + height)
+		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + height)
 		pyglet.gl.glEnd()
 
 		# - selected item background -
 		pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
 		pyglet.gl.glColor4f(0, 0, 0, 1)
-		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + W_HEIGHT/2 - (10 + TILE_SIZE / 2) )
-		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 25, self.offsetPos.y + W_HEIGHT/2 - (10 + TILE_SIZE / 2) )
-		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 25, self.offsetPos.y + W_HEIGHT/2 + (10 + TILE_SIZE / 2))
-		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + W_HEIGHT/2 + (10 + TILE_SIZE / 2))
+		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + height/2 - (10 + TILE_SIZE / 2) )
+		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 25, self.offsetPos.y + height/2 - (10 + TILE_SIZE / 2) )
+		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 25, self.offsetPos.y + height/2 + (10 + TILE_SIZE / 2))
+		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + height/2 + (10 + TILE_SIZE / 2))
 		pyglet.gl.glColor4f(1, 1, 1, 1)
 		pyglet.gl.glEnd()
 
 		# - selected item white lines -
 		pyglet.gl.glBegin(pyglet.gl.GL_LINE_STRIP)
 		pyglet.gl.glColor4f(1, 1, 1, 1)
-		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + W_HEIGHT/2 - (10 + TILE_SIZE / 2) )
-		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 25, self.offsetPos.y + W_HEIGHT/2 - (10 + TILE_SIZE / 2) )
-		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 25, self.offsetPos.y + W_HEIGHT/2 + (10 + TILE_SIZE / 2))
-		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + W_HEIGHT/2 + (10 + TILE_SIZE / 2))
+		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + height/2 - (10 + TILE_SIZE / 2) )
+		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 25, self.offsetPos.y + height/2 - (10 + TILE_SIZE / 2) )
+		pyglet.gl.glVertex2i(self.offsetPos.x + TILE_SIZE + 25, self.offsetPos.y + height/2 + (10 + TILE_SIZE / 2))
+		pyglet.gl.glVertex2i(self.offsetPos.x, self.offsetPos.y + height/2 + (10 + TILE_SIZE / 2))
 		pyglet.gl.glColor4f(1, 1, 1, 1)
 		pyglet.gl.glEnd()
 
@@ -202,7 +204,7 @@ class App(object):
 			sprite.scale =  1 - abs(self.selectedTexture - i) / 10.0
 			# Set position
 			sprite.x = self.offsetPos.x + 10
-			sprite.y = y=self.offsetPos.y + W_HEIGHT / 2 - (self.selectedTexture - i) * (TILE_SIZE + 12) - TILE_SIZE/2 * sprite.scale
+			sprite.y = y=self.offsetPos.y + height / 2 - (self.selectedTexture - i) * (TILE_SIZE + 12) - TILE_SIZE/2 * sprite.scale
 
 			# Draw
 			sprite.draw()
@@ -286,6 +288,7 @@ class App(object):
 		if symbol == key.E:
 			exportMap(self.map)
 			self.offsetPos = Pos(0, 0)
+			self.camera.setPos(0, 0)
 			self.returnState = "menu"
 
 		# - Center position to map origin -
@@ -307,10 +310,10 @@ class Camera:
 	def setPos(self, x, y):
 		self.x = x
 		self.y = y
-		pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)
+
 		pyglet.gl.glLoadIdentity()
-		pyglet.gl.glOrtho(x - W_WIDTH/2, x + W_WIDTH/2, y - W_HEIGHT/2, y + W_HEIGHT/2, -1, 1)
-		pyglet.gl.glMatrixMode(pyglet.gl.GL_MODELVIEW)
+		pyglet.gl.glTranslated(-x,-y,0)
+
 
 # ----------------------------------
 

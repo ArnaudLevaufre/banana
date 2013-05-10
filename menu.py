@@ -8,9 +8,10 @@ class MainMenu():
         """
         Créer le menu principal
         """
+        width, height = gameEngine.getDinamicWindowSize()
 
         self._batch = pyglet.graphics.Batch()
-        self.principalMenuText = pyglet.text.Label("Menu principal", font_size=40, batch=self._batch, anchor_x="center", anchor_y="top", x=gameEngine.GameEngine.W_WIDTH / 2, y=gameEngine.GameEngine.W_HEIGHT - 10, color=(255, 255, 255, 255))
+        self.principalMenuText = pyglet.text.Label("Menu principal", font_size=40, batch=self._batch, anchor_x="center", anchor_y="top", x=width / 2, y=height - 10, color=(255, 255, 255, 255))
         self.colors = [[[33, 33, 33], [77, 77, 77]], [[77, 77, 77], [33, 33, 33]]]
         self.bg = pyglet.sprite.Sprite(pyglet.image.load("data/sprites/fond.png").get_texture())
 
@@ -20,14 +21,23 @@ class MainMenu():
         self.editColor = 0
 
         # Texte
-        self.playText = pyglet.text.Label("Jouer", font_size=20, batch=self._batch, anchor_x="center", anchor_y="top", x=gameEngine.GameEngine.W_WIDTH / 2, y=self.principalMenuText.y - 160, color=(255, 255, 255, 255))
-        self.loadText = pyglet.text.Label("Charger une partie", font_size=20, batch=self._batch, anchor_x="center", anchor_y="top", x=gameEngine.GameEngine.W_WIDTH / 2, y=self.playText.y - 50, color=(255, 255, 255, 255))
-        self.editText = pyglet.text.Label("Editeur", font_size=20, batch=self._batch, anchor_x="center", anchor_y="top", x=gameEngine.GameEngine.W_WIDTH / 2, y=self.loadText.y - 50, color=(255, 255, 255, 255))
-        self.quitText = pyglet.text.Label("Quitter", font_size=20, batch=self._batch, anchor_x="center", anchor_y="top", x=gameEngine.GameEngine.W_WIDTH / 2, y=self.editText.y - 50, color=(255, 255, 255, 255))
+        self.playText = pyglet.text.Label("Jouer", font_size=20, batch=self._batch, anchor_x="center", anchor_y="top", x=width / 2, y=self.principalMenuText.y - 160, color=(255, 255, 255, 255))
+        self.loadText = pyglet.text.Label("Charger une partie", font_size=20, batch=self._batch, anchor_x="center", anchor_y="top", x=width / 2, y=self.playText.y - 50, color=(255, 255, 255, 255))
+        self.editText = pyglet.text.Label("Editeur", font_size=20, batch=self._batch, anchor_x="center", anchor_y="top", x=width / 2, y=self.loadText.y - 50, color=(255, 255, 255, 255))
+        self.quitText = pyglet.text.Label("Quitter", font_size=20, batch=self._batch, anchor_x="center", anchor_y="top", x=width / 2, y=self.editText.y - 50, color=(255, 255, 255, 255))
 
         self.returnState = "menu"
 
     def render(self):
+        width, height = gameEngine.getDinamicWindowSize()
+
+        # - mise a jour des psitions -
+        self.principalMenuText.x, self.principalMenuText.y = width/2, height-10
+        self.playText.x, self.playText.y = width/2, self.principalMenuText.y - 160
+        self.loadText.x, self.loadText.y = width/2, self.playText.y - 50
+        self.editText.x, self.editText.y = width/2, self.loadText.y - 50
+        self.quitText.x, self.quitText.y = width/2, self.editText.y - 50
+
         self.bg.draw()
 
         # - Jouer -

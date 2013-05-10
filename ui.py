@@ -32,7 +32,8 @@ class UI(object):
         self.resistanceText = pyglet.text.Label("Resistance: ", batch=self.batchPanel)
         self.speedText = pyglet.text.Label("Vitesse: ", batch=self.batchPanel)
 
-        self.mucusText = pyglet.text.Label("10 / 10", x=0, y=0, batch=self.batch, color=(0, 0, 0, 255))
+        self.mucusTextShadow = pyglet.text.Label("100 / 100", x=0, y=0, font_size=18, bold=True ,anchor_x="right", batch=self.batch, color=(0, 0, 0, 255))
+        self.mucusText = pyglet.text.Label("100 / 100", x=0, y=0, font_size=18, bold=True ,anchor_x="right", batch=self.batch)
 
     def toggleMenu(self, state):
         self.menuOpened = state
@@ -46,8 +47,9 @@ class UI(object):
     def render(self, x, y, player):
 
         # - Définition des origines -
-        originX = int(x - gameEngine.GameEngine.W_WIDTH/2)
-        originY = int(y - gameEngine.GameEngine.W_HEIGHT/2)
+        width, height = gameEngine.getDinamicWindowSize()
+        originX = int(x - width/2)
+        originY = int(y - height/2)
 
         # - Barre de vie -
         self.drawBar(originX + self.hpPos["x"], originY + self.hpPos["y"], self.hpSize["x"], self.hpSize["y"], (1, 0, 0), 3, player.hp/player.maxHp)
@@ -55,9 +57,11 @@ class UI(object):
             self.drawBar(originX + 5, originY + self.shieldPos["y"], self.shieldSize["x"], self.shieldSize["y"], (0.10, 0.5, 1), 3, player.shield/player.shieldCapacity)
 
         # - Mucus -
-        self.mucusText.x = originX + 850
+        self.mucusTextShadow.x = originX + width - 3
+        self.mucusTextShadow.y = originY + 13
+        self.mucusTextShadow.text = "%i / %i " % (player.mucus, player.mucusMax)
+        self.mucusText.x = originX + width - 5
         self.mucusText.y = originY + 15
-
         self.mucusText.text = "%i / %i " % (player.mucus, player.mucusMax)
 
         if self.menuOpened:
@@ -111,10 +115,10 @@ class UI(object):
         if self.showDevTool:
             fps = str(round(pyglet.clock.get_fps(), 2))
             self.fpsShadow.x = originX + 3
-            self.fpsShadow.y = originY + gameEngine.GameEngine.W_HEIGHT - 1
+            self.fpsShadow.y = originY + height - 1
             self.fpsShadow.text = "Fps: %s" % fps
             self.fps.x = originX + 2
-            self.fps.y = originY + gameEngine.GameEngine.W_HEIGHT
+            self.fps.y = originY + height
             self.fps.text = "Fps: %s" % fps
 
             # On draw a la main, les batchs sont foieux.

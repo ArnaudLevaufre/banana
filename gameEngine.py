@@ -3,14 +3,15 @@ import pyglet
 import game
 import menu
 import mapCreator as mc
+import sys
 
 class GameEngine(pyglet.window.Window):
-    # Constantes de la fenetre
+    # Constantes de la fenetre    
     W_WIDTH = 1024
     W_HEIGHT = 640
 
     def __init__(self):
-        super(GameEngine, self).__init__(width=self.W_WIDTH, height=self.W_HEIGHT, resizable=False)
+        super(GameEngine, self).__init__(width=self.W_WIDTH, height=self.W_HEIGHT, resizable=True)
 
         #   =======
         # ~ OPTIONS ~
@@ -26,7 +27,7 @@ class GameEngine(pyglet.window.Window):
         pyglet.gl.glClearColor(0.5, 0.75, 1, 1)
 
         # - Physique -
-        pyglet.clock.schedule_interval(lambda x: x, 1/100000000.0)  # Debridage complet des FPS
+        pyglet.clock.schedule_interval(lambda x: False, 1/100000000.0)  # Debridage complet des FPS
         pyglet.clock.schedule_interval(self.physicEngine, 1/100.0)
 
         #   =========
@@ -68,6 +69,7 @@ class GameEngine(pyglet.window.Window):
             self._menu.setDefault()
         elif self._state == "quit":
             self.close()
+            sys.exit() # sinon quelques erreurs en sortie de jeux du a des trucs inexistants. 
         elif self._state == "creator":
             self._state =  self._creator.render()
 
@@ -93,7 +95,8 @@ class GameEngine(pyglet.window.Window):
         if self._state == "playing":
             self._game.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
         elif self._state == "creator":
-            self._creator.on_mouse_drag(x, y, dx, dy, button, modifiers)
+            self._creator.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
+            
     def on_mouse_motion(self, x, y, dx, dy):
         # - Passage des evenements aux autres objets
         if self._state == "menu":
@@ -109,3 +112,12 @@ class GameEngine(pyglet.window.Window):
 
     def start(self):
         pyglet.app.run()
+
+# ---------------------------------
+
+def getDinamicWindowSize():
+    if len(pyglet.app.windows):
+        for window in pyglet.app.windows:
+            return window.width, window.height
+    else:
+        return 0,0

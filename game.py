@@ -173,10 +173,7 @@ class Game(object):
         else:
             self.cinematiqueIsPlaying = self.level.cinematique.run()
 
-
 # ---------------------------------------------------
-
-
 class Camera:
     def __init__(self):
         self.x = 0
@@ -185,7 +182,8 @@ class Camera:
     def setPos(self, x, y):
         self.x = x
         self.y = y
-        pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)
+        
+        width, height = gameEngine.getDinamicWindowSize()
+        
         pyglet.gl.glLoadIdentity()
-        pyglet.gl.glOrtho(x - gameEngine.GameEngine.W_WIDTH/2, x + gameEngine.GameEngine.W_WIDTH/2, y - gameEngine.GameEngine.W_HEIGHT/2, y + gameEngine.GameEngine.W_HEIGHT/2, -1, 1)
-        pyglet.gl.glMatrixMode(pyglet.gl.GL_MODELVIEW)
+        pyglet.gl.glTranslated( width/2 - x,height/2 - y,0)
