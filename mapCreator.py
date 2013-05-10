@@ -101,7 +101,9 @@ class App(object):
         # self.push_handlers(self.keysHandler)
 
         # - variables -
-        self.offsetPos = Pos(-W_WIDTH/2,-W_HEIGHT/2)
+        width, height = gameEngine.getDinamicWindowSize()
+        
+        self.offsetPos = Pos(-width/2,-height/2)
         self.camera = Camera()
         self.cursorPos = Pos(0,0)
         self.selectedPos = Pos(0,0)
@@ -227,7 +229,7 @@ class App(object):
             pyglet.gl.glEnd()
 
             # - Draw the textures in the selection panel -
-            for i in range(self.selectedTexture - 5, self.selectedTexture + 5):
+            for i in range(self.selectedTexture - 5, self.selectedTexture + 6):
                 
                 # Draw the 5 previous textures and the 5 next.
                 # The folowing condition are here to authorise a complete rotation of the 
