@@ -361,7 +361,8 @@ class App(object):
 
             # - Center position to map origin -
             if symbol == key.O:
-                self.offsetPos.set(-W_WIDTH/2,-W_HEIGHT/2)
+            	width, height = gameEngine.getDinamicWindowSize()
+                self.offsetPos.set(-width/2,-height/2)
 
         elif self.editState == "level":
             if symbol == key.ENTER:
