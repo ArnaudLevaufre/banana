@@ -17,11 +17,13 @@ class MainMenu():
         self.playColor = 0
         self.loadColor = 0
         self.quitColor = 0
+        self.editColor = 0
 
         # Texte
         self.playText = pyglet.text.Label("Jouer", font_size=20, batch=self._batch, anchor_x="center", anchor_y="top", x=gameEngine.GameEngine.W_WIDTH / 2, y=self.principalMenuText.y - 160, color=(255, 255, 255, 255))
         self.loadText = pyglet.text.Label("Charger une partie", font_size=20, batch=self._batch, anchor_x="center", anchor_y="top", x=gameEngine.GameEngine.W_WIDTH / 2, y=self.playText.y - 50, color=(255, 255, 255, 255))
-        self.quitText = pyglet.text.Label("Quitter", font_size=20, batch=self._batch, anchor_x="center", anchor_y="top", x=gameEngine.GameEngine.W_WIDTH / 2, y=self.loadText.y - 50, color=(255, 255, 255, 255))
+        self.editText = pyglet.text.Label("Editeur", font_size=20, batch=self._batch, anchor_x="center", anchor_y="top", x=gameEngine.GameEngine.W_WIDTH / 2, y=self.loadText.y - 50, color=(255, 255, 255, 255))
+        self.quitText = pyglet.text.Label("Quitter", font_size=20, batch=self._batch, anchor_x="center", anchor_y="top", x=gameEngine.GameEngine.W_WIDTH / 2, y=self.editText.y - 50, color=(255, 255, 255, 255))
 
         self.returnState = "menu"
 
@@ -48,6 +50,16 @@ class MainMenu():
         pyglet.gl.glVertex2i(self.loadText.x - 180, self.loadText.y - 1)
         pyglet.gl.glEnd()
 
+        # - Edit -
+        pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
+        pyglet.gl.glColor3ub(self.colors[self.editColor][0][0], self.colors[self.editColor][0][1], self.colors[self.editColor][0][2])
+        pyglet.gl.glVertex2i(self.editText.x - 180, self.editText.y - 37)
+        pyglet.gl.glVertex2i(self.editText.x + 180, self.editText.y - 37)
+        pyglet.gl.glColor3ub(self.colors[self.editColor][1][0], self.colors[self.editColor][1][1], self.colors[self.editColor][1][2])
+        pyglet.gl.glVertex2i(self.editText.x + 180, self.editText.y - 1)
+        pyglet.gl.glVertex2i(self.editText.x - 180, self.editText.y - 1)
+        pyglet.gl.glEnd()
+
         #-Quitter
         pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
         pyglet.gl.glColor3ub(self.colors[self.quitColor][0][0], self.colors[self.quitColor][0][1], self.colors[self.quitColor][0][2])
@@ -68,6 +80,8 @@ class MainMenu():
                 self.returnState = "playing"
             elif x > self.loadText.x - 180 and x < self.loadText.x + 180 and y > self.loadText.y - 45 and y < self.loadText.y - 8:
                 self.returnState = "playing"
+            elif x > self.editText.x - 180 and x < self.editText.x + 180 and y > self.editText.y - 45 and y < self.editText.y - 8:
+                self.returnState = "creator"
             elif x > self.quitText.x - 180 and x < self.quitText.x + 180 and y > self.quitText.y - 45 and y < self.quitText.y - 8:
                 self.returnState = "quit"
 
@@ -81,8 +95,16 @@ class MainMenu():
             self.loadColor = 1
         else:
             self.loadColor = 0
-
+        
+        if x > self.editText.x - 180 and x < self.editText.x + 180 and y > self.editText.y - 45 and y < self.editText.y - 8:
+            self.editColor = 1
+        else:
+            self.editColor = 0
+        
         if x > self.quitText.x - 180 and x < self.quitText.x + 180 and y > self.quitText.y - 45 and y < self.quitText.y - 8:
             self.quitColor = 1
         else:
             self.quitColor = 0
+
+    def setDefault(self):
+        self.returnState = "menu"
