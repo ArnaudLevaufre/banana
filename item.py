@@ -37,7 +37,7 @@ class Item(object):
 
     def render(self):
         if self.type == "chest":
-            decal = 1
+            decal = 0
         else:
             decal = math.sin(5 * time.time())
 

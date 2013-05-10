@@ -6,7 +6,7 @@ import mapCreator as mc
 import sys
 
 class GameEngine(pyglet.window.Window):
-    # Constantes de la fenetre    
+    # Constantes de la fenetre
     W_WIDTH = 1024
     W_HEIGHT = 640
 
@@ -96,7 +96,7 @@ class GameEngine(pyglet.window.Window):
             self._game.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
         elif self._state == "creator":
             self._creator.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
-            
+
     def on_mouse_motion(self, x, y, dx, dy):
         # - Passage des evenements aux autres objets
         if self._state == "menu":
@@ -110,14 +110,25 @@ class GameEngine(pyglet.window.Window):
         if self._state == "creator":
             self._creator.on_mouse_scroll(x, y, scroll_x, scroll_y)
 
+    def on_text(self, text):
+        if self._state == "creator":
+            self._creator.on_text(text)
+
+    def on_text_motion(self, motion):
+        if self._state == "creator":
+            self._creator.on_text_motion(motion)
+      
+    def on_text_motion_select(self, motion):
+        if self._state == "creator":
+            self._creator.on_text_motion_select(motion)
+
     def start(self):
         pyglet.app.run()
-
-# ---------------------------------
-
+        
 def getDinamicWindowSize():
-    if len(pyglet.app.windows):
+    if len(pyglet.app.windows) != 0:
         for window in pyglet.app.windows:
             return window.width, window.height
     else:
         return 0,0
+    
