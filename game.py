@@ -12,7 +12,7 @@ import random
 # ---------------------------------------------------
 
 
-class Game:
+class Game(object):
     def __init__(self):
 
         self.lvl = 1
@@ -106,7 +106,6 @@ class Game:
                     elif item.type == "chest":
                         chest = entity.Enemy(item.x - map.Tile.SIZE, item.y - map.Tile.SIZE, "chest", self.map)
                         if random.randint(0, 1) == 1:
-                            print "ennemi"
                             self.level.enemies.append(chest)  # Rajouter le coffre comme monstre
                         else:
                             self.level.items.append(chest.loot())

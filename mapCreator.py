@@ -1,6 +1,6 @@
-#!/usr/bin/python2.7
 #-*- encoding:utf-8 -*-
 
+import gameEngine
 """
 		== DOCUMENTATION [FR] ==
 
@@ -31,10 +31,10 @@ import pyglet.window.key as key
 
 MAP_NAME="EXPORT"
 TILE_SIZE = 64
-TILEMAP_IMAGE_PATH = "tile-map.jpg"
+TILEMAP_IMAGE_PATH = "data/sprites/tile-map.jpg"
 
-W_WIDTH = 1280
-W_HEIGHT = 720
+W_WIDTH = 1024
+W_HEIGHT = 640
 
 
 COLLISIONABLE = [
@@ -50,7 +50,7 @@ COLLISIONABLE = [
 
 # ============================================= #
 
-class App(pyglet.window.Window):
+class App(object):
 	"""
 	============================
 	== Main application class ==
@@ -58,27 +58,10 @@ class App(pyglet.window.Window):
 	"""
 
 	def __init__(self):
-		super(App, self).__init__()
-		
-		# - Window options -
-		self.set_size(W_WIDTH,W_HEIGHT)
-		self.set_vsync(True)
-
-		# - Graphic options -
-		pyglet.gl.glEnable(pyglet.gl.GL_BLEND)
-		pyglet.gl.glBlendFunc(pyglet.gl.GL_SRC_ALPHA, pyglet.gl.GL_ONE_MINUS_SRC_ALPHA)
-		pyglet.gl.glClearColor(0.5, 0.75, 1, 1)
-
-		# - Main update interval - 
-		# With this timers configuration the framerate is about 60FPS
-		# while the input handler is check every 10ms, so here we have
-		# smooth input with decent fps without to much stress on the cpu
-		pyglet.clock.schedule_interval(lambda x : False, 1/60.0)
-		pyglet.clock.schedule_interval(self.refresh, 0.01) 
-
+	
 		# - Input handler -
-		self.keysHandler = pyglet.window.key.KeyStateHandler()
-		self.push_handlers(self.keysHandler)
+		# self.keysHandler = pyglet.window.key.KeyStateHandler()
+		# self.push_handlers(self.keysHandler)
 
 		# - variables -
 		self.offsetPos = Pos(-W_WIDTH/2,-W_HEIGHT/2)
@@ -91,39 +74,38 @@ class App(pyglet.window.Window):
 		self.textures.loadFromImage(TILEMAP_IMAGE_PATH)
 		self.selectedTexture = 10
 		self.batch = pyglet.graphics.Batch()
+		self.returnState = "creator"
 
-	def refresh(self, dt):
+	def refresh(self, dt, keysHandler):
 		"""
 		Check if the user is pressing movement keys. If he does
 		then we update the gloval offsetPos and the camera position
 		"""
-
 		# - Acceleration with spacebar -
-		if self.keysHandler[key.SPACE]:
+		if keysHandler[key.SPACE]:
 			speed = int(1500 * dt)
 		else : speed = int(1000 * dt)
 
 		# - up and down movement -
-		if self.keysHandler[key.Z]:
+		if keysHandler[key.Z]:
 			self.offsetPos.y += speed
-		elif self.keysHandler[key.S]:
+		elif keysHandler[key.S]:
 			self.offsetPos.y -= speed
 
 		# - left and right movement -
-		if self.keysHandler[key.Q]:
+		if keysHandler[key.Q]:
 			self.offsetPos.x -= speed
-		elif self.keysHandler[key.D]:
+		elif keysHandler[key.D]:
 			self.offsetPos.x += speed
 
 		# - Update camera pos -
 		self.camera.setPos(self.offsetPos.x + W_WIDTH/2, self.offsetPos.y + W_HEIGHT/2)
 
-	def on_draw(self):
+	def render(self):
 		"""
 		Update screen.
 		Daw map, grid, interface, texture selector.
 		"""
-		self.clear()
 
 		# - Display of the map -
 		self.batch.draw()
@@ -207,7 +189,6 @@ class App(pyglet.window.Window):
 			# Draw the 5 previous textures and the 5 next.
 			# The folowing condition are here to authorise a complete rotation of the 
 			# texture asset, with no gap of any kind.
-			
 			if i >= len(self.textures.textures):
 				# if index is to big, we fetch the textures from the begining (index 0)
 				sprite = pyglet.sprite.Sprite(self.textures.get(i - len(self.textures.textures)))
@@ -222,9 +203,11 @@ class App(pyglet.window.Window):
 			# Set position
 			sprite.x = self.offsetPos.x + 10
 			sprite.y = y=self.offsetPos.y + W_HEIGHT / 2 - (self.selectedTexture - i) * (TILE_SIZE + 12) - TILE_SIZE/2 * sprite.scale
+
 			# Draw
 			sprite.draw()
-	
+
+		return self.returnState
 
 	def on_mouse_motion(self, x, y, dx, dy):
 		"""
@@ -302,14 +285,12 @@ class App(pyglet.window.Window):
 		# - Export map -
 		if symbol == key.E:
 			exportMap(self.map)
+			self.offsetPos = Pos(0, 0)
+			self.returnState = "menu"
 
 		# - Center position to map origin -
 		if symbol == key.O:
 			self.offsetPos.set(-W_WIDTH/2,-W_HEIGHT/2)
-
-	def run(self):
-		# Launch the pyglet application.
-		pyglet.app.run()
 
 # ----------------------------------
 
@@ -441,8 +422,8 @@ def exportMap(map, mapName=MAP_NAME):
 	except:
 		print "Error while exporting map."
 
-# ==================================
+# # ==================================
 
-if __name__ == "__main__":
-	app = App()
-	app.run()
+# if __name__ == "__main__":
+# 	app = App()
+# 	app.run()
