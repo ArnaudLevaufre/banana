@@ -12,7 +12,7 @@ import random
 # ---------------------------------------------------
 
 
-class Game:
+class Game(object):
     def __init__(self):
 
         self.lvl = 1
