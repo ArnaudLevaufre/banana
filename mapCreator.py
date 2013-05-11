@@ -353,25 +353,33 @@ class App(object):
                 self.editState = "level"
                 self.batch = pyglet.graphics.Batch()
                 self.offsetPos = Pos(0, 0)
-                self.widgets = [
-                                TextWidget('', 200, 100, W_WIDTH - 210, self.batch),
-                                TextWidget('', 200, 60, W_WIDTH - 210, self.batch),
-                                TextWidget('', 200, 20, W_WIDTH - 210, self.batch)
-                               ]
+                width, height = gameEngine.getDinamicWindowSize()
+                self.mainText = pyglet.text.Label("Enregistrer le niveau", font_size=20, batch=self.batch, anchor_x="center", anchor_y="top", x=width / 2, y=height, color=(255, 255, 255, 255))
+                self.nameLabel = pyglet.text.Label("Nom du niveau:", font_size=20, batch=self.batch, anchor_x="left", anchor_y="top", x=10, y=self.mainText.y - 150, color=(255, 255, 255, 255))
+                self.nextLabel = pyglet.text.Label("Niveau suivant:", font_size=20, batch=self.batch, anchor_x="left", anchor_y="top", x=10, y=self.nameLabel.y - 40, color=(255, 255, 255, 255))
+                self.cinLabel = pyglet.text.Label("Cinematique:", font_size=20, batch=self.batch, anchor_x="left", anchor_y="top", x=10, y=self.nextLabel.y - 40, color=(255, 255, 255, 255))
+
+                self.widgets = [TextWidget('', self.nameLabel.x + 250, self.nameLabel.y - 27, 500, self.batch),
+                                TextWidget('', self.nextLabel.x + 250, self.nextLabel.y - 27, 500, self.batch),
+                                TextWidget('', self.cinLabel.x + 250, self.cinLabel.y - 27, 500, self.batch)]
 
             # - Center position to map origin -
             if symbol == key.O:
-            	width, height = gameEngine.getDinamicWindowSize()
-                self.offsetPos.set(-width/2,-height/2)
+                width, height = gameEngine.getDinamicWindowSize()
+                self.offsetPos.set(-width/2, -height/2)
 
         elif self.editState == "level":
             if symbol == key.ENTER:
-                exportMap(self.map)
-                self.returnState = "menu"
+                if self.widgets[0].document.text != "":
+                    exportMap(self.map, self.widgets[0].document.text)
+                    self.returnState = "menu"
+                else:
+                    self.widgets[0].rectangle.vertex_list.colors[:16] = [255, 0, 0, 255] * 4
 
     def on_text(self, text):
         if self.focus and self.editState == "level":
             self.focus.caret.on_text(text)
+            self.widgets[0].rectangle.vertex_list.colors[:16] = [200, 200, 220, 255] * 4
 
     def on_text_motion(self, motion):
         if self.focus:
@@ -396,10 +404,10 @@ class Camera:
     def setPos(self, x, y):
         self.x = x
         self.y = y
-        
+
         width, height = gameEngine.getDinamicWindowSize()
         pyglet.gl.glLoadIdentity()
-        pyglet.gl.glTranslated( width/2 - x,height/2 - y,0)
+        pyglet.gl.glTranslated(width/2 - x, height/2 - y, 0)
 
 # ----------------------------------
 
@@ -413,7 +421,7 @@ class Pos(object):
         self.x = x
         self.y = y
 
-    def set(self, x,y):
+    def set(self, x, y):
         self.x = x
         self.y = y
 
@@ -423,7 +431,7 @@ class Pos(object):
 class TextureList(object):
     """
     == Texture List ==
-    Load and give acces to all the 
+    Load and give acces to all the
     textures from a specified tile
     sheet.
     """
