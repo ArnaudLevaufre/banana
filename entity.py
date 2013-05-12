@@ -23,8 +23,6 @@ class Entity(object):
         self.xVel = xVel
         self.yVel = yVel
 
-    def simulate(self, dt=1):
-        pass
 
     def move(self, x, y, gameMap, dt):
         if not gameMap.collide(self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
@@ -72,7 +70,7 @@ class Enemy(Entity):
                 elif child.tag == "speed":
                     self.speed = float(child.text)
                 elif child.tag == "sprite":
-                      # - Chargement animations
+                    # - Chargement animations
                     self.animation = animation.AnimationGroup()
                     self.animation.createFromImage(pyglet.image.load(child.text), self.width, self.height)
                 elif child.tag == "itemList":
@@ -158,12 +156,7 @@ class Player(Entity):
         self.height = 48
         self.aimVector = vector.Vector2(0, 0)
         self.mouthOffset = 7
-        self.sprite = pyglet.sprite.Sprite(pyglet.image.load("data/sprites/blarg.png"))
-        self.sprite.x = x
-        self.sprite.y = y
         self.type = "player"
-        self.frame = 0
-        self.lastFrameChange = time.time()
 
         # - Tir -
         self.isFiring = False
