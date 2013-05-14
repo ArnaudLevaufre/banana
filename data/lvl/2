@@ -4,14 +4,14 @@
 		<cinematique file="data/cin/1.xml" />
 		<next level="next" />
 		<player skin="blarg.png" x="5" y="8" width="48" height="48" />
-		<map name="001" />
+		<map name="grass-test" />
 	</init>
 	
 	<enemies>
-		<enemy x="7" y="5" type="" />
-				<enemy x="7" y="6" type="" />
-						<enemy x="7" y="7" type="" />
-								<enemy x="7" y="8" type="" />
+		<enemy x="7" y="5" type="base" />
+		<enemy x="7" y="6" type="base" />
+		<enemy x="7" y="7" type="base" />
+		<enemy x="7" y="8" type="base" />
 	</enemies>
 	<items>
 		<chest x="9" y="9" />

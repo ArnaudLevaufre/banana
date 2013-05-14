@@ -11,7 +11,13 @@ class IA(object):
         for b in gameMap.collidable:
             self.gridMap.set_blocked(b)
 
-        self.pf = PathFinder(self.gridMap.successors, self.gridMap.move_cost,
+        self.suc = {}
+        for i in xrange(gameMap.sizeX+1):
+            self.suc[i] = {}
+            for j in xrange(gameMap.sizeY+1):
+                self.suc[i][j] = self.gridMap.successors((i, j))
+
+        self.pf = PathFinder(self.suc, self.gridMap.move_cost,
                              self.gridMap.move_cost)
 
     def _recompute_path(self, xPlayer, yPlayer, xEnt, yEnt):
@@ -172,7 +178,7 @@ class PathFinder(object):
 
             closed_set[curr_node] = curr_node
 
-            for succ_coord in self.successors(curr_node.coord):
+            for succ_coord in self.successors[curr_node.x][curr_node.y]:
                 succ_node = self._Node(succ_coord)
                 succ_node.g_cost = self._compute_g_cost(curr_node, succ_node)
                 succ_node.f_cost = self._compute_f_cost(succ_node, goal)
@@ -226,6 +232,8 @@ class PathFinder(object):
         """
         def __init__(self, coord, g_cost=None, f_cost=None, pred=None):
             self.coord = coord
+            self.x = coord[0]
+            self.y = coord[1]
             self.g_cost = g_cost
             self.f_cost = f_cost
             self.pred = pred

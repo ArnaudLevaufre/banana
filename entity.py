@@ -50,6 +50,7 @@ class Enemy(Entity):
         self.y = int(y)
         self.canMove = True
         self.vector = []
+        self.fireRate = 10
 
         # - IA -
         self.IA = IA.IA(self.x, self.y, gameMap)
@@ -59,6 +60,7 @@ class Enemy(Entity):
         self.load(fileName)
 
     def load(self, fileName):
+        
         if os.path.isfile("data/ennemies/"+fileName+".xml"):
             xmlTree = xml.parse("data/ennemies/"+fileName+".xml")
             root = xmlTree.getroot()
@@ -92,21 +94,25 @@ class Enemy(Entity):
         try:
             self.animation.setFrameRate(4/(self.speed/10))
             # Selection de l'animation en fonction de l'orientation de la vidée.
-            if self.IA.path[-2][0] - self.caseX < 0 and self.IA.path[-2][1] - self.caseY < 0:
-                # Bottom Left
-                self.animation.selectAnimation(3)
-            elif self.IA.path[-2][0] - self.caseX > 0 and self.IA.path[-2][1] - self.caseY < 0:
-                # Bottom Right
-                self.animation.selectAnimation(2)
-
-            elif self.IA.path[-2][0] - self.caseX < 0 and self.IA.path[-2][1] - self.caseY > 0:
-                # Top left
-                self.animation.selectAnimation(1)
-
-            elif self.IA.path[-2][0] - self.caseX > 0 and self.IA.path[-2][1] - self.caseY > 0:
-                # Top right
-                self.animation.selectAnimation(0)
-
+           
+            if self.IA.path[-2][1] - self.caseY < 0:
+                # bottom:
+                if self.IA.path[-2][0] - self.caseX <= 0:
+                    # left
+                    self.animation.selectAnimation(3)
+                elif self.IA.path[-2][0] - self.caseX > 0:
+                    # right
+                    self.animation.selectAnimation(2)
+                    
+            elif  self.IA.path[-2][1] - self.caseY > 0:
+                # top
+                if self.IA.path[-2][0] - self.caseX < 0:
+                    # left
+                    self.animation.selectAnimation(1)
+                elif self.IA.path[-2][0] - self.caseX >= 0:
+                    # right
+                    self.animation.selectAnimation(0)
+                    
             self.animation.render(self.x - self.width/2, self.y - self.height/2)
         except:
             pass

@@ -25,7 +25,8 @@ class Game(object):
         self.bullets = []
         self.cinematiqueIsPlaying = True
         self.tick = 0
-
+        self.gameEnded = False
+        
     def simulate(self, dt, keysHandler):
         self.tick += 1
         if self.cinematiqueIsPlaying is False:
@@ -111,7 +112,6 @@ class Game(object):
                             self.level.items.append(chest.loot())
 
             if self.level.enemies == []:
-                print "FINI"
                 self.lvl += 1
                 self.reload()
             # on repositionne la carte.
@@ -120,17 +120,18 @@ class Game(object):
     def reload(self):
         # On load le level self.lvl
         try:
-            self.camera = Camera()
-            self.ui = ui.UI()
-            self.level = level.Level()
-            self.level.load(str(self.lvl))
-            self.player.x, self.player.y = self.level.player.x, self.level.player.y  # On mets le joueur à la bonne place
-            self.map = self.level.map
-            self.bullets = []
-            self.cinematiqueIsPlaying = True
-            self.tick = 0
+            if not self.gameEnded:
+                self.camera = Camera()
+                self.ui = ui.UI()
+                self.level = level.Level()
+                self.level.load(str(self.lvl))
+                self.player.x, self.player.y = self.level.player.x, self.level.player.y  # On mets le joueur à la bonne place
+                self.map = self.level.map
+                self.bullets = []
+                self.cinematiqueIsPlaying = True
+                self.tick = 0
         except:
-            print "FIN"
+            self.gameEnded = True
 
     def on_mouse_press(self, x, y, button, modifiers):
         if(button == pyglet.window.mouse.LEFT):
