@@ -23,7 +23,6 @@ class Entity(object):
         self.xVel = xVel
         self.yVel = yVel
 
-
     def move(self, x, y, gameMap, dt):
         if not gameMap.collide(self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
             self.x += int(x * dt * self.speed)

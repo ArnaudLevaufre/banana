@@ -91,6 +91,7 @@ class TextWidget(object):
         return (0 < x - self.layout.x < self.layout.width and
                 0 < y - self.layout.y < self.layout.height)
 
+
 class App(object):
     """
     ============================
@@ -127,7 +128,7 @@ class App(object):
         then we update the gloval offsetPos and the camera position
         """
         width, height = gameEngine.getDinamicWindowSize()
-        
+
         if self.editState == "map":
             # - Acceleration with spacebar -
             if keysHandler[key.SPACE]:
@@ -302,11 +303,11 @@ class App(object):
                                 self.map.remove(tile)
                             else:
                                 foundTextureID = tile.texture
-                    
+
                     if foundTextureID is not self.selectedTexture:
                         # apply the texture only if case is empty or as not already the same one.
-                        self.map.append( Tile( self.selectedCase.x, self.selectedCase.y, False, self.selectedTexture, self.textures, self.batch ))
-            
+                        self.map.append(Tile(self.selectedCase.x, self.selectedCase.y, False, self.selectedTexture, self.textures, self.batch))
+
             # - Pick texture -
             if button == pyglet.window.mouse.RIGHT:
                 for tile in self.map:
@@ -328,21 +329,21 @@ class App(object):
             # Call on_mouse_motion when in dragin mod to
             # be able to "paint" the map
             if button == pyglet.window.mouse.LEFT:
-                self.on_mouse_motion(x,y,dx,dy)
-                self.on_mouse_press(x,y,button, modifiers)
+                self.on_mouse_motion(x, y, dx, dy)
+                self.on_mouse_press(x, y, button, modifiers)
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if self.editState == "map":
             """
-            Change the selected texture. 
+            Change the selected texture.
             """
             if scroll_y > 0:
-                if self.selectedTexture + 1 < len(self.textures.textures) :
+                if self.selectedTexture + 1 < len(self.textures.textures):
                     self.selectedTexture += 1
                 else:
                     self.selectedTexture = 0
             else:
-                if self.selectedTexture > 0 :
+                if self.selectedTexture > 0:
                     self.selectedTexture -= 1
                 else:
                     self.selectedTexture = len(self.textures.textures) - 1
@@ -374,8 +375,10 @@ class App(object):
 
         elif self.editState == "level":
             if symbol == key.ENTER:
+                self.focus = None
                 if self.widgets[0].document.text != "":
                     exportMap(self.map, self.widgets[0].document.text)
+                    exportLvl(self.widgets[0].document.text)
                     self.returnState = "menu"
                 else:
                     self.widgets[0].rectangle.vertex_list.colors[:16] = [255, 0, 0, 255] * 4
@@ -388,7 +391,7 @@ class App(object):
     def on_text_motion(self, motion):
         if self.focus:
             self.focus.caret.on_text_motion(motion)
-      
+
     def on_text_motion_select(self, motion):
         if self.focus:
             self.focus.caret.on_text_motion_select(motion)
@@ -478,6 +481,23 @@ class Tile:
 # ----------------------------------
 
 
+def exportLvl(name, nextName=None, cinName=None):
+    """ 
+    === Export Lvl ===
+    Exporte le niveau associé à la map
+    """
+    file = open("data/lvl/" + name, "w+")
+    file.write("<?xml version=\"1.0\" ?>\n")
+    file.write("<init>\n")
+    if cinName is not None:
+        file.write("\t<cinematique file=\"data/cin/"+cinName+".xml\" />\n")
+    if nextName is not None:
+        file.write("\t<next level=\""+nextName+"\" />\n")
+    file.write("\t<player skin=\"blarg.png\" x=\"3\" y=\"3\" <idth=\"48\" height=\"48\" />\n")
+    file.write("\t<map name=\""+name+"\" />\n")
+    file.write("</init>\n")
+
+
 def exportMap(map, mapName=MAP_NAME):
     """
     == Export Map ==
@@ -513,9 +533,9 @@ def exportMap(map, mapName=MAP_NAME):
 
     # - Export into xml file
     try:
-        file = open(mapName, "w+")
+        file = open("data/maps/" + mapName, "w+")
         file.write("<?xml version=\"1.0\" ?>\n")
-        file.write("<map sizeX=\"%i\" sizeY=\"%i\">\n" % ( (maxX - minX)/TILE_SIZE, (maxY - minY)/TILE_SIZE ) )
+        file.write("<map sizeX=\"%i\" sizeY=\"%i\">\n" % ((maxX - minX)/TILE_SIZE, (maxY - minY)/TILE_SIZE))
 
         for tile in map:
             file.write("\t<tile x=\"%i\" y=\"%i\" collision=\"%s\" type=\"%i\" />\n" % (tile.x / TILE_SIZE, tile.y / TILE_SIZE, COLLISIONABLE[tile.texture], tile.texture))

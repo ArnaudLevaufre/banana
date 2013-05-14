@@ -1,6 +1,5 @@
 import heapq
 from collections import defaultdict
-from math import sqrt
 
 
 class IA(object):
@@ -282,7 +281,7 @@ class GridMap(object):
         """ Compute the cost of movement from one coordinate to
             another.
         """
-        return sqrt((c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2)
+        return ((c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2)
 
     def successors(self, c):
         """ Compute the successors of coordinate 'c': all the
