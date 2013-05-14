@@ -6,7 +6,6 @@ import entity
 import ui
 import map
 import level
-import math
 import random
 
 # ---------------------------------------------------
@@ -23,7 +22,11 @@ class Game(object):
         self.map = self.level.map
         self.player = self.level.player
         self.bullets = []
-        self.cinematiqueIsPlaying = True
+
+        if self.level.cinematique is not None:
+            self.cinematiqueIsPlaying = True
+        else:
+            self.cinematiqueIsPlaying = False
         self.tick = 0
 
     def simulate(self, dt, keysHandler):
@@ -66,12 +69,11 @@ class Game(object):
                         loot = ent.loot()
                         if loot is not None:
                             self.level.items.append(loot)
-
-                    if self.tick % 4 == 0 and math.sqrt((self.player.x - ent.x)**2 + (self.player.y - ent.y)**2) < 64*12:
+                    if self.tick % 4 == 0 and ((self.player.x - ent.x)**2 + (self.player.y - ent.y)**2) < 280000 and ent.canMove:
                         ent.IA._recompute_path(self.player.x, self.player.y, ent.caseX, ent.caseY)
                     ent.move((ent.IA.path[-2][0] - ent.caseX), (ent.IA.path[-2][1]-ent.caseY), self.map, dt, ent.IA.path[-2])
-                except:
-                    pass
+                except BaseException, e:
+                    print e
 
             for item in self.level.items:
                 if item.collide(self.player):
@@ -174,6 +176,8 @@ class Game(object):
             self.cinematiqueIsPlaying = self.level.cinematique.run()
 
 # ---------------------------------------------------
+
+
 class Camera:
     def __init__(self):
         self.x = 0
@@ -182,8 +186,8 @@ class Camera:
     def setPos(self, x, y):
         self.x = x
         self.y = y
-        
+
         width, height = gameEngine.getDinamicWindowSize()
-        
+
         pyglet.gl.glLoadIdentity()
-        pyglet.gl.glTranslated( width/2 - x,height/2 - y,0)
+        pyglet.gl.glTranslated(width/2 - x, height/2 - y, 0)

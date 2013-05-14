@@ -13,7 +13,7 @@ class MainMenu():
         self._batch = pyglet.graphics.Batch()
         self.principalMenuText = pyglet.text.Label("Menu principal", font_size=40, batch=self._batch, anchor_x="center", anchor_y="top", x=width / 2, y=height - 10, color=(255, 255, 255, 255))
         self.colors = [[[33, 33, 33], [77, 77, 77]], [[77, 77, 77], [33, 33, 33]]]
-        self.bg = pyglet.sprite.Sprite(pyglet.image.load("data/sprites/fond.png").get_texture())
+        self.bg = pyglet.sprite.Sprite(pyglet.image.load("data/sprites/fond.png"))
 
         self.playColor = 0
         self.loadColor = 0
@@ -38,6 +38,8 @@ class MainMenu():
         self.editText.x, self.editText.y = width/2, self.loadText.y - 50
         self.quitText.x, self.quitText.y = width/2, self.editText.y - 50
 
+        self.bg.y = height / 2 - self.bg.height / 2
+        self.bg.x = width / 2 - self.bg.width / 2
         self.bg.draw()
 
         # - Jouer -
