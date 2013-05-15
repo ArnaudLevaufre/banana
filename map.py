@@ -77,11 +77,19 @@ class Map(object):
         dy = int(y / Tile.SIZE)
         dx = int(x / Tile.SIZE)
         dxw = int((x + w) / Tile.SIZE)
-        dxh = int((y + h) / Tile.SIZE)
+        dyh = int((y + h) / Tile.SIZE)
 
         if (dx, dy) in self.collidable:
+            # coin bas gauche
             return True
-        elif (dxw, dxh) in self.collidable:
+        elif (dx, dyh) in self.collidable:
+            # coin haut gauche
+            return True
+        elif (dxw, dy) in self.collidable:
+            # coin bas droit
+            return True
+        elif (dxw, dyh) in self.collidable:
+            # coin haut droit
             return True
 
         return False
