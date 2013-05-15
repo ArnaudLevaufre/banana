@@ -14,7 +14,6 @@ import random
 class Game(object):
     def __init__(self):
 
-        self.batch = pyglet.graphics.Batch()
         self.lvl = 1
         self.camera = Camera()
         self.ui = ui.UI()
@@ -23,6 +22,7 @@ class Game(object):
         self.map = self.level.map
         self.player = self.level.player
         self.bullets = []
+        self.batch = pyglet.graphics.Batch()
 
         if self.level.cinematique is not None:
             self.cinematiqueIsPlaying = True
