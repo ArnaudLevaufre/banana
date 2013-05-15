@@ -5,6 +5,7 @@ import xml.etree.ElementTree as xml
 
 # ---------------------------------------------------
 
+
 class Map(object):
     """
     La carte est un tableau d'objets Tile
@@ -15,7 +16,7 @@ class Map(object):
         self.map = []
         self.textures = []
         self.sprites = []
-        
+
         # -IA -
         self.sizeX = 0
         self.sizeY = 0
@@ -72,14 +73,15 @@ class Map(object):
 
         :rtype: bool
         """
-        # One does not simply understand what's written there
-        if (int(x/Tile.SIZE), int(y/Tile.SIZE)) in self.collidable:
+
+        dy = int(y / Tile.SIZE)
+        dx = int(x / Tile.SIZE)
+        dxw = int((x + w) / Tile.SIZE)
+        dxh = int((y + h) / Tile.SIZE)
+
+        if (dx, dy) in self.collidable:
             return True
-        elif (int( (x+w) /Tile.SIZE), int(y/Tile.SIZE)) in self.collidable:
-            return True
-        elif (int((x+w) /Tile.SIZE), int((y+h)/Tile.SIZE)) in self.collidable:
-            return True
-        elif (int(x/Tile.SIZE), int((y+h)/Tile.SIZE)) in self.collidable:
+        elif (dxw, dxh) in self.collidable:
             return True
 
         return False

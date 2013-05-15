@@ -16,7 +16,7 @@ class IA(object):
             for j in xrange(gameMap.sizeY+1):
                 self.suc[i][j] = self.gridMap.successors((i, j))
 
-        self.pf = PathFinder(self.gridMap.successors, self.gridMap.move_cost,
+        self.pf = PathFinder(self.suc, self.gridMap.move_cost,
                              self.gridMap.move_cost)
 
     def _recompute_path(self, xPlayer, yPlayer, xEnt, yEnt):
@@ -159,7 +159,6 @@ class PathFinder(object):
         #
         closed_set = {}
 
-        self.iter = 0
         start_node = self._Node(start)
         start_node.g_cost = 0
         start_node.f_cost = self._compute_f_cost(start_node, goal)
@@ -167,8 +166,7 @@ class PathFinder(object):
         open_set = PriorityQueueSet()
         open_set.add(start_node)
 
-        while len(open_set) > 0 or self.iter > 50:
-            self.iter += 1
+        while len(open_set) > 0:
             # Remove and get the node with the lowest f_score from
             # the open set
             #
@@ -179,7 +177,7 @@ class PathFinder(object):
 
             closed_set[curr_node] = curr_node
 
-            for succ_coord in self.successors(curr_node.coord):
+            for succ_coord in self.successors[curr_node.x][curr_node.y]:
                 succ_node = self._Node(succ_coord)
                 succ_node.g_cost = self._compute_g_cost(curr_node, succ_node)
                 succ_node.f_cost = self._compute_f_cost(succ_node, goal)
