@@ -72,31 +72,9 @@ class Map(object):
 
         :rtype: bool
         """
-        # # One does not simply understand what's written there
-        # for tile in self.map:
-        #     if tile.collision:
-        #         if tile.x <= x <= tile.x + Tile.SIZE or tile.x <= x+w <= tile.x + Tile.SIZE:
-        #             # Si la position gauche (x) ou la position droite (x+w)
-        #             # est comprise entre le bord gauche et droite de la tile.
-        #             if tile.y <= y <= tile.y + Tile.SIZE or tile.y <= y+h <= tile.y + Tile.SIZE:
-        #                 # [1] Si la position du bas (y) ou la position du haut (y+h)
-        #                 # est comprise entre le bord haut et le bord bas de la tile.
-        #                 return True
-        #             elif y <= tile.y <= y+h or y <= tile.y + Tile.SIZE <= y+h:
-        #                 # [2] si le bord bas (tile.y) ou le bord haut(tile.y+Tile.SIZE) est
-        #                 # compris entre le position du bas (y) et la position du haut
-        #                 # (y+h) de l'objet à tester.
-        #                 return True
-
-        #         elif x <= tile.x <= x+w or x <= tile.x + Tile.SIZE <= x+w:
-        #             # Si le bord gauche ou le bord droit de la tile est compris
-        #             # entre la position gauche et droite de l'objet à tester.
-        #             if (tile.y <= y <= tile.y + Tile.SIZE) or (tile.y <= y+h <= tile.y + Tile.SIZE):
-        #                 # Voir [1]
-        #                 return True
-        #             elif y <= tile.y <= y+h or y <= tile.y + Tile.SIZE <= y+h:
-        #                 # voir [2]
-        #                 return True
+        # One does not simply understand what's written there
+        if (int((x - 1)/64), int((y + 1)/64)) in self.collidable or (int((x+w - 1)/64), int((y + 1)/64)) in self.collidable or (int((x+w - 1)/64), int((y+h - 1)/64)) in self.collidable or (int((x - 1)/64), int((y+h - 1)/64)) in self.collidable :
+            return True
         return False
 
     def render(self):
