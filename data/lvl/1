@@ -9,26 +9,6 @@
 
 	<enemies>
 		<enemy x="7" y="9" type="base" />
-		<enemy x="7" y="6" type="base" />
-		<enemy x="7" y="7" type="base" />
-		<enemy x="7" y="8" type="base" />		<enemy x="7" y="9" type="base" />
-		<enemy x="7" y="6" type="base" />
-		<enemy x="7" y="7" type="base" />
-		<enemy x="7" y="8" type="base" />		<enemy x="7" y="9" type="base" />
-		<enemy x="7" y="6" type="base" />
-		<enemy x="7" y="7" type="base" />
-		<enemy x="7" y="8" type="base" />		<enemy x="7" y="9" type="base" />
-		<enemy x="7" y="6" type="base" />
-		<enemy x="7" y="7" type="base" />
-		<enemy x="7" y="8" type="base" />		<enemy x="7" y="9" type="base" />
-		<enemy x="7" y="6" type="base" />
-		<enemy x="7" y="7" type="base" />
-		<enemy x="7" y="8" type="base" />		<enemy x="7" y="9" type="base" />
-		<enemy x="7" y="6" type="base" />
-		<enemy x="7" y="7" type="base" />
-		<enemy x="7" y="8" type="base" />		<enemy x="7" y="9" type="base" />
-		<enemy x="7" y="6" type="base" />
-		<enemy x="7" y="7" type="base" />
 		<enemy x="7" y="8" type="base" />
 	</enemies>
 

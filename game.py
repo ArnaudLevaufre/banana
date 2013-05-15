@@ -18,7 +18,7 @@ class Game(object):
         self.camera = Camera()
         self.ui = ui.UI()
         self.level = level.Level()
-        self.level.load("1")
+        self.level.load("2")
         self.map = self.level.map
         self.player = self.level.player
         self.bullets = []
@@ -74,7 +74,7 @@ class Game(object):
                         ent.IA._recompute_path(self.player.x, self.player.y, ent.caseX, ent.caseY)
                     ent.move((ent.IA.path[-2][0] - ent.caseX), (ent.IA.path[-2][1]-ent.caseY), self.map, dt, ent.IA.path[-2])
                 except BaseException, e:
-                    print e
+                    pass
 
             for item in self.level.items:
                 if item.collide(self.player):
