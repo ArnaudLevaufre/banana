@@ -42,6 +42,7 @@ class Enemy(Entity):
         # - Constantes -
         self.type = "enemy"
         self.name = fileName
+        self.bulletModel = pyglet.image.load("data/sprites/mucus.png")
 
         # - Mouvements -
         self.blocked = False
@@ -135,10 +136,10 @@ class Enemy(Entity):
     def hit(self):
         self.hp -= 10
 
-    def shoot(self, x, y, bulletList):
+    def shoot(self, x, y, bulletList, batch):
         if random.random() < self.fireRate/200:
             aimDirection = vector.Vector2(x - self.x, y - self.y).getUnitary()
-            bulletList.append(Bullet(self.x, self.y, aimDirection.x * self.bulletSpeed, aimDirection.y * self.bulletSpeed, self))
+            bulletList.append(Bullet(self.x, self.y, aimDirection.x * self.bulletSpeed, aimDirection.y * self.bulletSpeed, self, self.bulletModel, batch))
 
     def loot(self):
         objet = random.randint(0, len(self.itemList) - 1)
@@ -182,7 +183,10 @@ class Player(Entity):
         self.regenMucus = 0.01
 
         self.increasedMucus = 0
-
+        
+        # model des bullets
+        self.bulletModel = pyglet.image.load("data/sprites/mucus.png")
+        
         # - Chargement animations
         self.animation = animation.AnimationGroup()
         self.animation.createFromImage(pyglet.image.load("data/sprites/blarg.png"), self.width, self.height)
@@ -209,10 +213,10 @@ class Player(Entity):
         self.aimVector.set(x-centerX, y-centerY)
         self.aimVector = self.aimVector.getUnitary()
 
-    def shoot(self, bullets):
+    def shoot(self, bullets, batch):
         if self.isFiring and time.time() - self.lastShoot > 1/self.fireRate and self.mucus > 0:
             self.lastShoot = time.time()
-            bullets.append(Bullet(self.x, self.y + self.mouthOffset, self.aimVector.x * 1000, self.aimVector.y * 1000, self))
+            bullets.append(Bullet(self.x, self.y + self.mouthOffset, self.aimVector.x * 1000, self.aimVector.y * 1000, self, self.bulletModel, batch))
             self.mucus -= 1
 
     def hit(self, attack):
@@ -253,7 +257,7 @@ class Player(Entity):
 class Bullet(Entity):
     SIZE = 10
 
-    def __init__(self, x, y, xVel, yVel, owner):
+    def __init__(self, x, y, xVel, yVel, owner, image, batch):
         # - Objet -
         super(Bullet, self).__init__(x, y, xVel, yVel)
 
@@ -265,18 +269,24 @@ class Bullet(Entity):
         self.initX = x
         self.initY = y
         self.owner = owner
+        self.sprite = pyglet.sprite.Sprite(image, batch=batch)
 
     def simulate(self, gameMap, player, ennemies, dt=0.1):
         norm = math.sqrt((self.initX - self.x)**2 + (self.initY - self.y)**2)
         if not gameMap.collide(self.x - self.width/2 + self.xVel * dt * self.speed, self.y - self.height/2 + self.yVel * dt * self.speed, self.width, self.height) and norm < self.range:
             self.x += int(self.xVel * dt * self.speed)
             self.y += int(self.yVel * dt * self.speed)
+            
+            self.sprite.x = self.x - self.SIZE/2
+            self.sprite.y = self.y - self.SIZE/2
         else:
             return False
+        
         for en in ennemies:
             if self.collide(en):
                 en.hit()
                 return False
+        
         if self.collide(player):
             player.hit(self.owner.attack)
             return False

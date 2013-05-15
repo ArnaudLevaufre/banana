@@ -74,22 +74,31 @@ class Map(object):
         :rtype: bool
         """
 
-        dy = int(y / Tile.SIZE)
+        # Ici nous recherchon a obtenir un impact minimal
+        # sur les performances, c'est pourqu'oi nous
+        # retardons au maximum la déclarations de variables.
+        # dans certains cas, on économise donc 1 ou 2 déclarations
+
+        # dx, dy, dxw, dyh représent des coordonnées en terme de case.
         dx = int(x / Tile.SIZE)
-        dxw = int((x + w) / Tile.SIZE)
-        dyh = int((y + h) / Tile.SIZE)
+        dy = int(y / Tile.SIZE)
 
         if (dx, dy) in self.collidable:
             # coin bas gauche
             return True
-        elif (dx, dyh) in self.collidable:
-            # coin haut gauche
-            return True
-        elif (dxw, dy) in self.collidable:
+        
+        dxw = int((x + w) / Tile.SIZE)
+        if (dxw, dy) in self.collidable:
             # coin bas droit
             return True
-        elif (dxw, dyh) in self.collidable:
+
+        dyh = int((y + h) / Tile.SIZE)
+        if (dxw, dyh) in self.collidable:
             # coin haut droit
+            return True
+
+        if (dx, dyh) in self.collidable:
+            # coin haut gauche
             return True
 
         return False

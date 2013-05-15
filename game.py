@@ -14,6 +14,7 @@ import random
 class Game(object):
     def __init__(self):
 
+        self.batch = pyglet.graphics.Batch()
         self.lvl = 1
         self.camera = Camera()
         self.ui = ui.UI()
@@ -33,6 +34,7 @@ class Game(object):
     def simulate(self, dt, keysHandler):
         self.tick += 1
         if self.cinematiqueIsPlaying is False:
+            
             self.playerdx, self.playerdy = self.player.x, self.player.y
 
             if keysHandler[key.Z]:
@@ -45,16 +47,18 @@ class Game(object):
             elif keysHandler[key.D]:
                 self.player.move(10, 0, self.map, dt)
 
+            self.playerdx, self.playerdy = self.player.x - self.playerdx, self.player.y - self.playerdy
+
+
             if keysHandler[key.TAB]:
                 self.ui.toggleMenu(True)
             else:
                 self.ui.toggleMenu(False)
 
-            self.playerdx = self.player.x - self.playerdx
-            self.playerdy = self.player.y - self.playerdy
 
             # tir du joueur
-            self.player.shoot(self.bullets)
+            if self.player.isFiring:
+                self.player.shoot(self.bullets, self.batch)
 
             self.player.increaseMucus()
 
@@ -62,8 +66,11 @@ class Game(object):
                 if bullet.simulate(self.map, self.player, self.level.enemies, dt) is False:
                     self.bullets.remove(bullet)
 
+            targetPosX = self.player.x + self.playerdx * 10
+            targetPosY = self.player.y + self.playerdy * 10
+            
             for ent in self.level.enemies:  # Simulation des ennemis
-                ent.shoot(self.player.x + self.playerdx*10, self.player.y + self.playerdy * 10, self.bullets)
+                ent.shoot(targetPosX, targetPosY, self.bullets, self.batch)
                 try:
                     if ent.hp < 0:  # Si l'ennemi est mort
                         self.level.enemies.remove(ent)
@@ -136,7 +143,7 @@ class Game(object):
             self.gameEnded = True
 
     def on_mouse_press(self, x, y, button, modifiers):
-        if(button == pyglet.window.mouse.LEFT):
+        if button == pyglet.window.mouse.LEFT:
             self.player.isFiring = True
             self.player.aim(x, y)
 
@@ -154,25 +161,15 @@ class Game(object):
     def render(self):
         if self.cinematiqueIsPlaying is False:
             self.map.render()
-            self.ui.render(self.camera.x, self.camera.y, self.player)
             self.player.render()
-
-            for bullet in self.bullets:
-                if self.player.x - gameEngine.GameEngine.W_WIDTH/2 < bullet.x < self.player.x + gameEngine.GameEngine.W_WIDTH/2 and self.player.y - gameEngine.GameEngine.W_HEIGHT/2 < bullet.y < self.player.y + gameEngine.GameEngine.W_WIDTH/2:
-                    pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
-                    pyglet.gl.glVertex2d(bullet.x - bullet.SIZE / 2, bullet.y - bullet.SIZE / 2)
-                    pyglet.gl.glVertex2d(bullet.x - bullet.SIZE / 2 + entity.Bullet.SIZE, bullet.y - bullet.SIZE / 2)
-                    pyglet.gl.glVertex2d(bullet.x - bullet.SIZE / 2 + entity.Bullet.SIZE, bullet.y - bullet.SIZE/2 + entity.Bullet.SIZE)
-                    pyglet.gl.glVertex2d(bullet.x - bullet.SIZE / 2, bullet.y - bullet.SIZE/2 + entity.Bullet.SIZE)
-                    pyglet.gl.glEnd()
-                else:
-                    self.bullets.remove(bullet)
+            self.batch.draw()
 
             for ent in self.level.enemies:
                 ent.render()
 
             for item in self.level.items:
                 item.render()
+            self.ui.render(self.camera.x, self.camera.y, self.player)
         else:
             self.cinematiqueIsPlaying = self.level.cinematique.run()
 
