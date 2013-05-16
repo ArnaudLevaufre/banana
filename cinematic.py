@@ -3,6 +3,7 @@ import pyglet
 import gameEngine
 import xml.etree.ElementTree as ET
 import time
+import animation
 
 
 class Cinematic(object):
@@ -65,7 +66,7 @@ class Cinematic(object):
             elmt.animate(self.dt)  # On anime tous les elements
         self.mainDrawingBatch.draw()
         self.lastOnDrawTime = time.time()
-        if(int(self.time) > self.endTime):  # Fin de la cinematique
+        if(float(self.time) > self.endTime):  # Fin de la cinematique
             return False
 
 
@@ -101,13 +102,14 @@ class Border(pyglet.sprite.Sprite):
         # - Temps -
         self.time = 0
 
+        # - Vitesse -
+        self.velY = int(velY)
+
         # - Taille -
         if(height is None):
             height = self.W_HEIGHT/4
         if(width is None):
             width = self.W_WIDTH
-
-        # - Vitesse -
 
         # - Image -
         super(Border, self).__init__(pyglet.image.create(width, height, pyglet.image.SolidColorImagePattern((0, 0, 0, 255))))
@@ -168,9 +170,9 @@ class Border(pyglet.sprite.Sprite):
 
 # -----------------------------------------------------------
 
-class Image(pyglet.sprite.Sprite):
+class Image():
 
-    def __init__(self, batch, ch=None, path=None, x=250, y=250):
+    def __init__(self, batch, ch=None, path=None, x=250, y=250, w=48, h=48):
         """
         Dessine une image "path" a la position (x,y)
         Si il y a une balise <move x="350" y="325" timeStart="2" timeStop="3"/>
@@ -188,18 +190,27 @@ class Image(pyglet.sprite.Sprite):
         :type x: str | int
         :type y: str | int
         """
-        # - Objets -
-        self._batch = batch
-        super(Image, self).__init__(pyglet.image.load(path))
+        self.animation = animation.AnimationGroup()
+        self.animation.createFromImage(pyglet.image.load(path), int(w), int(h))
+        self.animation.setFrameRate(4.0/50.0)
+        self.animation.selectAnimation(0)
+        self.animation.setIdleState()
 
         # - Position -
         self.x = int(x)
         self.y = int(y)
-        self.actualX = self.x  # On sauvegarde x et y
-        self.actualY = self.y
-
+        self.width = int(w)
+        self.height = int(h)
+        # Pour garder une vitesse constante
+        self.startX = self.x
+        self.startY = self.y
         # - Temps -
         self.time = 0
+
+        # - Animation -
+        self.moveNb = 0
+        self.mvtDone = False
+        self.elmt = ""
 
         # - Parsage des enfants avec des petits pois -
         self.toDoMovement = {}
@@ -209,23 +220,31 @@ class Image(pyglet.sprite.Sprite):
                 for i in elmt.attrib:
                     attrib[i] = elmt.attrib[i]
                 self.toDoMovement[elmt.attrib['timeStart']] = attrib  # Alors on le mets dans le todo
+        self.keylist = self.toDoMovement.keys()
+        self.keylist.sort()
 
     def animate(self, dt):
         """
         Anime le tout selon les parametres definis auparavant
         """
+
         self.time += dt
-        delete = ""
+        try:
+            self.elmt = self.toDoMovement[self.keylist[self.moveNb]]
 
-        for elmt in self.toDoMovement:  # On regarde la liste de todo
-            if(int(self.toDoMovement[elmt]['timeStop']) >= int(self.time) >= int(elmt)):  # Si on est entre le timeStart et le timeStop d'un move, on bouge l'image
-                    self.x += dt * (int(self.toDoMovement[str(int(elmt))]['x']) - self.actualX) / (int(self.toDoMovement[str(int(elmt))]['timeStop']) - int(self.toDoMovement[str(int(elmt))]['timeStart']))
-                    self.y += dt * (int(self.toDoMovement[str(int(elmt))]['y']) - self.actualY) / (int(self.toDoMovement[str(int(elmt))]['timeStop']) - int(self.toDoMovement[str(int(elmt))]['timeStart']))
+            if(float(self.elmt['timeStop']) >= float(self.time) >= float(self.elmt['timeStart'])):
+                self.animation.unsetIdleState()
+                self.mvtDone = True
+                self.x += dt * ((int(self.elmt['x']) - self.startX)) / (int(self.elmt['timeStop']) - int(self.elmt['timeStart']))
+                self.y += dt * ((int(self.elmt['y']) - self.startY)) / (int(self.elmt['timeStop']) - int(self.elmt['timeStart']))
+            else:
+                if self.mvtDone:
+                    self.startX = self.x
+                    self.startY = self.y
+                    self.animation.setIdleState()
+                    self.moveNb += 1
+                    self.mvtDone = False
 
-            if(int(self.time) >= int(self.toDoMovement[elmt]['timeStop'])):  # Si on a depassé le timeStop, la tache est faite, on prepare la deletion de cette derniere
-                self.actualX = self.x  # Et on enregistre la nouvelle position
-                self.actualY = self.y
-                delete = str(int(elmt))
-
-        if(delete in self.toDoMovement):  # On delete le todo
-            self.toDoMovement.pop(delete)
+            self.animation.render(self.x, self.y)
+        except:
+            pass

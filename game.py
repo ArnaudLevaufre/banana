@@ -28,6 +28,7 @@ class Game(object):
             self.cinematiqueIsPlaying = True
         else:
             self.cinematiqueIsPlaying = False
+
         self.tick = 0
         self.gameEnded = False
         
