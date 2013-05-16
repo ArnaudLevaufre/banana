@@ -1,19 +1,4 @@
 <?xml version="1.0"?>
 <cin>
-	<border velY = "250" pos = "bot" maxY = "-2">
-		<textChange time = "1">Glarg: Je suis stupide</textChange>
-		<textChange time ="5">Glargette: Mais non, juste idiot</textChange>
-		<textChange time ="7">Glarg: TA GUEULE CONNASSE !!!!</textChange>
-	</border>
-	<border velY = "220" pos = "top" maxY = "540"/>
-	<image path="data/sprites/blarg.png" x="250" y="250" w="48" h="48">
-		<move x="350" y="325" timeStart="2" timeStop="3"/> 
-		<move x="350" y="395" timeStart="4" timeStop="5"/> 
-		<move x="350" y="335" timeStart="8" timeStop="9"/> 
-	</image>
-	<image path="data/sprites/blarg.png" x="250" y="250" w="48" h="48">
-		<move x="480" y="325" timeStart="2" timeStop="3"/> 
-		<move x="333" y="395" timeStart="4" timeStop="5"/> 
-		<move x="275" y="335" timeStart="8" timeStop="9"/> 
-	</image>
+<end time="1" />
 </cin>

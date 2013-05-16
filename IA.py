@@ -3,19 +3,9 @@ from collections import defaultdict
 
 
 class IA(object):
-    def __init__(self, x, y, gameMap):
-
-        self.gridMap = GridMap(gameMap.sizeX+1, gameMap.sizeY+1)
-
-        for b in gameMap.collidable:
-            self.gridMap.set_blocked(b)
-
-        self.suc = {}
-        for i in xrange(gameMap.sizeX+1):
-            self.suc[i] = {}
-            for j in xrange(gameMap.sizeY+1):
-                self.suc[i][j] = self.gridMap.successors((i, j))
-
+    def __init__(self, x, y, gameMap, gridMap, suc):
+        self.gridMap = gridMap
+        self.suc = suc
         self.pf = PathFinder(self.suc, self.gridMap.move_cost,
                              self.gridMap.move_cost)
 

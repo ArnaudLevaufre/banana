@@ -115,7 +115,7 @@ class Game(object):
                     elif item.type == "resistance":
                         self.player.resistance += item.value
                     elif item.type == "chest":
-                        chest = entity.Enemy(item.x - map.Tile.SIZE, item.y - map.Tile.SIZE, "chest", self.map)
+                        chest = entity.Enemy(item.x - map.Tile.SIZE, item.y - map.Tile.SIZE, "chest", self.map, self.level.gridMap, self.level.suc)
                         if random.randint(0, 1) == 1:
                             self.level.enemies.append(chest)  # Rajouter le coffre comme monstre
                         else:

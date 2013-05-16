@@ -4,6 +4,7 @@ import entity
 import cinematic
 import map
 import item
+import IA
 
 
 class Level(object):
@@ -30,10 +31,21 @@ class Level(object):
             self.cinematique = cinematic.Cinematic(xml.getElementsByTagName("cinematique")[0].getAttribute("file"))
             self.nextLevelName = xml.getElementsByTagName("next")[0].getAttribute("level")
             self.map.load(xml.getElementsByTagName("map")[0].getAttribute("name"))
+            # GRIDMAP Pour l'IA
+            self.gridMap = IA.GridMap(self.map.sizeX+1, self.map.sizeY+1)
+
+            for b in self.map.collidable:
+                self.gridMap.set_blocked(b)
+
+            self.suc = {}
+            for i in xrange(self.map.sizeX+1):
+                self.suc[i] = {}
+                for j in xrange(self.map.sizeY+1):
+                    self.suc[i][j] = self.gridMap.successors((i, j))
 
             enemies = xml.getElementsByTagName("enemy")
             for e in enemies:
-                self.enemies.append(entity.Enemy(int(e.getAttribute("x")) * map.Tile.SIZE + 32, int(e.getAttribute("y")) * map.Tile.SIZE + 32, e.getAttribute("type"), self.map))
+                self.enemies.append(entity.Enemy(int(e.getAttribute("x")) * map.Tile.SIZE + 32, int(e.getAttribute("y")) * map.Tile.SIZE + 32, e.getAttribute("type"), self.map, self.gridMap, self.suc))
 
             items = xml.getElementsByTagName("chest")
             for i in items:

@@ -35,7 +35,7 @@ class Enemy(Entity):
     """
     Ennemie pour tester l'IA, il essaie juste de toucher le joueur
     """
-    def __init__(self, x, y, fileName, gameMap):
+    def __init__(self, x, y, fileName, gameMap, gridMap, suc):
         # - Objets -
         Entity.__init__(self, x, y)
 
@@ -53,7 +53,7 @@ class Enemy(Entity):
         self.fireRate = 10
 
         # - IA -
-        self.IA = IA.IA(self.x, self.y, gameMap)
+        self.IA = IA.IA(self.x, self.y, gameMap, gridMap, suc)
         self.caseX = self.x / 64
         self.caseY = self.y / 64
 
