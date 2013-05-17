@@ -242,6 +242,7 @@ class PathFinder(object):
         def __repr__(self):
             return self.__str__()
 
+
 class GridMap(object):
     """ Represents a rectangular grid map. The map consists of
         nrows X ncols coordinates (squares). Some of the squares

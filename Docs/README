@@ -1,0 +1,64 @@
+Prérequis:  - Python 2.7
+			- Pyglet
+Le jeu n'a été testé que sous linux (archlinux, xubuntu) avec python 2.7 32 bits et pyglet 1.1.4
+
+Commandes: Pour se déplacer, il faut utiliser les touches Z,Q,S,D.
+	Z : Avancer
+	Q : Aller à gauche
+	S : Reculer
+	D : Aller à droite
+
+Créér ses niveaux: 
+
+Pour créer ses propres niveaux, il est impératif de comprendre le fonctionnement du XML.
+
+Les fichiers lvl. Placés dans data/lvl, ils contiennent le nom de la carte, le nom de la cinématique utilisé, l'image du joueur, sa position de départ ainsi que le nom du niveau suivant.
+
+Un exemple:
+
+<?xml version="1.0" ?>
+<level>
+	<init>
+		<cinematique file="data/cin/1.xml" /> <!-- Le chemin relatif de la cinématique par rapport au dossier ou se situe main.py -->
+		<next level="next" /> <!-- Le nom du fichier contenant le niveau suivant -->
+		<player skin="blarg.png" x="25" y="25" width="48" height="48" /> <!-- L'image representant le joueur, sa position en x et en y, puis la taille de l'image -->
+		<map name="arena" /> <!-- Le nom de la carte à utiliser -->
+	</init>
+</level>
+
+Les fichiers de cinématique. Placés dans data/cin, ils contiennent de quoi créer une cinématique simple. On peut afficher du texte, faire bouger des images.
+
+Un exemple:
+
+<?xml version="1.0"?>
+<cin>
+	<border velY = "250" pos = "bot" maxY = "-2"> <!-- Bordure noire du bas, sa vitesse de montée ainsi que la position maximale du bas de la bordure -->
+		<textChange time = "1">Texte 1</textChange> <!-- On peut afficher du texte, ici le texte apparait à la seconde 1 -->
+		<textChange time ="5">Texte 2</textChange> <!-- Puis à la seconde 5 -->
+		<textChange time ="7">Texte 3</textChange>
+	</border>
+	<border velY = "220" pos = "top" maxY = "540"/> <!-- Une bordure en haut, pour faire joli -->
+
+	<image path="data/sprites/blarg.png" x="250" y="250" h="48" w="48"> <!-- Une image(animation) on renseigne le chemin, relatif à l'endroit ou se situe main.py, sa position de depart (en pixels), et la taille d'un sprite. -->
+		<move x="350" y="325" timeStart="2" timeStop="3"/> <!-- On renseigne les mouvements, avec la position finale, le temps en secondes de départ et d'arrivé -->
+		<move x="350" y="395" timeStart="4" timeStop="5"/> 
+		<move x="350" y="335" timeStart="6" timeStop="7"/> 
+	</image>
+
+	<image path="data/sprites/blarg.png" x="250" y="250" h="48" w="48">
+		<move x="480" y="325" timeStart="2" timeStop="3"/> 
+		<move x="333" y="395" timeStart="4" timeStop="5"/> 
+		<move x="275" y="335" timeStart="6" timeStop="7"/> 
+	</image>
+
+	<end time="8" /> <!-- Enfin, on indique le temps de fin -->
+</cin>
+
+Le fichier map, il contient la totalité des cases de la carte, ainsi que leur état(passable ou non)
+
+Un exemple:
+<?xml version="1.0" ?>
+<map sizeX="11" sizeY="9"> <!-- On indique la taille de la carte en x et y -->
+	<tile x="4" y="8" collision="False" type="8" /><!-- Une case, representée par sa position en x, en y, son etat: collision ="False" veut dire que l'on peut passer dessus et son type, qui represent son aspect -->
+	<tile x="3" y="8" collision="True" type="1" /> <!-- Une autre case, que l'on ne peut passer cette fois ci -->
+</map>

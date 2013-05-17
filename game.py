@@ -31,11 +31,11 @@ class Game(object):
 
         self.tick = 0
         self.gameEnded = False
-        
+
     def simulate(self, dt, keysHandler):
         self.tick += 1
         if self.cinematiqueIsPlaying is False:
-            
+
             self.playerdx, self.playerdy = self.player.x, self.player.y
 
             if keysHandler[key.Z]:
@@ -50,12 +50,10 @@ class Game(object):
 
             self.playerdx, self.playerdy = self.player.x - self.playerdx, self.player.y - self.playerdy
 
-
             if keysHandler[key.TAB]:
                 self.ui.toggleMenu(True)
             else:
                 self.ui.toggleMenu(False)
-
 
             # tir du joueur
             if self.player.isFiring:
@@ -69,7 +67,7 @@ class Game(object):
 
             targetPosX = self.player.x + self.playerdx * 10
             targetPosY = self.player.y + self.playerdy * 10
-            
+
             for ent in self.level.enemies:  # Simulation des ennemis
                 ent.shoot(targetPosX, targetPosY, self.bullets, self.batch)
                 try:

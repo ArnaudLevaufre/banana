@@ -10,6 +10,8 @@ import item
 import vector
 import animation
 import xml.etree.ElementTree as xml
+
+
 # ---------------------------------------------------
 
 
@@ -60,7 +62,7 @@ class Enemy(Entity):
         self.load(fileName)
 
     def load(self, fileName):
-        
+
         if os.path.isfile("data/ennemies/"+fileName+".xml"):
             xmlTree = xml.parse("data/ennemies/"+fileName+".xml")
             root = xmlTree.getroot()
@@ -94,7 +96,7 @@ class Enemy(Entity):
         try:
             self.animation.setFrameRate(4/(self.speed/10))
             # Selection de l'animation en fonction de l'orientation de la vidée.
-           
+
             if self.IA.path[-2][1] - self.caseY < 0:
                 # bottom:
                 if self.IA.path[-2][0] - self.caseX <= 0:
@@ -103,8 +105,8 @@ class Enemy(Entity):
                 elif self.IA.path[-2][0] - self.caseX > 0:
                     # right
                     self.animation.selectAnimation(2)
-                    
-            elif  self.IA.path[-2][1] - self.caseY > 0:
+
+            elif self.IA.path[-2][1] - self.caseY > 0:
                 # top
                 if self.IA.path[-2][0] - self.caseX < 0:
                     # left
@@ -112,7 +114,7 @@ class Enemy(Entity):
                 elif self.IA.path[-2][0] - self.caseX >= 0:
                     # right
                     self.animation.selectAnimation(0)
-                    
+
             self.animation.render(self.x - self.width/2, self.y - self.height/2)
         except:
             pass
@@ -121,7 +123,7 @@ class Enemy(Entity):
         if self.canMove:
                 self.vector = [x, y]
                 self.canMove = False
-        if not gameMap.collide(self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height) and sum(self.vector)**2 == 1:
+        if not gameMap.collide(self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
             # Si il ne collisione pas, il se déplace normalement
             self.x += int(self.vector[0] * dt * self.speed)
             self.y += int(self.vector[1] * dt * self.speed)
@@ -183,10 +185,10 @@ class Player(Entity):
         self.regenMucus = 0.01
 
         self.increasedMucus = 0
-        
+
         # model des bullets
         self.bulletModel = pyglet.image.load("data/sprites/mucus.png")
-        
+
         # - Chargement animations
         self.animation = animation.AnimationGroup()
         self.animation.createFromImage(pyglet.image.load("data/sprites/blarg.png"), self.width, self.height)
@@ -206,7 +208,7 @@ class Player(Entity):
         par le centre de l'écran et le cursor par sa norme.
         """
         width, height = gameEngine.getDinamicWindowSize()
-        
+
         centerX = width/2
         centerY = height/2 + self.mouthOffset
 
@@ -276,17 +278,17 @@ class Bullet(Entity):
         if not gameMap.collide(self.x - self.width/2 + self.xVel * dt * self.speed, self.y - self.height/2 + self.yVel * dt * self.speed, self.width, self.height) and norm < self.range:
             self.x += int(self.xVel * dt * self.speed)
             self.y += int(self.yVel * dt * self.speed)
-            
+
             self.sprite.x = self.x - self.SIZE/2
             self.sprite.y = self.y - self.SIZE/2
         else:
             return False
-        
+
         for en in ennemies:
             if self.collide(en):
                 en.hit()
                 return False
-        
+
         if self.collide(player):
             player.hit(self.owner.attack)
             return False
