@@ -107,12 +107,12 @@ class MainMenu():
             self.loadColor = 1
         else:
             self.loadColor = 0
-        
+
         if x > self.editText.x - 180 and x < self.editText.x + 180 and y > self.editText.y - 45 and y < self.editText.y - 8:
             self.editColor = 1
         else:
             self.editColor = 0
-        
+
         if x > self.quitText.x - 180 and x < self.quitText.x + 180 and y > self.quitText.y - 45 and y < self.quitText.y - 8:
             self.quitColor = 1
         else:

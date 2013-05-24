@@ -54,12 +54,6 @@ class GameEngine(pyglet.window.Window):
         elif self._state == "creator" and self._creator:
             self._creator.refresh(dt, self.keysHandler)
 
-    def on_key_press(self, symbol, modifier):
-        if symbol == pyglet.window.key.F1 and self._state == "playing":
-            self._game.ui.toggleDevTool()
-        elif self._state == "creator":
-            self._creator.on_key_press(symbol, modifier)
-
     def on_draw(self):
         self.clear()
         # ----------------------------
@@ -109,6 +103,14 @@ class GameEngine(pyglet.window.Window):
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if self._state == "creator":
             self._creator.on_mouse_scroll(x, y, scroll_x, scroll_y)
+
+    def on_key_press(self, symbol, modifier):
+        if symbol == pyglet.window.key.F1 and self._state == "playing":
+            self._game.ui.toggleDevTool()
+        elif self._state == "creator":
+            self._creator.on_key_press(symbol, modifier)
+        elif self._state == "playing":
+            self._game.on_key_press(symbol, modifier)
 
     def on_text(self, text):
         if self._state == "creator":

@@ -86,7 +86,7 @@ class Map(object):
         if (dx, dy) in self.collidable:
             # coin bas gauche
             return True
-        
+
         dxw = int((x + w) / Tile.SIZE)
         if (dxw, dy) in self.collidable:
             # coin bas droit

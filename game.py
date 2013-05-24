@@ -14,7 +14,7 @@ import random
 class Game(object):
     def __init__(self):
 
-        self.lvl = 1
+        self.lvl = 2
         self.camera = Camera()
         self.ui = ui.UI()
         self.level = level.Level()
@@ -29,13 +29,15 @@ class Game(object):
         else:
             self.cinematiqueIsPlaying = False
 
+        self.deadLabel = pyglet.text.Label("GAME OVER !\n\nPRESS ANY KEY TO CONTINUE", font_size=20, anchor_x="center", width=500, multiline=True, anchor_y="center", color=(255, 255, 255, 255))
+
         self.tick = 0
         self.gameEnded = False
+        self.dead = False
 
     def simulate(self, dt, keysHandler):
         self.tick += 1
-        if self.cinematiqueIsPlaying is False:
-
+        if self.cinematiqueIsPlaying is False and not self.dead:
             self.playerdx, self.playerdy = self.player.x, self.player.y
 
             if keysHandler[key.Z]:
@@ -54,6 +56,11 @@ class Game(object):
                 self.ui.toggleMenu(True)
             else:
                 self.ui.toggleMenu(False)
+
+            # Mort ?
+            if self.player.hp <= 0:
+                pyglet.gl.glClearColor(0, 0, 0, 1)
+                self.dead = True
 
             # tir du joueur
             if self.player.isFiring:
@@ -79,15 +86,15 @@ class Game(object):
                     if self.tick % 4 == 0 and ((self.player.x - ent.x)**2 + (self.player.y - ent.y)**2) < 280000 and ent.canMove:
                         ent.IA._recompute_path(self.player.x, self.player.y, ent.caseX, ent.caseY)
                     ent.move((ent.IA.path[-2][0] - ent.caseX), (ent.IA.path[-2][1]-ent.caseY), self.map, dt, ent.IA.path[-2])
-                except BaseException, e:
+                except:
                     pass
 
             for item in self.level.items:
                 if item.collide(self.player):
                     self.level.items.remove(item)
                     if item.type == "shield":
-                        self.player.shieldCapacity += item.value
-                        self.player.shield += item.value
+                        self.player.shieldCapacity = item.value
+                        self.player.shield = item.value
                     elif item.type == "life":
                         if self.player.hp + item.value > self.player.maxHp:
                             self.player.hp = self.player.maxHp
@@ -157,8 +164,15 @@ class Game(object):
     def on_mouse_motion(self, x, y, dx, dy):
         self.player.aim(x, y)
 
+    def on_key_press(self, symbol, modifier):
+        if self.dead:
+            pyglet.gl.glClearColor(0.5, 0.75, 1, 1)
+            self.dead = False
+            self.reload()
+            self.player.hp = self.player.maxHp
+
     def render(self):
-        if self.cinematiqueIsPlaying is False:
+        if self.cinematiqueIsPlaying is False and not self.dead:
             self.map.render()
             self.player.render()
             self.batch.draw()
@@ -169,8 +183,15 @@ class Game(object):
             for item in self.level.items:
                 item.render()
             self.ui.render(self.camera.x, self.camera.y, self.player)
-        else:
+        elif self.cinematiqueIsPlaying:
+            width, height = gameEngine.getDinamicWindowSize()
+            self.camera.setPos(width/2, height/2)
             self.cinematiqueIsPlaying = self.level.cinematique.run()
+        elif self.dead:
+            width, height = gameEngine.getDinamicWindowSize()
+            self.camera.setPos(width / 2, height / 2)
+            self.deadLabel.x, self.deadLabel.y = width / 2 + 50, height / 2
+            self.deadLabel.draw()
 
 # ---------------------------------------------------
 

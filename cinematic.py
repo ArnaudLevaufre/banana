@@ -65,6 +65,7 @@ class Cinematic(object):
         self.lastOnDrawTime = time.time()
         if(float(self.time) > self.endTime):  # Fin de la cinematique
             return False
+        return True
 
 
 # -----------------------------------------------------------
@@ -134,20 +135,20 @@ class Border(object):
         """
 
         self.W_WIDTH, self.W_HEIGHT = gameEngine.getDinamicWindowSize()  # Actualisation de la taille
-        self.height = self.W_HEIGHT / 4
+        self.height = self.W_HEIGHT / 5
         self.width = self.W_WIDTH
         self.time += dt
 
         # On simule
         if(self.pos == "bot"):  # Bordure en bas
-            self.y = (- self.W_HEIGHT / 4) + self.dy
+            self.y = (- self.W_HEIGHT / 5) + self.dy
             if(int(self.y) < self.maxY):
                 self.dy += self.velY * dt
             else:
                 self.y = self.maxY
 
         elif(self.pos == "top"):  # En haut
-            self.maxY = 3 * self.W_HEIGHT / 4 + 2
+            self.maxY = 4 * self.W_HEIGHT / 5 + 2
             self.y = self.W_HEIGHT - self.dy
             if(int(self.y) > self.maxY):
                 self.dy += self.velY * dt
@@ -162,6 +163,7 @@ class Border(object):
                     self.text.x = self.x + self.width / 2
 
     def render(self):
+        pyglet.gl.glColor3ub(0, 0, 0)
         pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
         pyglet.gl.glVertex2d(self.x, self.y)
         pyglet.gl.glVertex2d(self.x + self.width, self.y)
