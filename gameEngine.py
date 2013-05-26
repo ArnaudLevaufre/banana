@@ -45,11 +45,19 @@ class GameEngine(pyglet.window.Window):
 
         # - Objets -
         self._menu = menu.MainMenu()
-        self._game = game.Game()
         self._creator = mc.App()
 
     def physicEngine(self, dt):
-        if self._state == "playing" and self._game:
+        if self._state == "new":
+            self._game = game.Game()
+            self._state = "playing"
+        elif self._state == "continue":
+            self._game = game.Game(isContinue=True)
+            self._state = "playing"
+        elif self._state == "rapid":
+            self._game = game.Game(loadLevel="LOL")
+            self._state  = "playing"
+        elif self._state == "playing" and self._game:
             self._game.simulate(dt, self.keysHandler)
         elif self._state == "creator" and self._creator:
             self._creator.refresh(dt, self.keysHandler)
@@ -57,7 +65,7 @@ class GameEngine(pyglet.window.Window):
     def on_draw(self):
         self.clear()
         # ----------------------------
-        if self._state == "playing":
+        if self._state == "playing" and self._game:
             self._game.render()
         elif self._state == "menu":
             self._state = self._menu.render()

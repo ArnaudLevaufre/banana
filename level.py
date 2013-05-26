@@ -18,19 +18,28 @@ class Level(object):
         self.entity = []
         self.nextLevel = ""
 
+        self.campaign = True
+        self.baseLvlPath = "data/lvl/campaign/"
+        self.baseCinPath = "data/cin/campaign/"
+        self.baseMapPath = "data/maps/campaign/"
+
     def next(self):
         self.load(self.nextLevel)
 
     def load(self, fileName):
-        if os.path.isfile("data/lvl/"+fileName):
-            xml = xmlParser.parse("data/lvl/"+fileName).documentElement
+        if not self.campaign:
+            self.baseLvlPath = "data/lvl/"
+            self.baseCinPath = "data/cin/"
+            self.baseMapPath = "data/maps/"
 
+        if os.path.isfile(self.baseLvlPath+fileName):
+            xml = xmlParser.parse(self.baseLvlPath+fileName).documentElement
             # - Chargement des informations -
             xmlPlayerNode = xml.getElementsByTagName("player")[0]
             self.player = entity.Player(int(xmlPlayerNode.getAttribute("x")) * map.Tile.SIZE + 32, int(xmlPlayerNode.getAttribute("y")) * map.Tile.SIZE + 32)
-            self.cinematique = cinematic.Cinematic(xml.getElementsByTagName("cinematique")[0].getAttribute("file"))
+            self.cinematique = cinematic.Cinematic(self.baseCinPath + xml.getElementsByTagName("cinematique")[0].getAttribute("file"))
             self.nextLevelName = xml.getElementsByTagName("next")[0].getAttribute("level")
-            self.map.load(xml.getElementsByTagName("map")[0].getAttribute("name"))
+            self.map.load(self.baseMapPath + xml.getElementsByTagName("map")[0].getAttribute("name"))
             # GRIDMAP Pour l'IA
             self.gridMap = IA.GridMap(self.map.sizeX+1, self.map.sizeY+1)
 

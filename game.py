@@ -7,18 +7,28 @@ import ui
 import map
 import level
 import random
-
+import save
 # ---------------------------------------------------
 
 
 class Game(object):
-    def __init__(self):
-
+    def __init__(self, isContinue=False, loadLevel=False):
+        """ Si loadLevel vaut False, c'est la campagne
+        """
         self.lvl = 2
         self.camera = Camera()
         self.ui = ui.UI()
         self.level = level.Level()
-        self.level.load("2")
+        self.save = save.Save()
+        if not isContinue and not loadLevel:
+            self.level.load("1")
+        elif loadLevel is not False:
+            self.level.campaign = False
+            self.level.load(str(loadLevel))
+        elif isContinue:
+            self.save.load()
+            self.level.load(self.save.lvl)
+
         self.map = self.level.map
         self.player = self.level.player
         self.bullets = []
