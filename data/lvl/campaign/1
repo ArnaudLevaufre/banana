@@ -2,14 +2,13 @@
 <level>
 	<init>
 		<cinematique file="1.xml" />
-		<next level="next" />
-		<player skin="blarg.png" x="25" y="25" width="48" height="48" />
+		<next level="2" />
+		<player skin="blarg.png" x="7" y="10" width="48" height="48" />
 		<map name="001" />
 	</init>
 
 	<enemies>
-		<enemy x="7" y="9" type="base" />
-		<enemy x="7" y="8" type="base" />
+		<enemy x="7" y="8" type="sauronbat" />
 	</enemies>
 
 	<items>

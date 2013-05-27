@@ -2,7 +2,7 @@
 <level>
 	<init>
 		<cinematique file="Cin1.xml" />
-		<next level="next" />
+		<next level="" />
 		<player skin="blarg.png" x="5" y="10" width="48" height="48" />
 		<map name="arena" />
 	</init>

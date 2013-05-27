@@ -32,8 +32,8 @@ class UI(object):
         self.resistanceText = pyglet.text.Label("Resistance: ", batch=self.batchPanel)
         self.speedText = pyglet.text.Label("Vitesse: ", batch=self.batchPanel)
 
-        self.mucusTextShadow = pyglet.text.Label("100 / 100", x=0, y=0, font_size=18, bold=True ,anchor_x="right", batch=self.batch, color=(0, 0, 0, 255))
-        self.mucusText = pyglet.text.Label("100 / 100", x=0, y=0, font_size=18, bold=True ,anchor_x="right", batch=self.batch)
+        self.mucusTextShadow = pyglet.text.Label("100 / 100", x=0, y=0, font_size=18, bold=True, anchor_x="right", batch=self.batch, color=(0, 0, 0, 255))
+        self.mucusText = pyglet.text.Label("100 / 100", x=0, y=0, font_size=18, bold=True, anchor_x="right", batch=self.batch)
 
     def toggleMenu(self, state):
         self.menuOpened = state

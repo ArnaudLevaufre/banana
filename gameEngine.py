@@ -56,7 +56,7 @@ class GameEngine(pyglet.window.Window):
             self._state = "playing"
         elif self._state == "rapid":
             self._game = game.Game(loadLevel="LOL")
-            self._state  = "playing"
+            self._state = "playing"
         elif self._state == "playing" and self._game:
             self._game.simulate(dt, self.keysHandler)
         elif self._state == "creator" and self._creator:
@@ -66,7 +66,7 @@ class GameEngine(pyglet.window.Window):
         self.clear()
         # ----------------------------
         if self._state == "playing" and self._game:
-            self._game.render()
+            self._state = self._game.render()
         elif self._state == "menu":
             self._state = self._menu.render()
             self._menu.setDefault()

@@ -23,9 +23,6 @@ class Level(object):
         self.baseCinPath = "data/cin/campaign/"
         self.baseMapPath = "data/maps/campaign/"
 
-    def next(self):
-        self.load(self.nextLevel)
-
     def load(self, fileName):
         if not self.campaign:
             self.baseLvlPath = "data/lvl/"
@@ -38,7 +35,7 @@ class Level(object):
             xmlPlayerNode = xml.getElementsByTagName("player")[0]
             self.player = entity.Player(int(xmlPlayerNode.getAttribute("x")) * map.Tile.SIZE + 32, int(xmlPlayerNode.getAttribute("y")) * map.Tile.SIZE + 32)
             self.cinematique = cinematic.Cinematic(self.baseCinPath + xml.getElementsByTagName("cinematique")[0].getAttribute("file"))
-            self.nextLevelName = xml.getElementsByTagName("next")[0].getAttribute("level")
+            self.nextLevel = xml.getElementsByTagName("next")[0].getAttribute("level")
             self.map.load(self.baseMapPath + xml.getElementsByTagName("map")[0].getAttribute("name"))
             # GRIDMAP Pour l'IA
             self.gridMap = IA.GridMap(self.map.sizeX+1, self.map.sizeY+1)

@@ -19,5 +19,5 @@
 		<move x="25" y="-50" timeStart="6" timeStop="7"/> 
 	</image>
 
-	<end time="8" /> <!-- Enfin, on indique le temps de fin -->
+	<end time="1" /> <!-- Enfin, on indique le temps de fin -->
 </cin>

@@ -193,6 +193,33 @@ class Player(Entity):
         self.animation = animation.AnimationGroup()
         self.animation.createFromImage(pyglet.image.load("data/sprites/blarg.png"), self.width, self.height)
 
+    def loadFromSave(self, save):
+        self.maxHp = save.maxHp
+        self.hp = save.hp
+        self.speed = save.speed
+        self.shieldCapacity = save.shieldCapacity
+        self.shield = save.shield
+        self.fireRate = save.fireRate
+        self.resistance = save.resistance
+        self.attack = save.attack
+        self.mucus = save.mucus
+        self.mucusMax = save.mucusMax
+        self.regenMucus = save.regenMucus
+
+    def save(self, save, lvl):
+        save.lvl = lvl
+        save.maxHp = self.maxHp
+        save.hp = self.hp
+        save.speed = self.speed
+        save.shieldCapacity = self.shieldCapacity
+        save.shield = self.shield
+        save.fireRate = self.fireRate
+        save.resistance = self.resistance
+        save.attack = self.attack
+        save.mucus = self.mucus
+        save.mucusMax = self.mucusMax
+        save.regenMucus = self.regenMucus
+
     def increaseMucus(self):
         self.increasedMucus += self.regenMucus
         if self.increasedMucus >= 1:

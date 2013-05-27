@@ -8,6 +8,8 @@ import map
 import level
 import random
 import save
+import math
+
 # ---------------------------------------------------
 
 
@@ -15,24 +17,28 @@ class Game(object):
     def __init__(self, isContinue=False, loadLevel=False):
         """ Si loadLevel vaut False, c'est la campagne
         """
-        self.lvl = 2
         self.camera = Camera()
         self.ui = ui.UI()
         self.level = level.Level()
         self.save = save.Save()
         if not isContinue and not loadLevel:
             self.level.load("1")
+            self.lvl = 1
         elif loadLevel is not False:
             self.level.campaign = False
             self.level.load(str(loadLevel))
         elif isContinue:
             self.save.load()
             self.level.load(self.save.lvl)
+            self.lvl = int(self.save.lvl)
+            self.level.player.loadFromSave(self.save)
 
         self.map = self.level.map
         self.player = self.level.player
         self.bullets = []
         self.batch = pyglet.graphics.Batch()
+
+        self.returnState = "playing"
 
         if self.level.cinematique is not None:
             self.cinematiqueIsPlaying = True
@@ -82,8 +88,8 @@ class Game(object):
                 if bullet.simulate(self.map, self.player, self.level.enemies, dt) is False:
                     self.bullets.remove(bullet)
 
-            targetPosX = self.player.x + self.playerdx * 10
-            targetPosY = self.player.y + self.playerdy * 10
+            targetPosX = self.player.x + self.playerdx * (self.player.speed - 1)
+            targetPosY = self.player.y + self.playerdy * (self.player.speed - 1)
 
             for ent in self.level.enemies:  # Simulation des ennemis
                 ent.shoot(targetPosX, targetPosY, self.bullets, self.batch)
@@ -93,8 +99,10 @@ class Game(object):
                         loot = ent.loot()
                         if loot is not None:
                             self.level.items.append(loot)
-                    if self.tick % 4 == 0 and ((self.player.x - ent.x)**2 + (self.player.y - ent.y)**2) < 280000 and ent.canMove:
+                    elif self.tick % 4 == 0 and 64 < math.sqrt((self.player.x - ent.x)**2 + (self.player.y - ent.y)**2) < 30*64 and ent.canMove:
                         ent.IA._recompute_path(self.player.x, self.player.y, ent.caseX, ent.caseY)
+                    elif 64 > math.sqrt((self.player.x - ent.x)**2 + (self.player.y - ent.y)**2) and random.random() < ent.fireRate/50:
+                        self.player.hit(ent.attack)
                     ent.move((ent.IA.path[-2][0] - ent.caseX), (ent.IA.path[-2][1]-ent.caseY), self.map, dt, ent.IA.path[-2])
                 except:
                     pass
@@ -137,10 +145,19 @@ class Game(object):
                             self.level.items.append(chest.loot())
 
             if self.level.enemies == []:
-                self.lvl += 1
-                self.reload()
-            # on repositionne la carte.
-            self.camera.setPos(self.player.x, self.player.y)
+                # Si le niveau est fini, on save la partie
+                if self.level.nextLevel != "":
+                    self.lvl = self.level.nextLevel
+                    self.player.save(self.save, self.lvl)
+                    self.save.save()
+
+                    # On passe au suivant
+                    self.reload()
+                else:
+                    self.camera.reset()
+                    self.returnState = "menu"
+            else:
+                self.camera.setPos(self.player.x, self.player.y)
 
     def reload(self):
         # On load le level self.lvl
@@ -203,6 +220,8 @@ class Game(object):
             self.deadLabel.x, self.deadLabel.y = width / 2 + 50, height / 2
             self.deadLabel.draw()
 
+        return self.returnState
+
 # ---------------------------------------------------
 
 
@@ -219,3 +238,8 @@ class Camera:
 
         pyglet.gl.glLoadIdentity()
         pyglet.gl.glTranslated(width/2 - x, height/2 - y, 0)
+
+    def reset(self):
+        width, height = gameEngine.getDinamicWindowSize()
+        pyglet.gl.glLoadIdentity()
+        pyglet.gl.glTranslated(0, 0, 0)
