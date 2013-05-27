@@ -35,8 +35,8 @@ class Map(object):
                 self.textures.append(imageGrid[y*(tileSheet.height/64) + x])
 
     def load(self, fileName):
-        if os.path.isfile("data/maps/"+fileName):
-            xmlTree = xml.parse("data/maps/"+fileName)
+        if os.path.isfile(fileName):
+            xmlTree = xml.parse(fileName)
             root = xmlTree.getroot()
             self.sizeX = int(root.attrib['sizeX'])
             self.sizeY = int(root.attrib['sizeY'])
@@ -86,7 +86,7 @@ class Map(object):
         if (dx, dy) in self.collidable:
             # coin bas gauche
             return True
-        
+
         dxw = int((x + w) / Tile.SIZE)
         if (dxw, dy) in self.collidable:
             # coin bas droit

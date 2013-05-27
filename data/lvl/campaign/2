@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<level>
+	<init>
+		<cinematique file="Cin1.xml" />
+		<next level="" />
+		<player skin="blarg.png" x="5" y="11" width="48" height="48" />
+		<map name="lolmap" />
+	</init>
+	
+	<enemies>
+		<enemy x="7" y="8" type="base" />
+
+		
+
+	</enemies>
+	<items>
+		<chest x="9" y="9" />
+	</items>
+</level>

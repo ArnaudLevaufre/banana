@@ -23,10 +23,7 @@ class Cinematic(object):
         self.lastOnDrawTime = None
         self.dt = 0
         self.time = 0
-        self.endTime = 1000
-
-        # - Objets -
-        self.mainDrawingBatch = pyglet.graphics.Batch()  # Batch que l'on va draw
+        self.endTime = 0
 
         # - Divers -
         self.elements = []  # Elements de la cinématique
@@ -48,9 +45,9 @@ class Cinematic(object):
         root = tree.getroot()
         for child in root:
             if(child.tag == "border"):  # Si on veut une bordure
-                self.elements.append(Border(self.mainDrawingBatch, ch=[childs for childs in child], **child.attrib))
+                self.elements.append(Border(ch=[childs for childs in child], **child.attrib))
             if(child.tag == "image"):  # Si c'est une image
-                self.elements.append(Image(self.mainDrawingBatch, ch=[childs for childs in child], **child.attrib))
+                self.elements.append(Image(ch=[childs for childs in child], **child.attrib))
             if(child.tag == "end"):
                 if(child.attrib['time']):
                     self.endTime = int(child.attrib["time"])
@@ -64,17 +61,19 @@ class Cinematic(object):
         # - Render/Animation -
         for elmt in self.elements:
             elmt.animate(self.dt)  # On anime tous les elements
-        self.mainDrawingBatch.draw()
+            elmt.render()
         self.lastOnDrawTime = time.time()
         if(float(self.time) > self.endTime):  # Fin de la cinematique
             return False
+        return True
 
 
 # -----------------------------------------------------------
 
-class Border(pyglet.sprite.Sprite):
 
-    def __init__(self, batch, ch=None, text="", textSize="24", pos="bot", height=None, width=None, velY=80, maxY=None):
+class Border(object):
+
+    def __init__(self, ch=None, text="", textSize="24", pos="bot", velY=80):
         """
         Dessine une bordure noire a l'écran a la position pos
         Si il y a une balise <textChange>Text</textChange>, "Text" sera placé au milieu de la bordure
@@ -93,42 +92,26 @@ class Border(pyglet.sprite.Sprite):
         """
 
         # - Constantes -
-        self.W_HEIGHT = gameEngine.GameEngine.W_HEIGHT
-        self.W_WIDTH = gameEngine.GameEngine.W_WIDTH
-
-        # - Objets -
-        self._batch = batch
-
+        self.W_WIDTH, self.W_HEIGHT = gameEngine.getDinamicWindowSize()
+        self.batch = pyglet.graphics.Batch()
         # - Temps -
         self.time = 0
 
         # - Vitesse -
         self.velY = int(velY)
 
-        # - Taille -
-        if(height is None):
-            height = self.W_HEIGHT/4
-        if(width is None):
-            width = self.W_WIDTH
-
-        # - Image -
-        super(Border, self).__init__(pyglet.image.create(width, height, pyglet.image.SolidColorImagePattern((0, 0, 0, 255))))
-
         # - Position -
         self.pos = pos
+        self.x = 0
+        self.dy = 0
         if(pos == "bot"):
-            self.y = -self.height
-            if(maxY is None):
-                self.maxY = 0
-            else:
-                self.maxY = int(maxY)
+            self.y = -self.W_HEIGHT / 4
+            self.maxY = 0
         elif(pos == "top"):
-            if(maxY is None):
-                self.maxY = self.W_HEIGHT - self.height + 2
-            else:
-                self.maxY = int(maxY)
+            self.maxY = 3 * self.W_HEIGHT / 4 + 2
             self.y = self.W_HEIGHT
-
+        self.height = self.W_HEIGHT / 4
+        self.width = self.W_WIDTH
         # - Texte -
         if(text is not None):
             # - Contenu -
@@ -136,8 +119,7 @@ class Border(pyglet.sprite.Sprite):
 
             # - Size -
             self.textSize = int(textSize)
-            self.text = pyglet.text.Label(self.textContent, font_size=self.textSize, batch=self._batch, anchor_x="center", anchor_y="center", x=self.width/2, y=self.height/2, color=(255, 255, 255, 255))
-
+            self.text = pyglet.text.Label(self.textContent, font_size=self.textSize, batch=self.batch, anchor_x="center", anchor_y="center", x=self.width/2, y=self.height/2, color=(255, 255, 255, 255))
         else:
             self.text = None
 
@@ -151,14 +133,27 @@ class Border(pyglet.sprite.Sprite):
         """
         Anime le tout selon les parametres definis auparavant
         """
+
+        self.W_WIDTH, self.W_HEIGHT = gameEngine.getDinamicWindowSize()  # Actualisation de la taille
+        self.height = self.W_HEIGHT / 5
+        self.width = self.W_WIDTH
         self.time += dt
 
+        # On simule
         if(self.pos == "bot"):  # Bordure en bas
+            self.y = (- self.W_HEIGHT / 5) + self.dy
             if(int(self.y) < self.maxY):
-                self.y += self.velY * dt
+                self.dy += self.velY * dt
+            else:
+                self.y = self.maxY
+
         elif(self.pos == "top"):  # En haut
+            self.maxY = 4 * self.W_HEIGHT / 5 + 2
+            self.y = self.W_HEIGHT - self.dy
             if(int(self.y) > self.maxY):
-                self.y -= self.velY * dt
+                self.dy += self.velY * dt
+            else:
+                self.y = self.maxY
 
         if(self.text is not None):  # Si il y a du texte
             for elmt in self.toDoChangeText:
@@ -167,12 +162,23 @@ class Border(pyglet.sprite.Sprite):
                     self.text.y = self.y + self.height / 2  # Et on le place au centre
                     self.text.x = self.x + self.width / 2
 
+    def render(self):
+        pyglet.gl.glColor3ub(0, 0, 0)
+        pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
+        pyglet.gl.glVertex2d(self.x, self.y)
+        pyglet.gl.glVertex2d(self.x + self.width, self.y)
+        pyglet.gl.glVertex2d(self.x + self.width, self.y + self.height)
+        pyglet.gl.glVertex2d(self.x, self.y + self.height)
+        pyglet.gl.glEnd()
+
+        self.batch.draw()
 
 # -----------------------------------------------------------
 
-class Image():
 
-    def __init__(self, batch, ch=None, path=None, x=250, y=250, w=48, h=48):
+class Image(object):
+
+    def __init__(self, ch=None, path=None, x=250, y=250, w=48, h=48):
         """
         Dessine une image "path" a la position (x,y)
         Si il y a une balise <move x="350" y="325" timeStart="2" timeStop="3"/>
@@ -196,14 +202,15 @@ class Image():
         self.animation.selectAnimation(0)
         self.animation.setIdleState()
 
+        self.centerX, self.centerY = gameEngine.getDinamicWindowSize()[0] / 2, gameEngine.getDinamicWindowSize()[1] / 2
         # - Position -
-        self.x = int(x)
-        self.y = int(y)
+        self.dx = int(x)
+        self.dy = int(y)
         self.width = int(w)
         self.height = int(h)
         # Pour garder une vitesse constante
-        self.startX = self.x
-        self.startY = self.y
+        self.startX = self.dx
+        self.startY = self.dy
         # - Temps -
         self.time = 0
 
@@ -228,6 +235,7 @@ class Image():
         Anime le tout selon les parametres definis auparavant
         """
 
+        self.centerX, self.centerY = gameEngine.getDinamicWindowSize()[0] / 2, gameEngine.getDinamicWindowSize()[1] / 2
         self.time += dt
         try:
             self.elmt = self.toDoMovement[self.keylist[self.moveNb]]
@@ -235,16 +243,17 @@ class Image():
             if(float(self.elmt['timeStop']) >= float(self.time) >= float(self.elmt['timeStart'])):
                 self.animation.unsetIdleState()
                 self.mvtDone = True
-                self.x += dt * ((int(self.elmt['x']) - self.startX)) / (int(self.elmt['timeStop']) - int(self.elmt['timeStart']))
-                self.y += dt * ((int(self.elmt['y']) - self.startY)) / (int(self.elmt['timeStop']) - int(self.elmt['timeStart']))
+                self.dx += dt * ((int(self.elmt['x']) - self.startX)) / (int(self.elmt['timeStop']) - int(self.elmt['timeStart']))
+                self.dy += dt * ((int(self.elmt['y']) - self.startY)) / (int(self.elmt['timeStop']) - int(self.elmt['timeStart']))
             else:
                 if self.mvtDone:
-                    self.startX = self.x
-                    self.startY = self.y
+                    self.startX = self.dx
+                    self.startY = self.dy
                     self.animation.setIdleState()
                     self.moveNb += 1
                     self.mvtDone = False
-
-            self.animation.render(self.x, self.y)
         except:
             pass
+
+    def render(self):
+        self.animation.render(self.centerX + self.dx, self.centerY + self.dy)

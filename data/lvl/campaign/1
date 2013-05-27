@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<level>
+	<init>
+		<cinematique file="1.xml" />
+		<next level="2" />
+		<player skin="blarg.png" x="7" y="10" width="48" height="48" />
+		<map name="001" />
+	</init>
+
+	<enemies>
+		<enemy x="7" y="8" type="sauronbat" />
+	</enemies>
+
+	<items>
+		<chest x="9" y="9" />
+	</items>
+</level>

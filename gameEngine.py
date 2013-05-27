@@ -5,6 +5,7 @@ import menu
 import mapCreator as mc
 import sys
 
+
 class GameEngine(pyglet.window.Window):
     # Constantes de la fenetre
     W_WIDTH = 1024
@@ -44,37 +45,38 @@ class GameEngine(pyglet.window.Window):
 
         # - Objets -
         self._menu = menu.MainMenu()
-        self._game = game.Game()
         self._creator = mc.App()
 
     def physicEngine(self, dt):
-        if self._state == "playing" and self._game:
+        if self._state == "new":
+            self._game = game.Game()
+            self._state = "playing"
+        elif self._state == "continue":
+            self._game = game.Game(isContinue=True)
+            self._state = "playing"
+        elif self._state == "rapid":
+            self._game = game.Game(loadLevel="LOL")
+            self._state = "playing"
+        elif self._state == "playing" and self._game:
             self._game.simulate(dt, self.keysHandler)
         elif self._state == "creator" and self._creator:
             self._creator.refresh(dt, self.keysHandler)
 
-    def on_key_press(self, symbol, modifier):
-        if symbol == pyglet.window.key.F1 and self._state == "playing":
-            self._game.ui.toggleDevTool()
-        elif self._state == "creator":
-            self._creator.on_key_press(symbol, modifier)
-
     def on_draw(self):
         self.clear()
         # ----------------------------
-        if self._state == "playing":
-            self._game.render()
+        if self._state == "playing" and self._game:
+            self._state = self._game.render()
         elif self._state == "menu":
             self._state = self._menu.render()
             self._menu.setDefault()
         elif self._state == "quit":
             self.close()
-            sys.exit() # sinon quelques erreurs en sortie de jeux du a des trucs inexistants. 
+            sys.exit()  # sinon quelques erreurs en sortie de jeux du a des trucs inexistants.
         elif self._state == "creator":
-            self._state =  self._creator.render()
+            self._state = self._creator.render()
 
         # -----------------------------
-
 
     def on_mouse_press(self, x, y, button, modifiers):
         # - Passage des evenements aux autres objets
@@ -110,6 +112,14 @@ class GameEngine(pyglet.window.Window):
         if self._state == "creator":
             self._creator.on_mouse_scroll(x, y, scroll_x, scroll_y)
 
+    def on_key_press(self, symbol, modifier):
+        if symbol == pyglet.window.key.F1 and self._state == "playing":
+            self._game.ui.toggleDevTool()
+        elif self._state == "creator":
+            self._creator.on_key_press(symbol, modifier)
+        elif self._state == "playing":
+            self._game.on_key_press(symbol, modifier)
+
     def on_text(self, text):
         if self._state == "creator":
             self._creator.on_text(text)
@@ -117,18 +127,18 @@ class GameEngine(pyglet.window.Window):
     def on_text_motion(self, motion):
         if self._state == "creator":
             self._creator.on_text_motion(motion)
-      
+
     def on_text_motion_select(self, motion):
         if self._state == "creator":
             self._creator.on_text_motion_select(motion)
 
     def start(self):
         pyglet.app.run()
-        
+
+
 def getDinamicWindowSize():
     if len(pyglet.app.windows) != 0:
         for window in pyglet.app.windows:
             return window.width, window.height
     else:
-        return 0,0
-    
+        return 0, 0
