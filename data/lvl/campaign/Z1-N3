@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<init>
+	<cinematique file="Cin1.xml" />
+	<next level="Z1-N1" />
+	<player skin="blarg.png" x="3" y="3" width="48" height="48" />
+	<map name="Z1-N3" />
+	<enemies>
+		<enemy x="9" y="3" type="base" />
+		<enemy x="10" y="2" type="sauronbat" />
+	</enemies>
+	<items>
+		<chest x="10" y="3" />
+	</items>
+</init>

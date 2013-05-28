@@ -22,7 +22,7 @@ class Game(object):
         self.level = level.Level()
         self.save = save.Save()
         if not isContinue and not loadLevel:
-            self.level.load("1")
+            self.level.load("Z1-N1")
             self.lvl = 1
         elif loadLevel is not False:
             self.level.campaign = False

@@ -312,6 +312,22 @@ class App(object):
                     exportMap(self.map, self.exportMapBox.widgets[0].document.text)
                 else:
                     self.exportMapBox.widgets[0].rectangle.vertex_list.colors[:16] = [255, 0, 0, 255] * 4
+                    
+        elif self.exportLevelBox.show:
+            if symbol == key.RETURN:
+                # close the export menu, then export the map
+                self.exportLevelBox.toggle()
+                self.set_focus(None)
+                
+                if self.exportLevelBox.widgets[0].document.text != "":
+                    fixOffset(self.map, self.levelItemList)
+                    
+                    w = self.exportLevelBox.widgets
+                    
+                    exportLevel(w[0].document.text, w[2].document.text, w[3].document.text, w[1].document.text, self.levelItemList)
+                    
+                else:
+                    self.exportLevelBox.widgets[0].rectangle.vertex_list.colors[:16] = [255, 0, 0, 255] * 4
 
         # - Change from map editor to level editor -
         elif symbol == key.TAB:
@@ -323,23 +339,25 @@ class App(object):
         # - Specific action for map editor -
         elif self.selectedEditor == "map":
             # - Export map -
-            if symbol == key.ENTER:
-                width, height = gameEngine.getDinamicWindowSize()
-                
+            if symbol == key.RETURN:                
                 # - Toggle the state of the exportbox
                 self.exportMapBox.toggle() 
             
-
             # - Center position to map origin -
             if symbol == key.O:
                 width, height = gameEngine.getDinamicWindowSize()
                 self.offsetPos.set(-width/2, -height/2)
-
+        
+        # - Specific actions for level editor -
+        elif self.selectedEditor == "level":
+            if symbol == key.RETURN:
+                self.exportLevelBox.toggle()
+                
 
 
     # - input event listenner on writting - 
     def on_text(self, text):
-        if self.focus and self.selectedEditor == "map":
+        if self.focus:
             self.focus.caret.on_text(text)
 
     def on_text_motion(self, motion):
@@ -553,7 +571,7 @@ class ExportBox(object):
     def __init__(self, type):
 
         self.batch = pyglet.graphics.Batch()
-        self.title = pyglet.text.Label("", batch=self.batch)
+        self.title = pyglet.text.Label("", batch=self.batch, bold=True)
         self.fieldsTitle = []
         self.widgets = []
         self.show = False
@@ -565,6 +583,23 @@ class ExportBox(object):
             self.fieldsTitle.append( pyglet.text.Label("Map name:", batch=self.batch) )
             
             self.widgets = [
+                TextWidget('', 0, 0, self.width - 20,self.batch)
+                ]
+        
+        elif type == "level":
+            self.title.text = "Export level"
+            self.width = 450
+            self.height = 250
+            
+            self.fieldsTitle.append( pyglet.text.Label("Level name :", batch=self.batch) )
+            self.fieldsTitle.append( pyglet.text.Label("map :", batch=self.batch) )
+            self.fieldsTitle.append( pyglet.text.Label("niveau suivant :", batch=self.batch) )
+            self.fieldsTitle.append( pyglet.text.Label("cinematique :", batch=self.batch) )
+            
+            self.widgets = [
+                TextWidget('', 0, 0, self.width - 20,self.batch),
+                TextWidget('', 0, 0, self.width - 20,self.batch),
+                TextWidget('', 0, 0, self.width - 20,self.batch),
                 TextWidget('', 0, 0, self.width - 20,self.batch)
                 ]
     
@@ -603,7 +638,7 @@ class ExportBox(object):
 # ----------------------------------
 
 
-def exportLvl(name, nextName=None, cinName=None):
+def exportLevel(name, nextLevel, cinName, mapName, entities):
     """ 
     === Export Lvl ===
     Exporte le niveau associé à la map
@@ -611,12 +646,24 @@ def exportLvl(name, nextName=None, cinName=None):
     file = open("data/lvl/" + name, "w+")
     file.write("<?xml version=\"1.0\" ?>\n")
     file.write("<init>\n")
-    if cinName is not None:
-        file.write("\t<cinematique file=\"data/cin/"+cinName+".xml\" />\n")
-    if nextName is not None:
-        file.write("\t<next level=\""+nextName+"\" />\n")
-    file.write("\t<player skin=\"blarg.png\" x=\"3\" y=\"3\" <idth=\"48\" height=\"48\" />\n")
-    file.write("\t<map name=\""+name+"\" />\n")
+    file.write("\t<cinematique file=\""+cinName+"\" />\n")
+    file.write("\t<next level=\""+nextLevel+"\" />\n")
+    file.write("\t<player skin=\"blarg.png\" x=\"3\" y=\"3\" width=\"48\" height=\"48\" />\n")
+    file.write("\t<map name=\""+mapName+"\" />\n")
+    
+    # - implémentation des ennemis -
+    file.write("\t<enemies>\n")
+    for e in entities:
+        if e.name != "chest":
+            file.write('\t\t<enemy x="' + str(e.x / TILE_SIZE) +'" y="' + str(e.y / TILE_SIZE) + '" type="' + e.name + '" />\n')
+    file.write("\t</enemies>\n")
+    
+    file.write("\t<items>\n")
+    for e in entities:
+        if e.name == "chest":
+            file.write('\t\t<chest x="'+ str(e.x / TILE_SIZE) +'" y="' + str(e.y / TILE_SIZE) + '" />\n')
+    file.write("\t</items>\n")
+    
     file.write("</init>\n")
 
 

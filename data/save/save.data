@@ -1,15 +1,15 @@
 <?xml version="1.0" ?>
 <save>
-	<lvl>2</lvl>
+	<lvl>Z1-N2</lvl>
 	<maxHp>100.0</maxHp>
-	<hp>100.0</hp>
+	<hp>50.1808418662</hp>
 	<speed>30.0</speed>
 	<shieldCapacity>50.0</shieldCapacity>
-	<shield>50.0</shield>
+	<shield>20.0</shield>
 	<fireRate>10.0</fireRate>
 	<resistance>100</resistance>
 	<attack>10</attack>
-	<mucus>90</mucus>
+	<mucus>36.0</mucus>
 	<mucusMax>100</mucusMax>
 	<regenMucus>0.01</regenMucus>
 </save>
