@@ -178,6 +178,14 @@ class LevelSelector():
             if not os.path.isdir( os.path.join(dir,file) ):
                 self.levels.append(LevelSelectorBox(file, self.batch, 10, len(self.levels) * 55 ))
     
+    def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
+        self.scroll += scroll_y * 10
+
+        if self.scroll < 0 :
+            self.scroll = 0
+        elif self.scroll > len(self.levels) * LevelSelectorBox.HEIGHT:
+            self.scroll = len(self.levels) * LevelSelectorBox.HEIGHT
+    
     def on_mouse_press(self, x, y, button, modifiers):
         for e in self.levels:
             if e.label.y - LevelSelectorBox.HEIGHT/2 < y < e.label.y + LevelSelectorBox.HEIGHT/2:
@@ -201,9 +209,7 @@ class LevelSelectorBox():
     
     def update(self, scroll, pos):
         width, height = gameEngine.getDinamicWindowSize()
-        
-        height -= scroll
-        
+        height -= scroll + 5
         self.vertex_list.vertices = [width/4, height - self.HEIGHT * pos - 2, 3 * width / 4, height - self.HEIGHT * pos - 2, 2 * width / 3, height - self.HEIGHT * (pos + 1) + 2, width / 4, height - self.HEIGHT * (pos + 1) + 2]
         self.label.x = width / 4 + 10
         self.label.y = height - self.HEIGHT * pos - (self.HEIGHT - 4)/2

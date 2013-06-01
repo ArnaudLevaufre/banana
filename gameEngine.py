@@ -128,8 +128,8 @@ class GameEngine(pyglet.window.Window):
             self._creator.on_mouse_scroll(x, y, scroll_x, scroll_y)
         
         if self._state == "levelSelector":
-            self._levelSelector.scroll += scroll_y * 10
-
+            self._levelSelector.on_mouse_scroll(x, y, scroll_x, scroll_y) 
+            
     def on_key_press(self, symbol, modifier):
         if symbol == pyglet.window.key.F1 and self._state == "playing":
             self._game.ui.toggleDevTool()

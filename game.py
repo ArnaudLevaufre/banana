@@ -114,39 +114,14 @@ class Game(object):
             for item in self.level.items:
                 if item.collide(self.player):
                     self.level.items.remove(item)
-                    if item.type == "shield":
-                        self.player.shieldCapacity = item.value
-                        self.player.shield = item.value
-                    elif item.type == "life":
-                        if self.player.hp + item.value > self.player.maxHp:
-                            self.player.hp = self.player.maxHp
-                        else:
-                            self.player.hp += item.value
-                    elif item.type == "attack":
-                        self.player.attack += item.value
-                    elif item.type == "speed":
-                        self.player.speed += item.value
-                    elif item.type == "hpMax":
-                        self.player.maxHp += item.Value
-                        self.player.hp += item.value
-                    elif item.type == "mucus":
-                        if self.player.mucus + item.value > self.player.mucusMax:
-                            self.player.mucus = self.player.mucusMax
-                        else:
-                            self.player.mucus += item.value
-                    elif item.type == "mucusMax":
-                        self.player.mucusMax += item.value
-                        self.player.mucus += item.value
-                    elif item.type == "fireRate":
-                        self.player.fireRate += item.value
-                    elif item.type == "resistance":
-                        self.player.resistance += item.value
-                    elif item.type == "chest":
+                    if item.type == "chest":
                         chest = entity.Enemy(item.x - map.Tile.SIZE, item.y - map.Tile.SIZE, "chest", self.map, self.level.gridMap, self.level.suc)
                         if random.randint(0, 1) == 1:
                             self.level.enemies.append(chest)  # Rajouter le coffre comme monstre
                         else:
                             self.level.items.append(chest.loot())
+                    else:
+                        self.level.player.pick(item)
 
             if self.level.enemies == []:
                 # Si le niveau est fini, on save la partie

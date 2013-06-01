@@ -279,6 +279,36 @@ class Player(Entity):
             self.animation.selectAnimation(0)
 
         self.animation.render(self.x - self.width/2, self.y - self.height/2)
+    
+    def pick(self, item):
+        if item.type == "shield":
+            self.shieldCapacity = item.value
+            self.shield = item.value
+        elif item.type == "life":
+            if self.hp + item.value > self.maxHp:
+                self.hp = self.maxHp
+            else:
+                self.hp += item.value
+        elif item.type == "attack":
+            self.attack += item.value
+        elif item.type == "speed":
+            self.speed += item.value
+        elif item.type == "hpMax":
+            self.maxHp += item.Value
+            self.hp += item.value
+        elif item.type == "mucus":
+            if self.mucus + item.value > self.mucusMax:
+                self.mucus = self.mucusMax
+            else:
+                self.mucus += item.value
+        elif item.type == "mucusMax":
+            self.mucusMax += item.value
+            self.mucus += item.value
+        elif item.type == "fireRate":
+            self.fireRate += item.value
+        elif item.type == "resistance":
+            self.resistance += item.value
+        
 
 # ---------------------------------------------------
 
@@ -344,3 +374,4 @@ class Bullet(Entity):
                     return True
 
         return False
+    
