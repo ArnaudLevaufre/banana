@@ -45,7 +45,6 @@ class GameEngine(pyglet.window.Window):
 
         # - Objets -
         self._menu = menu.MainMenu()
-        self._creator = mc.App()
 
     def physicEngine(self, dt):
         if self._state == "new":
@@ -69,6 +68,10 @@ class GameEngine(pyglet.window.Window):
         
         elif self._state == "creator" and self._creator:
             self._creator.refresh(dt, self.keysHandler)
+            
+        elif self._state == "askNewCreator":
+            self._creator = mc.App()
+            self._state = "creator"
 
     def on_draw(self):
         self.clear()

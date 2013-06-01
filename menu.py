@@ -122,7 +122,7 @@ class MainMenu():
             elif x > self.rapidText.x - 180 and x < self.rapidText.x + 180 and y > self.rapidText.y - 45 and y < self.rapidText.y - 8:
                 self.returnState = "rapid"
             elif x > self.editText.x - 180 and x < self.editText.x + 180 and y > self.editText.y - 45 and y < self.editText.y - 8:
-                self.returnState = "creator"
+                self.returnState = "askNewCreator"
             elif x > self.quitText.x - 180 and x < self.quitText.x + 180 and y > self.quitText.y - 45 and y < self.quitText.y - 8:
                 self.returnState = "quit"
 

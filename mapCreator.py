@@ -179,6 +179,9 @@ class App(object):
         self.exportLevelBox.render(self.offsetPos.x, self.offsetPos.y)
         self.exportMapBox.render(self.offsetPos.x, self.offsetPos.y)
 
+        if self.returnState == "menu":
+            self.camera.setPos( width/2, height/2)
+            
         return self.returnState
     
     
@@ -303,7 +306,6 @@ class App(object):
         if symbol == key.ESCAPE:
             width, height = gameEngine.getDinamicWindowSize()
             
-            self.camera.setPos( width/2, height/2)
             self.returnState = "menu"
         
         # - Key interaction on the inputs -
