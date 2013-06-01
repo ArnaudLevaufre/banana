@@ -192,6 +192,12 @@ class Player(Entity):
         # - Chargement animations
         self.animation = animation.AnimationGroup()
         self.animation.createFromImage(pyglet.image.load("data/sprites/blarg.png"), self.width, self.height)
+        
+        # - Pick info -
+        self.pickLabel = pyglet.text.Label("", anchor_x="center", anchor_y="center", color=(0,0,0,255))
+        self.pickTimestamp = 0
+        self.pickWidth = 124
+        self.pickHeight = 24
 
     def loadFromSave(self, save):
         self.maxHp = save.maxHp
@@ -279,8 +285,36 @@ class Player(Entity):
             self.animation.selectAnimation(0)
 
         self.animation.render(self.x - self.width/2, self.y - self.height/2)
+        
+        # - Affichage de l'item récupéré -
+        if time.time() - self.pickTimestamp < 1:
+            # on affiche un background
+            pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
+            
+            pyglet.gl.glColor4f(0,0,0,1)
+            pyglet.gl.glVertex2i(self.x  - self.pickWidth/2 - 2, self.y + self.height - 2)
+            pyglet.gl.glVertex2i(self.x  + self.pickWidth/2 + 2, self.y + self.height - 2)
+            pyglet.gl.glVertex2i(self.x  + self.pickWidth/2 + 2, self.y + self.height + self.pickHeight + 2)
+            pyglet.gl.glVertex2i(self.x  - self.pickWidth/2 - 2, self.y + self.height + self.pickHeight + 2)
+            
+            pyglet.gl.glColor4f(1,1,1,1)
+            pyglet.gl.glVertex2i(self.x  - self.pickWidth/2, self.y + self.height)
+            pyglet.gl.glVertex2i(self.x  + self.pickWidth/2, self.y + self.height)
+            pyglet.gl.glVertex2i(self.x  + self.pickWidth/2, self.y + self.height + self.pickHeight)
+            pyglet.gl.glVertex2i(self.x  - self.pickWidth/2, self.y + self.height + self.pickHeight)
+            pyglet.gl.glEnd()
+            
+            # affiche le text
+            self.pickLabel.x = self.x
+            self.pickLabel.y = self.y + self.height + self.pickHeight/2
+            self.pickLabel.draw()
     
     def pick(self, item):
+        # mise a jour du pick info
+        self.pickLabel.text = (item.type + " " + str(int(item.value))).upper()
+        self.pickTimestamp = time.time()
+                
+        # action de l'item sur le joueur
         if item.type == "shield":
             self.shieldCapacity = item.value
             self.shield = item.value

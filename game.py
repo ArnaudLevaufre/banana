@@ -78,7 +78,7 @@ class Game(object):
                 self.ui.toggleMenu(False)
 
             # Mort ?
-            if self.player.hp <= 0:
+            if int(self.player.hp) <= 0:
                 pyglet.gl.glClearColor(0, 0, 0, 1)
                 self.dead = True
 
