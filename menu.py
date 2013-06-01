@@ -2,6 +2,7 @@
 import pyglet
 import gameEngine
 import os
+import gameEngine
 
 
 class MainMenu():
@@ -153,3 +154,57 @@ class MainMenu():
 
     def setDefault(self):
         self.returnState = "menu"
+
+# ----------------------------------s
+
+class LevelSelector():
+    def __init__(self):
+        self.levels = []
+        self.choosenLevel = None
+        self.scroll = 0
+        self.batch = pyglet.graphics.Batch()
+        self.loadLevels()
+        
+    def render(self):
+        for e in self.levels:
+            e.update(self.scroll, self.levels.index(e))
+        self.batch.draw()
+    
+    def loadLevels(self):
+        dir = "data/lvl"
+        
+        files = os.listdir(dir)
+        for file in files:
+            if not os.path.isdir( os.path.join(dir,file) ):
+                self.levels.append(LevelSelectorBox(file, self.batch, 10, len(self.levels) * 55 ))
+    
+    def on_mouse_press(self, x, y, button, modifiers):
+        for e in self.levels:
+            if e.label.y - LevelSelectorBox.HEIGHT/2 < y < e.label.y + LevelSelectorBox.HEIGHT/2:
+                
+                print e.label.text
+                self.choosenLevel = e.label.text
+            
+class LevelSelectorBox():
+    
+    WIDTH = 500
+    HEIGHT = 40
+    
+    def __init__(self, name, batch, x, y):
+        self.name = name
+        self.label = pyglet.text.Label(name, batch=batch, anchor_y="center", bold=True)
+
+        self.vertex_list = batch.add(4, pyglet.gl.GL_QUADS, None,
+            ('v2i', [x, y, x + self.WIDTH, y, self.WIDTH, self.HEIGHT, x, self.HEIGHT]),
+            ('c4B', [0, 0, 0, 255] * 4)
+        )
+    
+    def update(self, scroll, pos):
+        width, height = gameEngine.getDinamicWindowSize()
+        
+        height -= scroll
+        
+        self.vertex_list.vertices = [width/4, height - self.HEIGHT * pos - 2, 3 * width / 4, height - self.HEIGHT * pos - 2, 2 * width / 3, height - self.HEIGHT * (pos + 1) + 2, width / 4, height - self.HEIGHT * (pos + 1) + 2]
+        self.label.x = width / 4 + 10
+        self.label.y = height - self.HEIGHT * pos - (self.HEIGHT - 4)/2
+    

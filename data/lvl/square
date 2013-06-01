@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<init>
+	<cinematique file="void" />
+	<next level="square" />
+	<player skin="blarg.png" x="3" y="3" width="48" height="48" />
+	<map name="square" />
+	<enemies>
+		<enemy x="1" y="3" type="sauronbat" />
+	</enemies>
+	<items>
+		<chest x="5" y="3" />
+	</items>
+</init>

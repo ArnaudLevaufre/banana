@@ -3,7 +3,7 @@
         <width>48</width>
         <height> 48 </height>
         <speed> 200 </speed>
-        <sprite>data/sprites/blarg.png</sprite>
+        <sprite>data/sprites/chest.png</sprite>
         <itemList>
                 <life value="50"/>
                 <shield value="50"/>

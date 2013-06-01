@@ -51,14 +51,22 @@ class GameEngine(pyglet.window.Window):
         if self._state == "new":
             self._game = game.Game()
             self._state = "playing"
+        
         elif self._state == "continue":
             self._game = game.Game(isContinue=True)
             self._state = "playing"
+        
         elif self._state == "rapid":
-            self._game = game.Game(loadLevel="LOL")
+            self._levelSelector = menu.LevelSelector()
+            self._state = "levelSelector"
+            
+        elif self._state == "levelSelector" and self._levelSelector.choosenLevel is not None:
+            self._game = game.Game(loadLevel=self._levelSelector.choosenLevel)
             self._state = "playing"
+        
         elif self._state == "playing" and self._game:
             self._game.simulate(dt, self.keysHandler)
+        
         elif self._state == "creator" and self._creator:
             self._creator.refresh(dt, self.keysHandler)
 
@@ -75,6 +83,8 @@ class GameEngine(pyglet.window.Window):
             sys.exit()  # sinon quelques erreurs en sortie de jeux du a des trucs inexistants.
         elif self._state == "creator":
             self._state = self._creator.render()
+        elif self._state == "levelSelector":
+            self._levelSelector.render()
 
         # -----------------------------
 
@@ -82,10 +92,15 @@ class GameEngine(pyglet.window.Window):
         # - Passage des evenements aux autres objets
         if self._state == "playing":
             self._game.on_mouse_press(x, y, button, modifiers)
+        
         elif self._state == "menu":
             self._menu.on_mouse_press(x, y, button, modifiers)
+        
         elif self._state == "creator":
             self._creator.on_mouse_press(x, y, button, modifiers)
+            
+        elif self._state == "levelSelector":
+            self._levelSelector.on_mouse_press( x, y, button, modifiers)
 
     def on_mouse_release(self, x, y, button, modifiers):
         # - Passage des evenements aux autres objets
@@ -111,6 +126,9 @@ class GameEngine(pyglet.window.Window):
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if self._state == "creator":
             self._creator.on_mouse_scroll(x, y, scroll_x, scroll_y)
+        
+        if self._state == "levelSelector":
+            self._levelSelector.scroll += scroll_y * 10
 
     def on_key_press(self, symbol, modifier):
         if symbol == pyglet.window.key.F1 and self._state == "playing":

@@ -21,16 +21,20 @@ class Game(object):
         self.ui = ui.UI()
         self.level = level.Level()
         self.save = save.Save()
+        
         if not isContinue and not loadLevel:
+            # - creer nouvelle partie -
             self.level.load("Z1-N1")
             self.lvl = 1
+            
         elif loadLevel is not False:
             self.level.campaign = False
             self.level.load(str(loadLevel))
+            
         elif isContinue:
             self.save.load()
             self.level.load(self.save.lvl)
-            self.lvl = int(self.save.lvl)
+            self.lvl = self.save.lvl
             self.level.player.loadFromSave(self.save)
 
         self.map = self.level.map
@@ -148,8 +152,9 @@ class Game(object):
                 # Si le niveau est fini, on save la partie
                 if self.level.nextLevel != "":
                     self.lvl = self.level.nextLevel
-                    self.player.save(self.save, self.lvl)
-                    self.save.save()
+                    if self.level.campaign:
+                        self.player.save(self.save, self.lvl)
+                        self.save.save()
 
                     # On passe au suivant
                     self.reload()
@@ -210,10 +215,12 @@ class Game(object):
             for item in self.level.items:
                 item.render()
             self.ui.render(self.camera.x, self.camera.y, self.player)
+       
         elif self.cinematiqueIsPlaying:
             width, height = gameEngine.getDinamicWindowSize()
             self.camera.setPos(width/2, height/2)
             self.cinematiqueIsPlaying = self.level.cinematique.run()
+        
         elif self.dead:
             width, height = gameEngine.getDinamicWindowSize()
             self.camera.setPos(width / 2, height / 2)

@@ -300,8 +300,14 @@ class App(object):
 
 
     def on_key_press(self, symbol, modifiers):
+        if symbol == key.ESCAPE:
+            width, height = gameEngine.getDinamicWindowSize()
+            
+            self.camera.setPos( width/2, height/2)
+            self.returnState = "menu"
+        
         # - Key interaction on the inputs -
-        if self.exportMapBox.show:
+        elif self.exportMapBox.show:
             if symbol == key.RETURN:
                 # close the export menu, then export the map
                 self.exportMapBox.toggle()

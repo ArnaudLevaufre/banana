@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<map sizeX="6" sizeY="4">
+	<tile x="5" y="3" collision="False" type="8" />
+	<tile x="1" y="1" collision="False" type="8" />
+	<tile x="1" y="2" collision="False" type="8" />
+	<tile x="1" y="3" collision="False" type="8" />
+	<tile x="2" y="3" collision="False" type="8" />
+	<tile x="3" y="3" collision="False" type="8" />
+	<tile x="3" y="2" collision="False" type="8" />
+	<tile x="3" y="1" collision="False" type="8" />
+	<tile x="2" y="1" collision="False" type="8" />
+	<tile x="2" y="2" collision="False" type="8" />
+	<tile x="4" y="2" collision="False" type="8" />
+	<tile x="4" y="1" collision="False" type="8" />
+	<tile x="4" y="3" collision="False" type="8" />
+	<tile x="0" y="4" collision="True" type="7" />
+	<tile x="0" y="3" collision="True" type="7" />
+	<tile x="0" y="2" collision="True" type="7" />
+	<tile x="0" y="1" collision="True" type="7" />
+	<tile x="0" y="0" collision="True" type="7" />
+	<tile x="1" y="0" collision="True" type="7" />
+	<tile x="2" y="0" collision="True" type="7" />
+	<tile x="3" y="0" collision="True" type="7" />
+	<tile x="4" y="0" collision="True" type="7" />
+	<tile x="5" y="0" collision="True" type="7" />
+	<tile x="6" y="1" collision="True" type="7" />
+	<tile x="6" y="0" collision="True" type="7" />
+	<tile x="6" y="2" collision="True" type="7" />
+	<tile x="6" y="3" collision="True" type="7" />
+	<tile x="6" y="4" collision="True" type="7" />
+	<tile x="5" y="4" collision="True" type="7" />
+	<tile x="4" y="4" collision="True" type="7" />
+	<tile x="3" y="4" collision="True" type="7" />
+	<tile x="2" y="4" collision="True" type="7" />
+	<tile x="1" y="4" collision="True" type="7" />
+	<tile x="5" y="2" collision="False" type="8" />
+	<tile x="5" y="1" collision="False" type="8" />
+</map>

@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<init>
+	<cinematique file="void" />
+	<next level="labirynthe" />
+	<player skin="blarg.png" x="38" y="5" width="48" height="48" />
+	<map name="labyrinthe" />
+	<enemies>
+		<enemy x="11" y="25" type="base" />
+		<enemy x="14" y="25" type="base" />
+		<enemy x="35" y="80" type="sauronbat" />
+		<enemy x="40" y="80" type="sauronbat" />
+		<enemy x="40" y="75" type="sauronbat" />
+		<enemy x="35" y="75" type="sauronbat" />
+		<enemy x="17" y="8" type="base" />
+		<enemy x="17" y="7" type="base" />
+		<enemy x="18" y="8" type="base" />
+		<enemy x="18" y="7" type="base" />
+		<enemy x="68" y="78" type="sauronbat" />
+		<enemy x="69" y="79" type="base" />
+		<enemy x="65" y="71" type="base" />
+		<enemy x="66" y="66" type="sauronbat" />
+		<enemy x="65" y="65" type="base" />
+	</enemies>
+	<items>
+		<chest x="16" y="9" />
+		<chest x="19" y="9" />
+		<chest x="16" y="6" />
+		<chest x="19" y="6" />
+	</items>
+</init>
