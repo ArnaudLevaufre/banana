@@ -180,8 +180,8 @@ class Player(Entity):
         self.resistance = 100
         self.attack = 10
         self.isMoving = False
-        self.mucus = 100
-        self.mucusMax = 100
+        self.mucus = 1000
+        self.mucusMax = 1000
         self.regenMucus = 0.01
 
         self.increasedMucus = 0
@@ -287,7 +287,7 @@ class Player(Entity):
         self.animation.render(self.x - self.width/2, self.y - self.height/2)
         
         # - Affichage de l'item récupéré -
-        if time.time() - self.pickTimestamp < 1:
+        if time.time() - self.pickTimestamp < 2.5:
             # on affiche un background
             pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
             
@@ -308,12 +308,12 @@ class Player(Entity):
             self.pickLabel.x = self.x
             self.pickLabel.y = self.y + self.height + self.pickHeight/2
             self.pickLabel.draw()
-    
+        
     def pick(self, item):
         # mise a jour du pick info
         self.pickLabel.text = (item.type + " " + str(int(item.value))).upper()
         self.pickTimestamp = time.time()
-                
+        
         # action de l'item sur le joueur
         if item.type == "shield":
             self.shieldCapacity = item.value

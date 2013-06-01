@@ -147,7 +147,7 @@ class Game(object):
                 self.ui = ui.UI()
                 self.level = level.Level()
                 self.level.load(str(self.lvl))
-                self.player.x, self.player.y = self.level.player.x, self.level.player.y  # On mets le joueur à la bonne place
+                self.player = self.level.player  # On mets le joueur à la bonne place
                 self.map = self.level.map
                 self.bullets = []
                 self.cinematiqueIsPlaying = True
