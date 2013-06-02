@@ -493,7 +493,7 @@ class Selector(object):
 
         for file in listDir:
             if os.path.isfile(os.path.join(ENNEMIES_DIR_PATH, file)):
-                xml = xmlParser.parse(os.path.join( ENNEMIES_DIR_PATH, file)).documentElement
+                xml = xmlParser.parse(os.path.join(ENNEMIES_DIR_PATH, file)).documentElement
                 width = int(xml.getElementsByTagName("width")[0].firstChild.data)
                 height = int(xml.getElementsByTagName("height")[0].firstChild.data)
 
@@ -502,7 +502,7 @@ class Selector(object):
                 images = pyglet.image.ImageGrid(tileSheet, tileSheet.height/height, tileSheet.width / width)
                 image = images[len(images) - 1]
 
-                array.append(SelectorItem(os.path.basename(file).split(".")[0] , image, "level", width, height))  # Width and Height are stored in the "customs"
+                array.append(SelectorItem(os.path.basename(file).split(".")[0], image, "level", width, height))  # Width and Height are stored in the "customs"
 
         self.items["level"] = array
 
@@ -574,7 +574,7 @@ class ExportBox(object):
             self.title.text = "Export map"
             self.width = 450
             self.height = 100
-            self.fieldsTitle.append(pyglet.text.Label("Map name:", batch=self.batch) )
+            self.fieldsTitle.append(pyglet.text.Label("Map name:", batch=self.batch))
 
             self.widgets = [TextWidget('', 0, 0, self.width - 20, self.batch)]
 

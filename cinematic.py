@@ -7,6 +7,7 @@ import time
 import animation
 import collections
 
+
 class Cinematic(object):
     def __init__(self, filename=None):
         """

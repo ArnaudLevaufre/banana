@@ -201,7 +201,7 @@ class LevelSelector():
         self.scroll += scroll_y * 10
 
         # On limite le scroll pour ne pas se perdre.
-        if self.scroll < 0 :
+        if self.scroll < 0:
             self.scroll = 0
         elif self.scroll > len(self.levels) * LevelSelectorBox.HEIGHT:
             self.scroll = len(self.levels) * LevelSelectorBox.HEIGHT
@@ -214,7 +214,7 @@ class LevelSelector():
                 print e.label.text
                 self.choosenLevel = e.label.text
 
-  
+
 class LevelSelectorBox():
     """
     Classe définissant les éléments du menu de selection de niveau
