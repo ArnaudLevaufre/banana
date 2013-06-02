@@ -24,9 +24,15 @@ class Item(object):
         
         self.x = x
         self.y = y
-        self.SIZE = 24
+        
         self.type = itemType
         self.value = value
+        if itemType == "chest":
+            self.SIZE = 48
+            self.sprite = pyglet.sprite.Sprite(pyglet.image.load("data/sprites/chest.png"))
+        else:
+            self.SIZE = 24
+            self.sprite = pyglet.sprite.Sprite(pyglet.image.load("data/sprites/item.png"))
 
     def collide(self, ent):
         """
@@ -56,10 +62,6 @@ class Item(object):
         else:
             decal = math.sin(5 * time.time())
 
-        # Pour l'instant nous n'affichons qu'on carré.
-        pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
-        pyglet.gl.glVertex2d(self.x - self.SIZE / 2, self.y - self.SIZE / 2 + 5 * decal)
-        pyglet.gl.glVertex2d(self.x - self.SIZE / 2 + self.SIZE, self.y - self.SIZE / 2 + 5 * decal)
-        pyglet.gl.glVertex2d(self.x - self.SIZE / 2 + self.SIZE, self.y - self.SIZE / 2 + self.SIZE + 5 * decal)
-        pyglet.gl.glVertex2d(self.x - self.SIZE / 2, self.y - self.SIZE / 2 + self.SIZE + 5 * decal)
-        pyglet.gl.glEnd()
+        self.sprite.x = self.x - self.SIZE/2
+        self.sprite.y = self.y + 5 * decal - self.SIZE/2
+        self.sprite.draw()
