@@ -42,7 +42,7 @@ class Cinematic(object):
         """
 
         # On parse le XML
-        tree = ET.parse(fileName)
+        tree = ET.parse(str(fileName))
         root = tree.getroot()
         for child in root:
             if(child.tag == "border"):  # Si on veut une bordure
@@ -208,7 +208,7 @@ class Image(object):
         self.animation = animation.AnimationGroup()
         self.animation.createFromImage(pyglet.image.load(path), int(w), int(h))
         self.animation.setFrameRate(4.0/50.0)
-        self.animation.selectAnimation(0)
+        self.animation.selectAnimation(3)
         self.animation.setIdleState()
 
         self.centerX, self.centerY = gameEngine.getDinamicWindowSize()[0] / 2, gameEngine.getDinamicWindowSize()[1] / 2
