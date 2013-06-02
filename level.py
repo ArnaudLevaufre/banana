@@ -13,10 +13,10 @@ class Level(object):
     """
     Classe de gestion des niveaux
     """
-    
+
     def __init__(self):
         """ Le constructeur initialise tout les éléments du jeu """
-        
+
         self.player = None
         self.map = map.Map()
         self.cinematique = None
@@ -27,13 +27,12 @@ class Level(object):
         self.nextLevel = ""
 
         self.campaign = True
-        
 
     def load(self, fileName):
         """
         Charge le niveau depuis un fichier xml de nom fileName
         """
-        
+
         # Selection des chemin de fichier celon si on est en mode campagne ou non
         if self.campaign:
             self.baseLvlPath = "data/lvl/campaign/"

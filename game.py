@@ -18,30 +18,30 @@ class Game(object):
     def __init__(self, isContinue=False, loadLevel=None):
         """
         Classe de gestion du jeux. Il s'agit ni plus ni moins que du moteur de jeux.
-        Game va donc être en charge de créer une instance de niveau, une instance de Map, 
+        Game va donc être en charge de créer une instance de niveau, une instance de Map,
         gérer les ennemies, le joueur, les projectiles.
-        
-        :param isContinue: Permet de savoir si le joueur continue la partie déja existante. 
+
+        :param isContinue: Permet de savoir si le joueur continue la partie déja existante.
         :param  loadLevel: si différent de False, il s'agit d'une partie rapide.
-        
+
         :type isContinue: bool
         :type  loadLevel: None ou str
         """
-        
+
         self.camera = Camera()
         self.ui = ui.UI()
         self.level = level.Level()
         self.save = save.Save()
-        
+
         if not isContinue and loadLevel is None:
             # - creer nouvelle partie -
             self.level.load("Z1-N1")
             self.lvl = "Z1-N1"
-            
+
         elif loadLevel is not None:
             self.level.campaign = False
             self.level.load(str(loadLevel))
-            
+
         elif isContinue:
             self.save.load()
             self.level.load(self.save.lvl)
@@ -75,20 +75,20 @@ class Game(object):
         est appelé ici.
         Enfin nous trouverons la base de la gestion des items.
         Dans le cas particulier ou la cinématique est joué on ne fait rien.
-        
+
         :param dt: l'interval entre deux appel de la fonction
         :param keysHandler: une liste des touches qui sont enfoncés
-        
+
         :type dt: float
         :type keyHandler: dict
         """
-        
+
         self.tick += 1
         if self.cinematiqueIsPlaying is False and not self.dead:
             # si on ne joue pas de cinématiques.
 
             self.playerdx, self.playerdy = self.player.x, self.player.y
-            
+
             if keysHandler[key.Z]:
                 # déplacement vers le haut
                 self.player.move(0, 10, self.map, dt)
@@ -102,7 +102,7 @@ class Game(object):
             elif keysHandler[key.D]:
                 # déplacement à droite
                 self.player.move(10, 0, self.map, dt)
-            
+
             # calcul du dx et dy de la position du joueur. Ces valeurs serivirons dans le cadre des tirs ennemis
             self.playerdx, self.playerdy = self.player.x - self.playerdx, self.player.y - self.playerdy
 
@@ -132,9 +132,9 @@ class Game(object):
             # calcul de la position de tir des ennemis
             targetPosX = self.player.x + self.playerdx * (self.player.speed - 1)
             targetPosY = self.player.y + self.playerdy * (self.player.speed - 1)
-            
+
             # Simulation des ennemis
-            for ent in self.level.enemies:  
+            for ent in self.level.enemies:
                 ent.shoot(targetPosX, targetPosY, self.bullets, self.batch)
                 try:
                     if ent.hp < 0:  # Si l'ennemi est mort
@@ -162,7 +162,7 @@ class Game(object):
                             self.level.items.append(chest.loot())
                     else:
                         self.level.player.pick(item)
-            
+
             # Fin du niveau, quand tout les ennemis sont vaincus
             if self.level.enemies == []:
                 # Si le niveau est fini, on save la partie
@@ -208,13 +208,13 @@ class Game(object):
             self.player.isFiring = False
 
     def on_mouse_drag(self, x, y, dx, dy, button, mod):
-        # On met à jour la position de la visée quand on bouge la souris 
+        # On met à jour la position de la visée quand on bouge la souris
         # avec le click gauche enfoncé.
         if button == pyglet.window.mouse.LEFT:
             self.player.aim(x, y)
-        
-    def on_mouse_motion(self, x,y, dx, dy):
-        self.player.aim(x,y)
+
+    def on_mouse_motion(self, x, y, dx, dy):
+        self.player.aim(x, y)
 
     def on_key_press(self, symbol, modifier):
         if self.dead:
@@ -226,7 +226,7 @@ class Game(object):
 
     def render(self):
         """ Affichage des éléments du jeu """
-        
+
         if self.cinematiqueIsPlaying is False and not self.dead:
             self.map.render()
             self.player.render()
@@ -238,12 +238,12 @@ class Game(object):
             for item in self.level.items:
                 item.render()
             self.ui.render(self.camera.x, self.camera.y, self.player)
-       
+
         elif self.cinematiqueIsPlaying and self.level.cinematique:
             width, height = gameEngine.getDinamicWindowSize()
             self.camera.setPos(width/2, height/2)
             self.cinematiqueIsPlaying = self.level.cinematique.run()
-        
+
         elif self.dead:
             width, height = gameEngine.getDinamicWindowSize()
             self.camera.setPos(width / 2, height / 2)
@@ -258,13 +258,13 @@ class Game(object):
 
 class Camera:
     """
-    Classe gérant la caméra. 
+    Classe gérant la caméra.
     Lorsque l'on veut centrer la caméra sur quelque chose
     on réalise un translation du plan. (Tout ceci
-    est géré par openGL, et heureusement vue les 
-    matrices qu'il y à deriere) 
+    est géré par openGL, et heureusement vue les
+    matrices qu'il y à deriere)
     """
-    
+
     def __init__(self):
         self.x = 0
         self.y = 0
@@ -280,4 +280,4 @@ class Camera:
 
     def reset(self):
         width, height = gameEngine.getDinamicWindowSize()
-        self.setPos(width/2,height/2)
+        self.setPos(width/2, height/2)

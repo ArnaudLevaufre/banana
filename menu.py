@@ -3,22 +3,20 @@
 import pyglet
 import gameEngine
 import os
-import gameEngine
 
 
 class MainMenu():
     """
     Classe permetant de gérer le menu principal.
     """
-    
+
     def __init__(self):
-        
+
         # Vérification de l'existance d'une sauvegarde.
         if os.path.isfile("data/save/save.data"):
             self.existingSave = True
         else:
             self.existingSave = False
-
 
         # général
         width, height = gameEngine.getDinamicWindowSize()
@@ -46,7 +44,6 @@ class MainMenu():
             self.rapidText.y = self.newText.y - 50
             self.continueText.text = ""
 
-
     def render(self):
         width, height = gameEngine.getDinamicWindowSize()
 
@@ -55,10 +52,10 @@ class MainMenu():
         self.newText.x, self.newText.y = width/2, self.principalMenuText.y - 160
         self.continueText.x, self.continueText.y = width/2, self.newText.y - 50
         self.rapidText.x, self.rapidText.y = width / 2, self.continueText.y - 50
-        
+
         if not self.existingSave:
             self.rapidText.y = self.newText.y - 50
-            
+
         self.editText.x, self.editText.y = width/2, self.rapidText.y - 50
         self.quitText.x, self.quitText.y = width/2, self.editText.y - 50
 
@@ -169,100 +166,100 @@ class MainMenu():
 
 # ----------------------------------s
 
+
 class LevelSelector():
     """
     Selecteur de niveau dans le cas d'une partie rapide.
     """
-    
+
     def __init__(self):
         self.levels = []
         self.choosenLevel = None
         self.scroll = 0
         self.batch = pyglet.graphics.Batch()
         self.loadLevels()
-        
+
     def render(self):
         for e in self.levels:
             e.update(self.scroll, self.levels.index(e))
         self.batch.draw()
-    
+
     def loadLevels(self):
         """
         Chargement des niveaux présent dans le dossier des niveaux.
         """
-        
+
         dir = "data/lvl"
-        
+
         files = os.listdir(dir)
         for file in files:
-            if not os.path.isdir( os.path.join(dir,file) ):
-                self.levels.append(LevelSelectorBox(file, self.batch, 10, len(self.levels) * 55 ))
-    
+            if not os.path.isdir(os.path.join(dir, file)):
+                self.levels.append(LevelSelectorBox(file, self.batch, 10, len(self.levels) * 55))
+
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         # Navigation dans le menu
         self.scroll += scroll_y * 10
 
         # On limite le scroll pour ne pas se perdre.
-        if self.scroll < 0 :
+        if self.scroll < 0:
             self.scroll = 0
         elif self.scroll > len(self.levels) * LevelSelectorBox.HEIGHT:
             self.scroll = len(self.levels) * LevelSelectorBox.HEIGHT
-    
+
     def on_mouse_press(self, x, y, button, modifiers):
         # Action au clic sur des éléments du menu
         for e in self.levels:
             if e.label.y - LevelSelectorBox.HEIGHT/2 < y < e.label.y + LevelSelectorBox.HEIGHT/2:
-                
+
                 print e.label.text
                 self.choosenLevel = e.label.text
-            
+
+
 class LevelSelectorBox():
     """
     Classe définissant les éléments du menu de selection de niveau
     """
-    
+
     WIDTH = 500
     HEIGHT = 40
-    
+
     def __init__(self, name, batch, x, y):
         """
         Constructeur
-        
-        :param name: Le text qui sera afficher dans le boutton
+
+        :param name: Le texte qui sera afficher dans le boutton
         :param batch: le batch ou seront placés les text et les fonds
         :param x: position en x de l'élément
-        :param y: position en y de l'élément 
-        
+        :param y: position en y de l'élément
+
         :type name: str
         :type batch: pyglet.graphics.Batch
         :type x: int
         :type y: int
         """
-        
+
         self.name = name
         self.label = pyglet.text.Label(name, batch=batch, anchor_y="center", bold=True)
 
         # Créer un rectangle avec une pointe vers la droite
         self.vertex_list = batch.add(4, pyglet.gl.GL_QUADS, None,
-            ('v2i', [x, y, x + self.WIDTH, y, self.WIDTH, self.HEIGHT, x, self.HEIGHT]),
-            ('c4B', [0, 0, 0, 255] * 4)
-        )
-    
+                                    ('v2i', [x, y, x + self.WIDTH, y, self.WIDTH, self.HEIGHT, x, self.HEIGHT]),
+                                    ('c4B', [0, 0, 0, 255] * 4))
+
     def update(self, scroll, pos):
         """
         Met à jour les informations de position de l'élément, afin de prendre en compte
         le scroll.
-        
-        :param scroll: Le scroll dans le selecteur, afin de calculer les positions. 
+
+        :param scroll: Le scroll dans le selecteur, afin de calculer les positions.
         :param pos: ni plus ni moins que l'index de l'item dans le tableaux des items du selecteur
-        
+
         :type scroll: int
         :type pos: int
         """
-        
+
         width, height = gameEngine.getDinamicWindowSize()
         height -= scroll + 5
-        self.vertex_list.vertices = [width/4, height - self.HEIGHT * pos - 2, 3 * width / 4, height - self.HEIGHT * pos - 2, 2 * width / 3, height - self.HEIGHT * (pos + 1) + 2, width / 4, height - self.HEIGHT * (pos + 1) + 2]
+        self.vertex_list.vertices = [width / 4, height - self.HEIGHT * pos - 2, 3 * width / 4, height - self.HEIGHT * pos - 2, 2 * width / 3, height - self.HEIGHT * (pos + 1) + 2, width / 4, height - self.HEIGHT * (pos + 1) + 2]
         self.label.x = width / 4 + 10
-        self.label.y = height - self.HEIGHT * pos - (self.HEIGHT - 4)/2
-    
+        self.label.y = height - self.HEIGHT * pos - (self.HEIGHT - 4) / 2
