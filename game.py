@@ -36,7 +36,7 @@ class Game(object):
         if not isContinue and loadLevel is None:
             # - creer nouvelle partie -
             self.level.load("Z1-N1")
-            self.lvl = 1
+            self.lvl = "Z1-N1"
             
         elif loadLevel is not None:
             self.level.campaign = False
