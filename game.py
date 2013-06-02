@@ -107,7 +107,7 @@ class Game(object):
                         ent.IA._recompute_path(self.player.x, self.player.y, ent.caseX, ent.caseY)
                     elif 64 > math.sqrt((self.player.x - ent.x)**2 + (self.player.y - ent.y)**2) and random.random() < ent.fireRate/50:
                         self.player.hit(ent.attack)
-                    ent.move((ent.IA.path[-2][0] - ent.caseX), (ent.IA.path[-2][1]-ent.caseY), self.map, dt, ent.IA.path[-2])
+                    ent.move((ent.IA.path[-2][0] - ent.caseX), (ent.IA.path[-2][1]-ent.caseY), self.map, dt)
                 except:
                     pass
 

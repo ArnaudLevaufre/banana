@@ -1,4 +1,5 @@
 #-*- encoding: utf-8 -*-
+
 import math
 import time
 import os
@@ -17,7 +18,7 @@ import xml.etree.ElementTree as xml
 
 class Entity(object):
     """
-    Classe generale d'une entitée
+    Classe generale décrivant les entitées
     """
     def __init__(self, x=0, y=0, xVel=0, yVel=0):
         self.x = int(x)
@@ -37,7 +38,24 @@ class Enemy(Entity):
     """
     Ennemie pour tester l'IA, il essaie juste de toucher le joueur
     """
-    def __init__(self, x, y, fileName, gameMap, gridMap, suc):
+    
+    def __init__(self, x, y, fileName, gameMap, gridMap, successor):
+        """
+        :param x: position x originale de l'ennemi
+        :param y: position y originale de l'ennemi
+        :param fileName: Chemin vers le fichier xml décrivant les caractéristiques de l'ennemi
+        :param gameMap: une instance de la carte
+        :param gridMap: map version IA 
+        :param suc: arbre qui à chaque case associe les cases vers lesquels on peut bouger
+        
+        :type x: int
+        :type y: int
+        :type fileName: str
+        :type gameMap: Map object
+        :type gridMap: GriMap object
+        :type successor: dict
+        """
+        
         # - Objets -
         Entity.__init__(self, x, y)
 
@@ -55,14 +73,19 @@ class Enemy(Entity):
         self.fireRate = 10
 
         # - IA -
-        self.IA = IA.IA(self.x, self.y, gameMap, gridMap, suc)
+        self.IA = IA.IA(self.x, self.y, gameMap, gridMap, successor)
         self.caseX = self.x / 64
         self.caseY = self.y / 64
 
         self.load(fileName)
 
-    def load(self, fileName):
 
+    def load(self, fileName):
+        """ 
+        Charge les caractéristiques de l'ennemi depuis le 
+        fichier de description fileName. 
+        """
+        
         if os.path.isfile("data/ennemies/"+fileName+".xml"):
             xmlTree = xml.parse("data/ennemies/"+fileName+".xml")
             root = xmlTree.getroot()
@@ -119,7 +142,21 @@ class Enemy(Entity):
         except:
             pass
 
-    def move(self, x, y, gameMap, dt, target):
+    def move(self, x, y, gameMap, dt):
+        """
+        Gestion des mouvement de l'ennemi.
+        
+        :param x: déplacement voulus en x
+        :param y: déplacement voulus en y
+        :param gameMap: une instance de la carte
+        :param dt: l'interval depuis le dernier appel de la fonction
+
+        :type x: int
+        :type y: int
+        :type gameMap: Map object
+        :type dt: float
+        """
+        
         if self.canMove:
                 self.vector = [x, y]
                 self.canMove = False
@@ -148,14 +185,24 @@ class Enemy(Entity):
         itemToReturn = item.Item(self.x, self.y, self.itemList[objet][0], self.itemList[objet][1])
         return itemToReturn
 
+
 # ---------------------------------------------------
 
 
 class Player(Entity):
     """
-    Joueur
+    Classe permetant de gérer le joueur.
     """
+    
     def __init__(self, x, y):
+        """
+        :param x: position initiale en x du joueur
+        :param y: position initiale en y du joueur
+        
+        :type x: int
+        :type y: int
+        """
+        
         # - Objets -
         Entity.__init__(self, x, y)
 
@@ -239,6 +286,12 @@ class Player(Entity):
         le centre de l'écran et le pointeur de la souris.
         On le détermine en divisant le vecteur définit
         par le centre de l'écran et le cursor par sa norme.
+        
+        :param x: coordonnée en x de la souris
+        :param y: coordonnée en y de la souris
+        
+        :type x: int
+        :type y: int
         """
         width, height = gameEngine.getDinamicWindowSize()
 
@@ -249,17 +302,30 @@ class Player(Entity):
         self.aimVector = self.aimVector.getUnitary()
 
     def shoot(self, bullets, batch):
+        """
+        Tir en suivant la direction de aimVector.
+        
+        :param bullets: La liste ou sont stocké toutes les entitées de type Bullet du niveau
+        :param batch: le batch qui contiendra les sprites de projectiles.
+        
+        :param bullets: list
+        :param batch: Batch
+        """
         if self.isFiring and time.time() - self.lastShoot > 1/self.fireRate and self.mucus > 0:
             self.lastShoot = time.time()
             bullets.append(Bullet(self.x, self.y + self.mouthOffset, self.aimVector.x * 1000, self.aimVector.y * 1000, self, self.bulletModel, batch))
             self.mucus -= 1
 
-    def hit(self, attack):
-        if self.shield - attack > 0:
-            self.shield -= attack
-        elif self.hp - (attack - self.shield) / (1 + math.log(1 + self.resistance / 25)) > 0:
+    def hit(self, damage):
+        """
+        Calcul les dégat subis par une attaque de puissance donnée par la variable damage
+        """
+        
+        if self.shield - damage > 0:
+            self.shield -= damage
+        elif self.hp - (damage - self.shield) / (1 + math.log(1 + self.resistance / 25)) > 0:
             self.shield = 0
-            self.hp -= (attack - self.shield) / (1 + math.log(1 + self.resistance / 25))
+            self.hp -= (damage - self.shield) / (1 + math.log(1 + self.resistance / 25))
         else:
             self.hp = 0
             self.shield = 0
@@ -310,11 +376,16 @@ class Player(Entity):
             self.pickLabel.draw()
         
     def pick(self, item):
-        # mise a jour du pick info
+        """
+        Récupere l'item donnée en paramètre. Change les caractéristiques du joueur
+        et affiche une information sur l'item reçut.
+        """
+        
+        # - mise a jour du pick info -
         self.pickLabel.text = (item.type + " " + str(int(item.value))).upper()
         self.pickTimestamp = time.time()
         
-        # action de l'item sur le joueur
+        # - action de l'item sur le joueur -
         if item.type == "shield":
             self.shieldCapacity = item.value
             self.shield = item.value
@@ -348,9 +419,29 @@ class Player(Entity):
 
 
 class Bullet(Entity):
+    """ Class décrivant les projectiles """
+    
     SIZE = 10
 
     def __init__(self, x, y, xVel, yVel, owner, image, batch):
+        """
+        :param x: position initiale en x du projectile
+        :param y: position initiale en y du projectile
+        :param xVel: vitesse de déplacement sur l'axe des abscisses
+        :param yVel: vitesse de déplacement sur l'axe des ordonnés
+        :param owner: Une instance de player ou de Enemy celon les cas
+        :param image: Le model de projectile, il sera convertis en sprite
+        :param batch: le batch dans lequel sera placé le sprite du projectile
+        
+        :type x: int
+        :type y: int
+        :type xVel: int
+        :type yVel: int
+        :type owner: soit Enemy, soit Player
+        :type image: une image chargé avec pyglet.image.load
+        :type batch: Batch
+        """ 
+        
         # - Objet -
         super(Bullet, self).__init__(x, y, xVel, yVel)
 
@@ -365,36 +456,69 @@ class Bullet(Entity):
         self.sprite = pyglet.sprite.Sprite(image, batch=batch)
 
     def simulate(self, gameMap, player, ennemies, dt=0.1):
+        """
+        Simule les déplacements des projectiles. Si le projectile rencontre un mur
+        sur la crate ou se hurte à un ennemi ou au joueur, on return False. 
+        Cette information sera utilisée pour supprimer le projectile de la liste
+        des projectiles courants du niveau.
+        
+        :param gameMap: la carte du niveau, elle permet de gérer les collision anec le décors 
+        :param player: le joueur.
+        :param ennemies:  la liste des ennemies présents sur le niveau
+        :param dt: l'interval entre deux appels de la fonction
+        
+        :type gameMap: Map
+        :type player: Player
+        :type ennemies: list(Enemy)
+        :type dt: float
+        """
+        
+        # - calcul de la trajectiore, test de colision avec la carte et mise a jour de la position -
         norm = math.sqrt((self.initX - self.x)**2 + (self.initY - self.y)**2)
         if not gameMap.collide(self.x - self.width/2 + self.xVel * dt * self.speed, self.y - self.height/2 + self.yVel * dt * self.speed, self.width, self.height) and norm < self.range:
+            # mise à jour de la position du projectile si on ne collide pas avec la carte
             self.x += int(self.xVel * dt * self.speed)
             self.y += int(self.yVel * dt * self.speed)
 
+            # mise à jour de la position du sprite
             self.sprite.x = self.x - self.SIZE/2
             self.sprite.y = self.y - self.SIZE/2
         else:
             return False
 
+        # - test de collision entre les projectiles et les ennemies -
         for en in ennemies:
             if self.collide(en):
                 en.hit()
                 return False
 
+        # - test de collision entre les projectiles et le joueur
         if self.collide(player):
             player.hit(self.owner.attack)
             return False
 
     def collide(self, ent):
         """
-                              == COLLIDE ==
+                                == COLLIDE ==
 
-        Voir gameMap.collide() pour les explications
+        Gestion des colisions des projectiles avec le joueur ou les ennemies.
+        On vérifie que la position en x de l'entitée est comprise entre
+        la position en x du projectile et sa position en x+width.
+        On procede ensuit de la même maniere mais avec les coordonnées en y.
+        Enfin on répete le processus mais en inversant les coordonnées du 
+        projectile et de l'entitée dans les comparaison.
+        La second vérification permet de gérer les cas ou l'entitée est 
+        plus grosse que les cases. Sans cela on passerais à travers les blocks.  
 
-        :param ent: ennemi avec lequel check les collisions
-        :type ent: Ennemy
+        :param ent: L'ennemi ou le joueur avec lequel on veu vérifier la collision
+        :type ent: Ennemy ou Player
         """
+        
+        # ------------------------------------------------------- #
+        # - One does not simply understand what's written there - #
+        # ------------------------------------------------------- #
+        
         if ent.type != self.owner.type:
-            # One does not simply understand what's written there
             if self.x <= ent.x <= self.x + self.width or self.x <= ent.x+ent.width <= self.x + self.width:
                 if self.y <= ent.y <= self.y + self.height or self.y <= ent.y+ent.height <= self.y + self.height:
                     return True
@@ -408,4 +532,3 @@ class Bullet(Entity):
                     return True
 
         return False
-    

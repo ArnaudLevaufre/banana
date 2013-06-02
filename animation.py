@@ -33,6 +33,7 @@ class AnimationGroup(object):
         :type tileWidth: int
         :type tileHeight: int
         """
+        
         tileLine = pyglet.image.ImageGrid(image, image.height / tileHeight, 1)
 
         # calcul du nombre de ligne:
@@ -54,6 +55,11 @@ class AnimationGroup(object):
 
 
 class Animation(object):
+    """
+    Classe gérant l'animation. Un fichier image 
+    peut être directement parsé afin de créer une animation
+    automatiquement.
+    """
     def __init__(self, frameRate=1):
         self.frames = []
         self.lastFrameChange = time.time()

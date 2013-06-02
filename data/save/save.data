@@ -2,14 +2,14 @@
 <save>
 	<lvl>Z1-N2</lvl>
 	<maxHp>100.0</maxHp>
-	<hp>88.5032711999</hp>
+	<hp>100.0</hp>
 	<speed>30.0</speed>
 	<shieldCapacity>50.0</shieldCapacity>
-	<shield>50.0</shield>
+	<shield>30.0</shield>
 	<fireRate>10.0</fireRate>
 	<resistance>100</resistance>
 	<attack>10</attack>
-	<mucus>988</mucus>
+	<mucus>986</mucus>
 	<mucusMax>1000</mucusMax>
 	<regenMucus>0.01</regenMucus>
 </save>
