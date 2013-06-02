@@ -1,4 +1,5 @@
 #-*- encoding: utf-8 -*-
+
 import pyglet
 import pyglet.window.key as key
 import gameEngine
@@ -14,9 +15,19 @@ import math
 
 
 class Game(object):
-    def __init__(self, isContinue=False, loadLevel=False):
-        """ Si loadLevel vaut False, c'est la campagne
+    def __init__(self, isContinue=False, loadLevel=None):
         """
+        Classe de gestion du jeux. Il s'agit ni plus ni moins que du moteur de jeux.
+        Game va donc être en charge de créer une instance de niveau, une instance de Map, 
+        gérer les ennemies, le joueur, les projectiles.
+        
+        :param isContinue: Permet de savoir si le joueur continue la partie déja existante. 
+        :param  loadLevel: si différent de False, il s'agit d'une partie rapide.
+        
+        :type isContinue: bool
+        :type  loadLevel: None ou str
+        """
+        
         self.camera = Camera()
         self.ui = ui.UI()
         self.level = level.Level()
@@ -27,7 +38,7 @@ class Game(object):
             self.level.load("Z1-N1")
             self.lvl = 1
             
-        elif loadLevel is not False:
+        elif loadLevel is not None:
             self.level.campaign = False
             self.level.load(str(loadLevel))
             
@@ -56,28 +67,52 @@ class Game(object):
         self.dead = False
 
     def simulate(self, dt, keysHandler):
+        """
+        Fonction pricipale de simulation du jeux en cours.
+        On vérifira les actions clavier est on fera bouger le joueur
+        lorsque nécéssaire.
+        La simulation du déplacement des ennemies ainsi que des projectile
+        est appelé ici.
+        Enfin nous trouverons la base de la gestion des items.
+        Dans le cas particulier ou la cinématique est joué on ne fait rien.
+        
+        :param dt: l'interval entre deux appel de la fonction
+        :param keysHandler: une liste des touches qui sont enfoncés
+        
+        :type dt: float
+        :type keyHandler: dict
+        """
+        
         self.tick += 1
         if self.cinematiqueIsPlaying is False and not self.dead:
-            self.playerdx, self.playerdy = self.player.x, self.player.y
+            # si on ne joue pas de cinématiques.
 
+            self.playerdx, self.playerdy = self.player.x, self.player.y
+            
             if keysHandler[key.Z]:
+                # déplacement vers le haut
                 self.player.move(0, 10, self.map, dt)
             elif keysHandler[key.S]:
+                # déplacement vers le bas
                 self.player.move(0, -10, self.map, dt)
 
             if keysHandler[key.Q]:
+                # déplacement à gauche
                 self.player.move(-10, 0, self.map, dt)
             elif keysHandler[key.D]:
+                # déplacement à droite
                 self.player.move(10, 0, self.map, dt)
-
+            
+            # calcul du dx et dy de la position du joueur. Ces valeurs serivirons dans le cadre des tirs ennemis
             self.playerdx, self.playerdy = self.player.x - self.playerdx, self.player.y - self.playerdy
 
+            # commande d'affichage du panel des infos
             if keysHandler[key.TAB]:
                 self.ui.toggleMenu(True)
             else:
                 self.ui.toggleMenu(False)
 
-            # Mort ?
+            # vérification de la mort du joueur
             if int(self.player.hp) <= 0:
                 pyglet.gl.glClearColor(0, 0, 0, 1)
                 self.dead = True
@@ -86,16 +121,20 @@ class Game(object):
             if self.player.isFiring:
                 self.player.shoot(self.bullets, self.batch)
 
+            # regénération de mucus
             self.player.increaseMucus()
 
+            # simulation des projectiles
             for bullet in self.bullets:
                 if bullet.simulate(self.map, self.player, self.level.enemies, dt) is False:
                     self.bullets.remove(bullet)
 
+            # calcul de la position de tir des ennemis
             targetPosX = self.player.x + self.playerdx * (self.player.speed - 1)
             targetPosY = self.player.y + self.playerdy * (self.player.speed - 1)
-
-            for ent in self.level.enemies:  # Simulation des ennemis
+            
+            # Simulation des ennemis
+            for ent in self.level.enemies:  
                 ent.shoot(targetPosX, targetPosY, self.bullets, self.batch)
                 try:
                     if ent.hp < 0:  # Si l'ennemi est mort
@@ -111,6 +150,7 @@ class Game(object):
                 except:
                     pass
 
+            # gesion de items
             for item in self.level.items:
                 if item.collide(self.player):
                     self.level.items.remove(item)
@@ -122,7 +162,8 @@ class Game(object):
                             self.level.items.append(chest.loot())
                     else:
                         self.level.player.pick(item)
-
+            
+            # Fin du niveau, quand tout les ennemis sont vaincus
             if self.level.enemies == []:
                 # Si le niveau est fini, on save la partie
                 if self.level.nextLevel != "":
@@ -140,14 +181,14 @@ class Game(object):
                 self.camera.setPos(self.player.x, self.player.y)
 
     def reload(self):
-        # On load le level self.lvl
+        """ rechargement du niveau """
         try:
             if not self.gameEnded:
                 self.camera = Camera()
                 self.ui = ui.UI()
                 self.level = level.Level()
                 self.level.load(str(self.lvl))
-                self.player = self.level.player  # On mets le joueur à la bonne place
+                self.player = self.level.player
                 self.map = self.level.map
                 self.bullets = []
                 self.cinematiqueIsPlaying = True
@@ -156,29 +197,33 @@ class Game(object):
             self.gameEnded = True
 
     def on_mouse_press(self, x, y, button, modifiers):
+        # toggle le tir du joueur lorsque l'on click gauche
         if button == pyglet.window.mouse.LEFT:
             self.player.isFiring = True
             self.player.aim(x, y)
 
     def on_mouse_release(self, x, y, button, modifiers):
+        # reset le tir du joueur quand on relache le click gauche
         if button == pyglet.window.mouse.LEFT:
             self.player.isFiring = False
 
     def on_mouse_drag(self, x, y, dx, dy, button, mod):
+        # On met à jour la position de la visée quand on bouge la souris 
+        # avec le click gauche enfoncé.
         if button == pyglet.window.mouse.LEFT:
             self.player.aim(x, y)
 
-    def on_mouse_motion(self, x, y, dx, dy):
-        self.player.aim(x, y)
-
     def on_key_press(self, symbol, modifier):
         if self.dead:
+            # rechargement de la partie si le joueur est mort.
             pyglet.gl.glClearColor(0.5, 0.75, 1, 1)
             self.dead = False
             self.reload()
             self.player.hp = self.player.maxHp
 
     def render(self):
+        """ Affichage des éléments du jeu """
+        
         if self.cinematiqueIsPlaying is False and not self.dead:
             self.map.render()
             self.player.render()
@@ -204,10 +249,19 @@ class Game(object):
 
         return self.returnState
 
+
 # ---------------------------------------------------
 
 
 class Camera:
+    """
+    Classe gérant la caméra. 
+    Lorsque l'on veut centrer la caméra sur quelque chose
+    on réalise un translation du plan. (Tout ceci
+    est géré par openGL, et heureusement vue les 
+    matrices qu'il y à deriere) 
+    """
+    
     def __init__(self):
         self.x = 0
         self.y = 0
@@ -222,6 +276,4 @@ class Camera:
         pyglet.gl.glTranslated(width/2 - x, height/2 - y, 0)
 
     def reset(self):
-        width, height = gameEngine.getDinamicWindowSize()
-        pyglet.gl.glLoadIdentity()
-        pyglet.gl.glTranslated(0, 0, 0)
+        self.setPos(0,0)

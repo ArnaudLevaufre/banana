@@ -7,7 +7,23 @@ import sys
 
 
 class GameEngine(pyglet.window.Window):
-    # Constantes de la fenetre
+
+    """
+    == Classe principale de l'application == 
+    
+    C'est ici que l'on transmet tout les evenement
+    clavier, souris, commande d'affichage.
+    
+    On est entierement guidé par la variable 
+    _state qui, celon ca valeur, nous indique
+    l'état du programme, c'est à dire si nous
+    somme dans le menu, dans l'éditeur, en
+    jeu, etc ...
+    Ainsi suivant le cas on transmet les
+    evenement selement à la partie du
+    programme qui nous intéresse.
+    """
+
     W_WIDTH = 1024
     W_HEIGHT = 640
 
@@ -47,6 +63,15 @@ class GameEngine(pyglet.window.Window):
         self._menu = menu.MainMenu()
 
     def physicEngine(self, dt):
+        """
+        Moteur physique principal, il fait appel au fonctions
+        chargés de calculer les déplacement ainsi que celles
+        calculant les différents macanismes du jeu. Elle 
+        transmet à chaque fois dt, indispensable dans
+        les calculs de déplacement afin de garder une vitesse
+        constante.
+        """
+        
         if self._state == "new":
             self._game = game.Game()
             self._state = "playing"
@@ -74,6 +99,13 @@ class GameEngine(pyglet.window.Window):
             self._state = "creator"
 
     def on_draw(self):
+        """
+        Fonction d'affichage principale.
+        Elle commande l'appel de l'affichage
+        des diférents éléments du jeux, de l'éditeur
+        ou du menu celon les cas.
+        """
+        
         self.clear()
         # ----------------------------
         if self._state == "playing" and self._game:
@@ -121,8 +153,6 @@ class GameEngine(pyglet.window.Window):
         # - Passage des evenements aux autres objets
         if self._state == "menu":
             self._menu.on_mouse_motion(x, y, dx, dy)
-        elif self._state == "playing":
-            self._game.on_mouse_motion(x, y, dx, dy)
         elif self._state == "creator":
             self._creator.on_mouse_motion(x, y, dx, dy)
 
@@ -158,6 +188,10 @@ class GameEngine(pyglet.window.Window):
 
 
 def getDinamicWindowSize():
+    """
+    Fonction permetant de récupérer la taille
+    de la fenetre sans avoir a transmetre l'object Window
+    """
     if len(pyglet.app.windows) != 0:
         for window in pyglet.app.windows:
             return window.width, window.height
