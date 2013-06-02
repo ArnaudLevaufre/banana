@@ -1,23 +1,18 @@
 <?xml version="1.0"?>
 <cin>
-	<border velY = "250" pos = "bot"> <!-- Bordure noire du bas, sa vitesse de montée ainsi que la position maximale du bas de la bordure -->
-		<textChange time = "1">Texte 1</textChange> <!-- On peut afficher du texte, ici le texte apparait à la seconde 1 -->
-		<textChange time ="5">Texte 2</textChange> <!-- Puis à la seconde 5 -->
-		<textChange time ="7">Texte 3</textChange>
+	<border velY = "250" pos = "bot">
+		<textChange time ="0">Blarg: Blarg</textChange>
+		<textChange time ="2">Blargette: Blarg!</textChange>
+		<textChange time ="6">Blarg: Blarg Blaa..</textChange>
+		<textChange time ="8">NezFurious: Mouhahaha</textChange>
+		
 	</border>
-	<border pos = "top"/> <!-- Une bordure en haut, pour faire joli -->
+	
+	<border pos = "top" velY = "250"/>
 
-	<image path="data/sprites/blarg.png" x="0" y="0" h="48" w="48"> 
-		<move x="50" y="50" timeStart="2" timeStop="3"/> 
-		<move x="-15" y="25" timeStart="4" timeStop="5"/> 
-		<move x="45" y="45" timeStart="6" timeStop="7"/> 
+	<image path="data/sprites/blarg.png" x="-400" y="-48" h="48" w="48">
+		<move x="200" y="-48" timeStart="0" timeStop="4"/>
 	</image>
 
-	<image path="data/sprites/blarg.png" x="0" y="0" h="48" w="48">
-		<move x="-100" y="45" timeStart="2" timeStop="3"/> 
-		<move x="99" y="25" timeStart="4" timeStop="5"/> 
-		<move x="25" y="-50" timeStart="6" timeStop="7"/> 
-	</image>
-
-	<end time="8" /> <!-- Enfin, on indique le temps de fin -->
+	<end time="20" /> <!-- Enfin, on indique le temps de fin -->
 </cin>

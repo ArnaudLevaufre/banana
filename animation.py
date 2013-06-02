@@ -6,8 +6,8 @@ import pyglet
 
 class AnimationGroup(object):
     """
-    Class de gestion des animations customizé (celle de pyglet ne proposant pas ce que nous souhaitons)
-    Ainsi on peut gérer les animations par groupes.
+    Class de gestion des animations customisé (celle de pyglet ne proposant pas ce que nous souhaitons)
+    Ainsi on peut gérer les animations par groupe.
     """
     def __init__(self):
         self.animationList = []
@@ -33,7 +33,7 @@ class AnimationGroup(object):
         :type tileWidth: int
         :type tileHeight: int
         """
-        
+
         tileLine = pyglet.image.ImageGrid(image, image.height / tileHeight, 1)
 
         # calcul du nombre de ligne:
@@ -56,7 +56,7 @@ class AnimationGroup(object):
 
 class Animation(object):
     """
-    Classe gérant l'animation. Un fichier image 
+    Classe gérant l'animation. Un fichier image
     peut être directement parsé afin de créer une animation
     automatiquement.
     """

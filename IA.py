@@ -5,13 +5,19 @@ from collections import defaultdict
 
 
 class IA(object):
+    """
+    IA du monstre
+    """
     def __init__(self, x, y, gameMap, gridMap, suc):
-        self.gridMap = gridMap
-        self.suc = suc
+        self.gridMap = gridMap  # Map pour l'IA.
+        self.suc = suc  # Dictionnaire contenant tous les successeurs de chaque case de la map. Ca nous fait gagner du temps.
         self.pf = PathFinder(self.suc, self.gridMap.move_cost,
                              self.gridMap.move_cost)
 
     def _recompute_path(self, xPlayer, yPlayer, xEnt, yEnt):
+        """
+        Retourne un chemin en [xEnt, yEnt] et [yPlayer / 64, xPlayer / 64]
+        """
         self.goal_pos = xPlayer / 64, yPlayer / 64
         self.start_pos = xEnt, yEnt
 
@@ -161,7 +167,7 @@ class PathFinder(object):
         while len(open_set) > 0:
             # Remove and get the node with the lowest f_score from
             # the open set
-            #
+
             curr_node = open_set.pop_smallest()
 
             if curr_node.coord == goal:
@@ -246,13 +252,12 @@ class PathFinder(object):
 
 
 class GridMap(object):
-    """ Represents a rectangular grid map. The map consists of
-        nrows X ncols coordinates (squares). Some of the squares
-        can be blocked (by obstacles).
+    """
+    Represente la map pour l'IA
     """
     def __init__(self, nrows, ncols):
-        """ Create a new GridMap with the given amount of rows
-            and columns.
+        """
+        Créé la map vide
         """
         self.nrows = nrows
         self.ncols = ncols
@@ -271,21 +276,21 @@ class GridMap(object):
                 del self.blocked[coord]
 
     def move_cost(self, c1, c2):
-        """ Compute the cost of movement from one coordinate to
-            another.
+        """
+        Retourne la distance euclidienne entre 2 cases
         """
         return ((c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2)
 
     def successors(self, c):
-        """ Compute the successors of coordinate 'c': all the
-            coordinates that can be reached by one step from 'c'.
+        """
+        Retourne les successeurs accessibles de la case c
         """
         slist = []
         for drow in (-1, 0, 1):
             for dcol in (-1, 0, 1):
                 if drow == 0 and dcol == 0:
                     continue
-                elif (drow**2 + dcol**2) == 2:
+                elif (drow**2 + dcol**2) == 2:  # On empeche le deplacement en diagonal.
                     continue
 
                 newrow = c[0] + drow

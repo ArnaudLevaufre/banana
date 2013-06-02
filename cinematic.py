@@ -5,7 +5,7 @@ import gameEngine
 import xml.etree.ElementTree as ET
 import time
 import animation
-
+import collections
 
 class Cinematic(object):
     def __init__(self, filename=None):
@@ -55,7 +55,7 @@ class Cinematic(object):
 
     def run(self):
         """ Affiche la cinématique à l'écran """
-        
+
         # - Calcul de dt -
         if self.lastOnDrawTime is not None:
             self.dt = time.time() - self.lastOnDrawTime
@@ -66,7 +66,7 @@ class Cinematic(object):
             elmt.animate(self.dt)  # On anime tous les elements
             elmt.render()
         self.lastOnDrawTime = time.time()
-        
+
         if(float(self.time) > self.endTime):  # Fin de la cinematique
             return False
         return True
@@ -80,19 +80,17 @@ class Border(object):
     def __init__(self, ch=None, text="", textSize="24", pos="bot", velY=80):
         """
         Dessine une bordure noire a l'écran a la position pos
-        Si il y a une balise <textChange>Text</textChange>, "Text" sera placé au milieu de la bordure
+        Si il y a une balise <textChange time="5">Text</textChange>, "Text" sera placé au milieu de la bordure a partir de la seconde 5
 
         :param textSize: Taille de la police
         :param height: Hauteur de la bordure
         :param width: Largeur
         :param velY: Vitesse en Y
-        :param maxY: Y maximum de la bordure (coté bas de la bordure)
 
         :type textSize: int
         :type height: int
         :type width: int
         :type velY: int|float
-        :type maxY: int
         """
 
         # - Constantes -
@@ -108,17 +106,17 @@ class Border(object):
         self.pos = pos
         self.x = 0
         self.dy = 0
-        
+
         if(pos == "bot"):
             self.y = -self.W_HEIGHT / 4
-            self.maxY = 0            
+            self.maxY = 0     
         elif(pos == "top"):
             self.maxY = 3 * self.W_HEIGHT / 4 + 2
             self.y = self.W_HEIGHT
-            
+
         self.height = self.W_HEIGHT / 4
         self.width = self.W_WIDTH
-        
+
         # - Texte -
         if(text is not None):
             # - Contenu -
@@ -134,7 +132,9 @@ class Border(object):
         self.toDoChangeText = {}
         for elmt in ch:
             if elmt.tag == "textChange":
-                self.toDoChangeText[elmt.attrib['time']] = elmt.text
+                self.toDoChangeText[int(elmt.attrib['time'])] = elmt.text
+
+        self.toDoChangeText = collections.OrderedDict(sorted(self.toDoChangeText.iteritems()))
 
     def animate(self, dt):
         """
@@ -204,7 +204,7 @@ class Image(object):
         :type x: str | int
         :type y: str | int
         """
-        
+
         self.animation = animation.AnimationGroup()
         self.animation.createFromImage(pyglet.image.load(path), int(w), int(h))
         self.animation.setFrameRate(4.0/50.0)
@@ -212,17 +212,17 @@ class Image(object):
         self.animation.setIdleState()
 
         self.centerX, self.centerY = gameEngine.getDinamicWindowSize()[0] / 2, gameEngine.getDinamicWindowSize()[1] / 2
-        
+
         # - Position -
         self.dx = int(x)
         self.dy = int(y)
         self.width = int(w)
         self.height = int(h)
-        
+
         # Pour garder une vitesse constante
         self.startX = self.dx
         self.startY = self.dy
-        
+
         # - Temps -
         self.time = 0
 

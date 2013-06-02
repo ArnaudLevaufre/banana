@@ -162,7 +162,7 @@ class Game(object):
                             self.level.items.append(chest.loot())
                     else:
                         self.level.player.pick(item)
-            
+
             # Fin du niveau, quand tout les ennemis sont vaincus
             if self.level.enemies == []:
                 # Si le niveau est fini, on save la partie
@@ -175,6 +175,7 @@ class Game(object):
                     # On passe au suivant
                     self.reload()
                 else:
+                    print "coucou"
                     self.camera.reset()
                     self.returnState = "menu"
             else:
@@ -279,4 +280,5 @@ class Camera:
         pyglet.gl.glTranslated(width/2 - x, height/2 - y, 0)
 
     def reset(self):
-        self.setPos(0,0)
+        width, height = gameEngine.getDinamicWindowSize()
+        self.setPos(width / 2, height / 2)

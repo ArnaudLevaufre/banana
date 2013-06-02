@@ -27,7 +27,7 @@ class Entity(object):
         self.yVel = yVel
 
     def move(self, x, y, gameMap, dt):
-        if not gameMap.collide(self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
+        if not gameMap.collide(self.x - self.width / 2 + x * dt * self.speed, self.y - self.height / 2 + y * dt * self.speed, self.width, self.height):
             self.x += int(x * dt * self.speed)
             self.y += int(y * dt * self.speed)
 
@@ -38,16 +38,16 @@ class Enemy(Entity):
     """
     Ennemie pour tester l'IA, il essaie juste de toucher le joueur
     """
-    
+
     def __init__(self, x, y, fileName, gameMap, gridMap, successor):
         """
         :param x: position x originale de l'ennemi
         :param y: position y originale de l'ennemi
         :param fileName: Chemin vers le fichier xml décrivant les caractéristiques de l'ennemi
         :param gameMap: une instance de la carte
-        :param gridMap: map version IA 
+        :param gridMap: map version IA
         :param suc: arbre qui à chaque case associe les cases vers lesquels on peut bouger
-        
+
         :type x: int
         :type y: int
         :type fileName: str
@@ -55,7 +55,7 @@ class Enemy(Entity):
         :type gridMap: GriMap object
         :type successor: dict
         """
-        
+
         # - Objets -
         Entity.__init__(self, x, y)
 
@@ -79,13 +79,11 @@ class Enemy(Entity):
 
         self.load(fileName)
 
-
     def load(self, fileName):
-        """ 
-        Charge les caractéristiques de l'ennemi depuis le 
-        fichier de description fileName. 
         """
-        
+        Charge les caractéristiques de l'ennemi depuis le fichier de description fileName.
+        """
+
         if os.path.isfile("data/ennemies/"+fileName+".xml"):
             xmlTree = xml.parse("data/ennemies/"+fileName+".xml")
             root = xmlTree.getroot()
@@ -117,7 +115,7 @@ class Enemy(Entity):
 
     def render(self):
         try:
-            self.animation.setFrameRate(4/(self.speed/10))
+            self.animation.setFrameRate(4 / (self.speed / 10))
             # Selection de l'animation en fonction de l'orientation de la vidée.
 
             if self.IA.path[-2][1] - self.caseY < 0:
@@ -145,7 +143,7 @@ class Enemy(Entity):
     def move(self, x, y, gameMap, dt):
         """
         Gestion des mouvement de l'ennemi.
-        
+
         :param x: déplacement voulus en x
         :param y: déplacement voulus en y
         :param gameMap: une instance de la carte
@@ -156,11 +154,11 @@ class Enemy(Entity):
         :type gameMap: Map object
         :type dt: float
         """
-        
+
         if self.canMove:
                 self.vector = [x, y]
                 self.canMove = False
-        if not gameMap.collide(self.x - self.width/2 + x * dt * self.speed, self.y - self.height/2 + y * dt * self.speed, self.width, self.height):
+        if not gameMap.collide(self.x - self.width / 2 + x * dt * self.speed, self.y - self.height / 2 + y * dt * self.speed, self.width, self.height):
             # Si il ne collisione pas, il se déplace normalement
             self.x += int(self.vector[0] * dt * self.speed)
             self.y += int(self.vector[1] * dt * self.speed)
@@ -176,7 +174,7 @@ class Enemy(Entity):
         self.hp -= 10
 
     def shoot(self, x, y, bulletList, batch):
-        if random.random() < self.fireRate/200:
+        if random.random() < self.fireRate / 200:
             aimDirection = vector.Vector2(x - self.x, y - self.y).getUnitary()
             bulletList.append(Bullet(self.x, self.y, aimDirection.x * self.bulletSpeed, aimDirection.y * self.bulletSpeed, self, self.bulletModel, batch))
 
@@ -193,16 +191,16 @@ class Player(Entity):
     """
     Classe permetant de gérer le joueur.
     """
-    
+
     def __init__(self, x, y):
         """
         :param x: position initiale en x du joueur
         :param y: position initiale en y du joueur
-        
+
         :type x: int
         :type y: int
         """
-        
+
         # - Objets -
         Entity.__init__(self, x, y)
 
@@ -239,9 +237,9 @@ class Player(Entity):
         # - Chargement animations
         self.animation = animation.AnimationGroup()
         self.animation.createFromImage(pyglet.image.load("data/sprites/blarg.png"), self.width, self.height)
-        
+
         # - Pick info -
-        self.pickLabel = pyglet.text.Label("", anchor_x="center", anchor_y="center", color=(0,0,0,255))
+        self.pickLabel = pyglet.text.Label("", anchor_x="center", anchor_y="center", color=(0, 0, 0, 255))
         self.pickTimestamp = 0
         self.pickWidth = 124
         self.pickHeight = 24
@@ -284,19 +282,19 @@ class Player(Entity):
         """
         Détermine le vecteur directeur de la droite passant par
         le centre de l'écran et le pointeur de la souris.
-        On le détermine en divisant le vecteur définit
-        par le centre de l'écran et le cursor par sa norme.
-        
+        On le détermine en divisant le vecteur défini
+        par le centre de l'écran et le curseur par sa norme.
+
         :param x: coordonnée en x de la souris
         :param y: coordonnée en y de la souris
-        
+
         :type x: int
         :type y: int
         """
         width, height = gameEngine.getDinamicWindowSize()
 
-        centerX = width/2
-        centerY = height/2 + self.mouthOffset
+        centerX = width / 2
+        centerY = height / 2 + self.mouthOffset
 
         self.aimVector.set(x-centerX, y-centerY)
         self.aimVector = self.aimVector.getUnitary()
@@ -304,10 +302,10 @@ class Player(Entity):
     def shoot(self, bullets, batch):
         """
         Tir en suivant la direction de aimVector.
-        
+
         :param bullets: La liste ou sont stocké toutes les entitées de type Bullet du niveau
         :param batch: le batch qui contiendra les sprites de projectiles.
-        
+
         :param bullets: list
         :param batch: Batch
         """
@@ -320,7 +318,7 @@ class Player(Entity):
         """
         Calcul les dégat subis par une attaque de puissance donnée par la variable damage
         """
-        
+
         if self.shield - damage > 0:
             self.shield -= damage
         elif self.hp - (damage - self.shield) / (1 + math.log(1 + self.resistance / 25)) > 0:
@@ -332,7 +330,7 @@ class Player(Entity):
 
     def render(self):
         # update du framerate de l'animation
-        self.animation.setFrameRate(4/self.speed)
+        self.animation.setFrameRate(4 / self.speed)
 
         # Selection de l'animation en fonction de l'orientation de la vidée.
         if self.aimVector.x < 0 and self.aimVector.y < 0:
@@ -351,40 +349,40 @@ class Player(Entity):
             self.animation.selectAnimation(0)
 
         self.animation.render(self.x - self.width/2, self.y - self.height/2)
-        
+
         # - Affichage de l'item récupéré -
         if time.time() - self.pickTimestamp < 2.5:
             # on affiche un background
             pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
-            
-            pyglet.gl.glColor4f(0,0,0,1)
-            pyglet.gl.glVertex2i(self.x  - self.pickWidth/2 - 2, self.y + self.height - 2)
-            pyglet.gl.glVertex2i(self.x  + self.pickWidth/2 + 2, self.y + self.height - 2)
-            pyglet.gl.glVertex2i(self.x  + self.pickWidth/2 + 2, self.y + self.height + self.pickHeight + 2)
-            pyglet.gl.glVertex2i(self.x  - self.pickWidth/2 - 2, self.y + self.height + self.pickHeight + 2)
-            
-            pyglet.gl.glColor4f(1,1,1,1)
-            pyglet.gl.glVertex2i(self.x  - self.pickWidth/2, self.y + self.height)
-            pyglet.gl.glVertex2i(self.x  + self.pickWidth/2, self.y + self.height)
-            pyglet.gl.glVertex2i(self.x  + self.pickWidth/2, self.y + self.height + self.pickHeight)
-            pyglet.gl.glVertex2i(self.x  - self.pickWidth/2, self.y + self.height + self.pickHeight)
+
+            pyglet.gl.glColor4f(0, 0, 0, 1)
+            pyglet.gl.glVertex2i(self.x - self.pickWidth/2 - 2, self.y + self.height - 2)
+            pyglet.gl.glVertex2i(self.x + self.pickWidth/2 + 2, self.y + self.height - 2)
+            pyglet.gl.glVertex2i(self.x + self.pickWidth/2 + 2, self.y + self.height + self.pickHeight + 2)
+            pyglet.gl.glVertex2i(self.x - self.pickWidth/2 - 2, self.y + self.height + self.pickHeight + 2)
+
+            pyglet.gl.glColor4f(1, 1, 1, 1)
+            pyglet.gl.glVertex2i(self.x - self.pickWidth/2, self.y + self.height)
+            pyglet.gl.glVertex2i(self.x + self.pickWidth/2, self.y + self.height)
+            pyglet.gl.glVertex2i(self.x + self.pickWidth/2, self.y + self.height + self.pickHeight)
+            pyglet.gl.glVertex2i(self.x - self.pickWidth/2, self.y + self.height + self.pickHeight)
             pyglet.gl.glEnd()
-            
+
             # affiche le text
             self.pickLabel.x = self.x
             self.pickLabel.y = self.y + self.height + self.pickHeight/2
             self.pickLabel.draw()
-        
+
     def pick(self, item):
         """
         Récupere l'item donnée en paramètre. Change les caractéristiques du joueur
-        et affiche une information sur l'item reçut.
+        et affiche une information sur l'item reçu.
         """
-        
+
         # - mise a jour du pick info -
         self.pickLabel.text = (item.type + " " + str(int(item.value))).upper()
         self.pickTimestamp = time.time()
-        
+
         # - action de l'item sur le joueur -
         if item.type == "shield":
             self.shieldCapacity = item.value
