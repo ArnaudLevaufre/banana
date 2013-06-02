@@ -212,6 +212,9 @@ class Game(object):
         # avec le click gauche enfoncé.
         if button == pyglet.window.mouse.LEFT:
             self.player.aim(x, y)
+        
+    def on_mouse_motion(self, x,y, dx, dy):
+        self.player.aim(x,y)
 
     def on_key_press(self, symbol, modifier):
         if self.dead:

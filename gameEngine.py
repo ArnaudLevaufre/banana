@@ -155,6 +155,8 @@ class GameEngine(pyglet.window.Window):
             self._menu.on_mouse_motion(x, y, dx, dy)
         elif self._state == "creator":
             self._creator.on_mouse_motion(x, y, dx, dy)
+        elif self._state == "playing":
+            self._game.on_mouse_motion(x, y, dx, dy)
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if self._state == "creator":
