@@ -19,7 +19,7 @@ class GameEngine(pyglet.window.Window):
     l'état du programme, c'est à dire si nous
     somme dans le menu, dans l'éditeur, en
     jeu, etc ...
-    Ainsi suivant le cas on transmet les
+    Ainsi suivant le cas on transmet lesd
     evenement selement à la partie du
     programme qui nous intéresse.
     """

@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<init>
+	<cinematique file="mdd-presentation" />
+	<next level="" />
+	<player skin="blarg.png" x="3" y="3" width="48" height="48" />
+	<map name="mdd-presentation" />
+	<enemies>
+		<enemy x="2" y="10" type="base" />
+		<enemy x="6" y="10" type="base" />
+		<enemy x="2" y="13" type="base" />
+		<enemy x="6" y="13" type="base" />
+		<enemy x="2" y="47" type="base" />
+		<enemy x="4" y="47" type="base" />
+		<enemy x="6" y="47" type="base" />
+		<enemy x="3" y="45" type="sauronbat" />
+		<enemy x="5" y="45" type="sauronbat" />
+		<enemy x="4" y="43" type="sauronbat" />
+	</enemies>
+	<items>
+		<chest x="2" y="17" />
+		<chest x="2" y="19" />
+		<chest x="6" y="19" />
+		<chest x="6" y="17" />
+	</items>
+</init>
