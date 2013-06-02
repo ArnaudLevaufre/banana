@@ -411,14 +411,13 @@ class Player(Entity):
             self.fireRate += item.value
         elif item.type == "resistance":
             self.resistance += item.value
-        
 
 # ---------------------------------------------------
 
 
 class Bullet(Entity):
-    """ Class décrivant les projectiles """
-    
+    """ Classe décrivant les projectiles """
+
     SIZE = 10
 
     def __init__(self, x, y, xVel, yVel, owner, image, batch):
@@ -430,7 +429,7 @@ class Bullet(Entity):
         :param owner: Une instance de player ou de Enemy celon les cas
         :param image: Le model de projectile, il sera convertis en sprite
         :param batch: le batch dans lequel sera placé le sprite du projectile
-        
+
         :type x: int
         :type y: int
         :type xVel: int
@@ -438,8 +437,8 @@ class Bullet(Entity):
         :type owner: soit Enemy, soit Player
         :type image: une image chargé avec pyglet.image.load
         :type batch: Batch
-        """ 
-        
+        """
+
         # - Objet -
         super(Bullet, self).__init__(x, y, xVel, yVel)
 
@@ -456,21 +455,21 @@ class Bullet(Entity):
     def simulate(self, gameMap, player, ennemies, dt=0.1):
         """
         Simule les déplacements des projectiles. Si le projectile rencontre un mur
-        sur la crate ou se hurte à un ennemi ou au joueur, on return False. 
+        sur la crate ou se hurte à un ennemi ou au joueur, on return False.
         Cette information sera utilisée pour supprimer le projectile de la liste
         des projectiles courants du niveau.
-        
-        :param gameMap: la carte du niveau, elle permet de gérer les collision anec le décors 
+
+        :param gameMap: la carte du niveau, elle permet de gérer les collision anec le décors
         :param player: le joueur.
         :param ennemies:  la liste des ennemies présents sur le niveau
         :param dt: l'interval entre deux appels de la fonction
-        
+
         :type gameMap: Map
         :type player: Player
         :type ennemies: list(Enemy)
         :type dt: float
         """
-        
+
         # - calcul de la trajectiore, test de colision avec la carte et mise a jour de la position -
         norm = math.sqrt((self.initX - self.x)**2 + (self.initY - self.y)**2)
         if not gameMap.collide(self.x - self.width/2 + self.xVel * dt * self.speed, self.y - self.height/2 + self.yVel * dt * self.speed, self.width, self.height) and norm < self.range:
@@ -503,19 +502,19 @@ class Bullet(Entity):
         On vérifie que la position en x de l'entitée est comprise entre
         la position en x du projectile et sa position en x+width.
         On procede ensuit de la même maniere mais avec les coordonnées en y.
-        Enfin on répete le processus mais en inversant les coordonnées du 
+        Enfin on répete le processus mais en inversant les coordonnées du
         projectile et de l'entitée dans les comparaison.
-        La second vérification permet de gérer les cas ou l'entitée est 
-        plus grosse que les cases. Sans cela on passerais à travers les blocks.  
+        La second vérification permet de gérer les cas ou l'entitée est
+        plus grosse que les cases. Sans cela on passerais à travers les blocks.
 
         :param ent: L'ennemi ou le joueur avec lequel on veu vérifier la collision
         :type ent: Ennemy ou Player
         """
-        
+
         # ------------------------------------------------------- #
         # - One does not simply understand what's written there - #
         # ------------------------------------------------------- #
-        
+
         if ent.type != self.owner.type:
             if self.x <= ent.x <= self.x + self.width or self.x <= ent.x+ent.width <= self.x + self.width:
                 if self.y <= ent.y <= self.y + self.height or self.y <= ent.y+ent.height <= self.y + self.height:

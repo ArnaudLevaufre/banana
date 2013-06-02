@@ -26,8 +26,8 @@ class Save(object):
 
     def load(self):
         """
-        Charge les caractéristiques du joueur ainsi que des infos 
-        sur le niveau ou il était rendus. 
+        Charge les caractéristiques du joueur ainsi que des infos
+        sur le niveau ou il était rendus.
         """
         if os.path.isfile(self.fileName):
             self.xml = xml.parse(self.fileName)
@@ -63,7 +63,7 @@ class Save(object):
         Enregistre les informations du joueur et le niveau auquel il
         est rendus dans un fichier xml.
         """
-        
+
         file = open(self.fileName, "w")
         saveFile = "<?xml version=\"1.0\" ?>\n\
 <save>\n\t\

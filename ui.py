@@ -8,13 +8,13 @@ class UI(object):
     """
     Classe de gestion de l'interface utilisateur.
     """
-    
+
     def __init__(self):
-        
+
         # Initialisation des batchs
         self.batch = pyglet.graphics.Batch()
         self.batchPanel = pyglet.graphics.Batch()
-        
+
         # initialisation de l'état des menus
         self.menuOpened = False
         self.showDevTool = True
@@ -28,7 +28,7 @@ class UI(object):
         self.sidePanelWidth = 160
         self.sidePanelHeight = 400
 
-        # Labels 
+        # Labels
         self.hpLabel = pyglet.text.Label("100 / 100", x=0, y=0, batch=self.batch, anchor_x="right", anchor_y="center", bold=True, font_size=8)
         self.shieldLabel = pyglet.text.Label("50 / 50", x=0, y=0, batch=self.batch, anchor_x="right", anchor_y="center", bold=True, font_size=8)
 
@@ -60,7 +60,7 @@ class UI(object):
         :param x: Position centrale de l'écran en x
         :param y: Position centrale de l'écran en y
         :param player: Le joueur, afin de récupérer ses caractéristiques
-        
+
         :type x: int
         :type y: int
         :type player: Player
@@ -93,19 +93,19 @@ class UI(object):
             pyglet.gl.glVertex2i(originX + self.sidePanelWidth, y + self.sidePanelHeight / 2)
             pyglet.gl.glVertex2i(originX, y + self.sidePanelHeight / 2)
             pyglet.gl.glEnd()
-            
+
             # bordure du panel
             pyglet.gl.glBegin(pyglet.gl.GL_LINE_STRIP)
             pyglet.gl.glColor4f(0, 0, 0, 1)
-            pyglet.gl.glVertex2i(originX, y - self.sidePanelHeight/2)
-            pyglet.gl.glVertex2i(originX + self.sidePanelWidth, y - self.sidePanelHeight/2)
-            pyglet.gl.glVertex2i(originX + self.sidePanelWidth, y + self.sidePanelHeight/2)
+            pyglet.gl.glVertex2i(originX, y - self.sidePanelHeight / 2)
+            pyglet.gl.glVertex2i(originX + self.sidePanelWidth, y - self.sidePanelHeight / 2)
+            pyglet.gl.glVertex2i(originX + self.sidePanelWidth, y + self.sidePanelHeight / 2)
             pyglet.gl.glVertex2i(originX, y + self.sidePanelHeight/2)
             pyglet.gl.glEnd()
 
             # - Update des positions et valeurs des infos panel -
-            self.panelTitle.x = originX + self.sidePanelWidth/2
-            self.panelTitle.y = originY + gameEngine.GameEngine.W_HEIGHT/2 + self.sidePanelHeight/2 - 20
+            self.panelTitle.x = originX + self.sidePanelWidth / 2
+            self.panelTitle.y = originY + gameEngine.GameEngine.W_HEIGHT / 2 + self.sidePanelHeight / 2 - 20
 
             panelTop = originY + gameEngine.GameEngine.W_HEIGHT/2 + self.sidePanelHeight / 2
 
@@ -124,8 +124,8 @@ class UI(object):
             self.batchPanel.draw()
 
         # - Redéfinition des positions du texte -
-        self.hpLabel.x, self.hpLabel.y = originX + self.hpPos["x"] + self.hpSize["x"] - 6, originY + self.hpPos["y"] + self.hpSize["y"]/2
-        self.shieldLabel.x, self.shieldLabel.y = originX + self.shieldPos["x"] + self.shieldSize["x"] - 6, originY + self.shieldPos["y"] + self.shieldSize["y"]/2
+        self.hpLabel.x, self.hpLabel.y = originX + self.hpPos["x"] + self.hpSize["x"] - 6, originY + self.hpPos["y"] + self.hpSize["y"] / 2
+        self.shieldLabel.x, self.shieldLabel.y = originX + self.shieldPos["x"] + self.shieldSize["x"] - 6, originY + self.shieldPos["y"] + self.shieldSize["y"] / 2
         self.hpLabel.text = str(int(player.hp)) + " / " + str(int(player.maxHp))
 
         if int(player.shield) > 0:
@@ -151,9 +151,9 @@ class UI(object):
 
     def drawBar(self, x, y, width, height, color, border, progress):
         """
-        Fonction permetant de tracer une barre avec toutes les 
+        Fonction permetant de tracer une barre avec toutes les
         bordures qui vont avec, de maniere simple avec openGL
-        
+
         :param x: position en x de l'élément
         :param y: position en y de l'élément
         :param width: largeur de la barre
@@ -161,7 +161,7 @@ class UI(object):
         :param color: la couleur de la barre principale
         :param border: définis si on affiche les bordues ou non
         :param preogress:  définis jusqu'ou on remplis la barre principale
-        
+
         :type x: int
         :type y: int
         :type width: int
@@ -170,7 +170,7 @@ class UI(object):
         :type border: bool
         :type progress: int
         """
-        
+
         pyglet.gl.glBegin(pyglet.gl.GL_QUADS)
 
         if border:

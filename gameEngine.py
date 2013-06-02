@@ -9,12 +9,12 @@ import sys
 class GameEngine(pyglet.window.Window):
 
     """
-    == Classe principale de l'application == 
-    
+    == Classe principale de l'application ==
+
     C'est ici que l'on transmet tout les evenement
     clavier, souris, commande d'affichage.
-    
-    On est entierement guidé par la variable 
+
+    On est entierement guidé par la variable
     _state qui, celon ca valeur, nous indique
     l'état du programme, c'est à dire si nous
     somme dans le menu, dans l'éditeur, en
@@ -66,34 +66,34 @@ class GameEngine(pyglet.window.Window):
         """
         Moteur physique principal, il fait appel au fonctions
         chargés de calculer les déplacement ainsi que celles
-        calculant les différents macanismes du jeu. Elle 
+        calculant les différents macanismes du jeu. Elle
         transmet à chaque fois dt, indispensable dans
         les calculs de déplacement afin de garder une vitesse
         constante.
         """
-        
+
         if self._state == "new":
             self._game = game.Game()
             self._state = "playing"
-        
+
         elif self._state == "continue":
             self._game = game.Game(isContinue=True)
             self._state = "playing"
-        
+
         elif self._state == "rapid":
             self._levelSelector = menu.LevelSelector()
             self._state = "levelSelector"
-            
+
         elif self._state == "levelSelector" and self._levelSelector.choosenLevel is not None:
             self._game = game.Game(loadLevel=self._levelSelector.choosenLevel)
             self._state = "playing"
-        
+
         elif self._state == "playing" and self._game:
             self._game.simulate(dt, self.keysHandler)
-        
+
         elif self._state == "creator" and self._creator:
             self._creator.refresh(dt, self.keysHandler)
-            
+
         elif self._state == "askNewCreator":
             self._creator = mc.App()
             self._state = "creator"
@@ -105,7 +105,7 @@ class GameEngine(pyglet.window.Window):
         des diférents éléments du jeux, de l'éditeur
         ou du menu celon les cas.
         """
-        
+
         self.clear()
         # ----------------------------
         if self._state == "playing" and self._game:
@@ -127,15 +127,15 @@ class GameEngine(pyglet.window.Window):
         # - Passage des evenements aux autres objets
         if self._state == "playing":
             self._game.on_mouse_press(x, y, button, modifiers)
-        
+
         elif self._state == "menu":
             self._menu.on_mouse_press(x, y, button, modifiers)
-        
+
         elif self._state == "creator":
             self._creator.on_mouse_press(x, y, button, modifiers)
-            
+
         elif self._state == "levelSelector":
-            self._levelSelector.on_mouse_press( x, y, button, modifiers)
+            self._levelSelector.on_mouse_press(x, y, button, modifiers)
 
     def on_mouse_release(self, x, y, button, modifiers):
         # - Passage des evenements aux autres objets
@@ -161,10 +161,10 @@ class GameEngine(pyglet.window.Window):
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if self._state == "creator":
             self._creator.on_mouse_scroll(x, y, scroll_x, scroll_y)
-        
+
         if self._state == "levelSelector":
-            self._levelSelector.on_mouse_scroll(x, y, scroll_x, scroll_y) 
-            
+            self._levelSelector.on_mouse_scroll(x, y, scroll_x, scroll_y)
+
     def on_key_press(self, symbol, modifier):
         if symbol == pyglet.window.key.F1 and self._state == "playing":
             self._game.ui.toggleDevTool()
