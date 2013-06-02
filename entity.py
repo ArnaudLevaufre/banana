@@ -225,8 +225,8 @@ class Player(Entity):
         self.resistance = 100
         self.attack = 10
         self.isMoving = False
-        self.mucus = 1000
-        self.mucusMax = 1000
+        self.mucus = 100
+        self.mucusMax = 100
         self.regenMucus = 0.01
 
         self.increasedMucus = 0
