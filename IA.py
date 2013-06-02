@@ -1,3 +1,5 @@
+#-*- encoding:utf-8 -*-
+
 import heapq
 from collections import defaultdict
 

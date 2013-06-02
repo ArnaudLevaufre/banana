@@ -1,7 +1,7 @@
 #-*- encoding:utf-8 -*-
 
 """
-        == DOCUMENTATION [FR] ==
+        == DOCUMENTATION ==
 
 Controles :
 -----------

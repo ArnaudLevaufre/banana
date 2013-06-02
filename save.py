@@ -1,3 +1,5 @@
+#-*- encoding:utf-8 -*-
+
 import os
 import xml.etree.ElementTree as xml
 
@@ -23,6 +25,10 @@ class Save(object):
         self.fileName = "data/save/save.data"
 
     def load(self):
+        """
+        Charge les caractéristiques du joueur ainsi que des infos 
+        sur le niveau ou il était rendus. 
+        """
         if os.path.isfile(self.fileName):
             self.xml = xml.parse(self.fileName)
             root = self.xml.getroot()
@@ -53,6 +59,11 @@ class Save(object):
                     self.regenMucus = float(child.text)
 
     def save(self):
+        """
+        Enregistre les information du joueur et le niveau auquel il
+        est rendus dans un fichier xml.
+        """
+        
         file = open(self.fileName, "w")
         saveFile = "<?xml version=\"1.0\" ?>\n\
 <save>\n\t\
