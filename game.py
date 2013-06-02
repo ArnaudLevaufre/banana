@@ -33,10 +33,10 @@ class Game(object):
         self.level = level.Level()
         self.save = save.Save()
         
-        if not isContinue and not loadLevel:
+        if not isContinue and loadLevel is None:
             # - creer nouvelle partie -
             self.level.load("Z1-N1")
-            self.lvl = 1
+            self.lvl = "Z1-N1"
             
         elif loadLevel is not None:
             self.level.campaign = False
@@ -162,7 +162,7 @@ class Game(object):
                             self.level.items.append(chest.loot())
                     else:
                         self.level.player.pick(item)
-
+            
             # Fin du niveau, quand tout les ennemis sont vaincus
             if self.level.enemies == []:
                 # Si le niveau est fini, on save la partie
@@ -175,7 +175,6 @@ class Game(object):
                     # On passe au suivant
                     self.reload()
                 else:
-                    print "coucou"
                     self.camera.reset()
                     self.returnState = "menu"
             else:
@@ -240,7 +239,7 @@ class Game(object):
                 item.render()
             self.ui.render(self.camera.x, self.camera.y, self.player)
        
-        elif self.cinematiqueIsPlaying:
+        elif self.cinematiqueIsPlaying and self.level.cinematique:
             width, height = gameEngine.getDinamicWindowSize()
             self.camera.setPos(width/2, height/2)
             self.cinematiqueIsPlaying = self.level.cinematique.run()
@@ -281,4 +280,4 @@ class Camera:
 
     def reset(self):
         width, height = gameEngine.getDinamicWindowSize()
-        self.setPos(width / 2, height / 2)
+        self.setPos(width/2,height/2)

@@ -60,7 +60,7 @@ class Save(object):
 
     def save(self):
         """
-        Enregistre les information du joueur et le niveau auquel il
+        Enregistre les informations du joueur et le niveau auquel il
         est rendus dans un fichier xml.
         """
         
