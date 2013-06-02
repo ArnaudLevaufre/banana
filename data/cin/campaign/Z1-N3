@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<cin>
+	<border velY = "250" pos = "bot">
+		<textChange time ="0">Nonoeil: Lolololol !</textChange>
+	</border>
+	
+	<border pos = "top" velY = "250"/>
+
+	<image path="data/sprites/blarg.png" x="-1000" y="-48" h="48" w="48">
+		<move x="800" y="-48" timeStart="0" timeStop="4"/>
+	</image>
+	
+	<image path="data/sprites/nonoeil.png" x="-1000" y="64" h="68" w="70">
+		<move x="1000" y="64" timeStart="0" timeStop="4"/>
+	</image>
+
+	<end time="4" />
+</cin>
