@@ -33,7 +33,7 @@ class Game(object):
         self.level = level.Level()
         self.save = save.Save()
         
-        if not isContinue and not loadLevel:
+        if not isContinue and loadLevel is None:
             # - creer nouvelle partie -
             self.level.load("Z1-N1")
             self.lvl = 1
@@ -239,7 +239,7 @@ class Game(object):
                 item.render()
             self.ui.render(self.camera.x, self.camera.y, self.player)
        
-        elif self.cinematiqueIsPlaying:
+        elif self.cinematiqueIsPlaying and self.level.cinematique:
             width, height = gameEngine.getDinamicWindowSize()
             self.camera.setPos(width/2, height/2)
             self.cinematiqueIsPlaying = self.level.cinematique.run()
@@ -279,4 +279,5 @@ class Camera:
         pyglet.gl.glTranslated(width/2 - x, height/2 - y, 0)
 
     def reset(self):
-        self.setPos(0,0)
+        width, height = gameEngine.getDinamicWindowSize()
+        self.setPos(width/2,height/2)
