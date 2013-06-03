@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<enemy>
+        <width>70</width>
+        <height> 68 </height>
+        <speed> 100 </speed>
+        <sprite>data/sprites/nonoeil.png</sprite>
+        <itemList>
+                <life value="50"/>
+                <shield value="50"/>
+        </itemList>
+
+        <hp> 1000 </hp>
+        <fireRate> 4.0 </fireRate>
+        <bulletSpeed> 500.0 </bulletSpeed>
+        <attack> 25 </attack>
+</enemy>

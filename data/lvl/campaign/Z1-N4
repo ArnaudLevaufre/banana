@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<init>
+	<cinematique file="Z1-N4" />
+	<next level="" />
+	<player skin="blarg.png" x="3" y="3" width="48" height="48" />
+	<map name="" />
+	<enemies>
+	</enemies>
+	<items>
+	</items>
+</init>
