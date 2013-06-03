@@ -2,11 +2,11 @@
 <cin>
 	<border velY = "250" pos = "bot">
 		<textChange time ="1">Nonoeil: AAAH Tu es trop fort !</textChange>
-		<textChange time ="3">Nonoeil: Je suis vaincus</textChange>
+		<textChange time ="3">Nonoeil: Je suis vaincu</textChange>
 		<textChange time ="5">Blarg et Blargette: BLAAARG !!</textChange>
 		<textChange time ="7">OFF: Ainsi, Nonoeil vaincu, ils vécurent heureux et ...</textChange>
 		<textChange time ="9">ZBROTCH !!!</textChange>
-		<textChange time ="10">OFF: Mmh et bien ... voila qui conclus notre épopée.</textChange>
+		<textChange time ="10">OFF: Mmh et bien ... voila qui conclut notre épopée.</textChange>
 	</border>
 	
 	<border pos = "top" velY = "250"/>

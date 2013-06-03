@@ -1,4 +1,4 @@
 <?xml version="1.0"?>
 <cin>
-	<end time="0" /> <!-- Enfin, on indique le temps de fin -->
+	<end time="0" />
 </cin>
