@@ -59,7 +59,7 @@ class Cinematic(object):
 
         # - Calcul de dt -
         if self.lastOnDrawTime is not None:
-            self.dt = time.time() - self.lastOnDrawTime
+            self.dt = (time.time() - self.lastOnDrawTime) * 5
             self.time += self.dt
 
         # - Render/Animation -
@@ -110,7 +110,7 @@ class Border(object):
 
         if(pos == "bot"):
             self.y = -self.W_HEIGHT / 4
-            self.maxY = 0     
+            self.maxY = 0
         elif(pos == "top"):
             self.maxY = 3 * self.W_HEIGHT / 4 + 2
             self.y = self.W_HEIGHT
