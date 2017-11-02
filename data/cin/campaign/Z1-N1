@@ -6,13 +6,13 @@
 		<textChange time ="6">Blarg: Blarg Blaa..</textChange>
 		<textChange time ="8">Nonoeil: Mouhahaha</textChange>
 		<textChange time ="10">Blarg: Noooooon !</textChange>
-		<textChange time ="12">Blarg: Ma bien aimé glargette a été enlevée</textChange>
-		<textChange time ="14">Blarg: Je dois à tous prix la retrouver</textChange>
+		<textChange time ="12">Blarg: Ma bien aimée glargette a été enlevée</textChange>
+		<textChange time ="14">Blarg: Je dois à tout prix la retrouver</textChange>
 		<textChange time ="16">OFF: Pour te déplacer, utilise les touches Z,Q,S,D</textChange>
 		<textChange time ="18">OFF: Tu peux viser et tirer avec la souris</textChange>
-		
+
 	</border>
-	
+
 	<border pos = "top" velY = "250"/>
 
 	<image path="data/sprites/blarg.png" x="-400" y="-48" h="48" w="48">
@@ -24,9 +24,9 @@
 		<move x="200" y="5" timeStart="0" timeStop="4"/>
 		<move x="200" y="65" timeStart="7" timeStop="8"/>
 		<move x="999" y="65" timeStart="9" timeStop="10"/>
-		
+
 	</image>
-	
+
 	<image path="data/sprites/nonoeil.png" x="-999" y="64" h="68" w="70">
 		<move x="0" y="64" timeStart="5" timeStop="6"/>
 		<move x="190" y="64" timeStart="6" timeStop="7"/>
